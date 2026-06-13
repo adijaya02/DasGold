@@ -219,6 +219,7 @@ body{
     height:380px;
     background:#fff;
     padding:15px;
+	position: relative;
 }
 	
 .filter button.active{
@@ -633,22 +634,24 @@ body{
 <script>
 
 	async function loadHarga() {
-		try {
-			const res = await fetch('/api/harga');
-
-			const data = await res.json();
-
-			if (!data || !data.harga_beli) return;
-
-			document.getElementById('hargaBeli').innerText =
-				'Rp ' + Number(data.harga_beli).toLocaleString('id-ID');
-
-			document.getElementById('hargaJual').innerText =
-				'Rp ' + Number(data.harga_jual).toLocaleString('id-ID');
-
-		} catch (err) {
-			console.error(err);
-		}
+	    try {
+	        const res = await fetch('/api/harga');
+	        const data = await res.json();
+	
+	        // 🔥 FIX: Supabase return array
+	        const row = Array.isArray(data) ? data[0] : data;
+	
+	        if (!row) return;
+	
+	        document.getElementById('hargaBeli').innerText =
+	            'Rp ' + Number(row.harga_beli).toLocaleString('id-ID');
+	
+	        document.getElementById('hargaJual').innerText =
+	            'Rp ' + Number(row.harga_jual).toLocaleString('id-ID');
+	
+	    } catch (err) {
+	        console.error(err);
+	    }
 	}
 	loadHarga();
 
@@ -679,28 +682,28 @@ body{
 		window.location.href = "login.html";
 	}
 
-	let goldChart = null;
-
 	async function loadChart(days = 7) {
-	
+
 	    try {
-	        console.log("loadChart jalan");
 	
 	        const res = await fetch(`/api/history?days=${days}`);
 	        const data = await res.json();
 	
-	        console.log("DATA:", data);
+	        if (!Array.isArray(data)) {
+	            console.error("Data history bukan array:", data);
+	            return;
+	        }
 	
 	        const canvas = document.getElementById('goldChart');
 	
 	        if (!canvas) {
-	            console.error("Canvas goldChart tidak ditemukan");
+	            console.error("Canvas tidak ditemukan");
 	            return;
 	        }
 	
 	        const ctx = canvas.getContext('2d');
 	
-	        if (goldChart) {
+	        if (goldChart && typeof goldChart.destroy === "function") {
 	            goldChart.destroy();
 	        }
 	
@@ -711,7 +714,7 @@ body{
 	                datasets: [
 	                    {
 	                        label: 'Harga Beli',
-	                        data: data.map(d => d.harga_beli),
+	                        data: data.map(d => Number(d.harga_beli)),
 	                        borderColor: 'blue',
 	                        fill: false
 	                    }
@@ -727,16 +730,6 @@ body{
 	        console.error("Error loadChart:", err);
 	    }
 	}
-	
-	window.addEventListener("DOMContentLoaded", () => {
-	
-	    loadChart(7);
-	
-	    document.getElementById("btn7").addEventListener("click", () => loadChart(7));
-	    document.getElementById("btn30").addEventListener("click", () => loadChart(30));
-	    document.getElementById("btn365").addEventListener("click", () => loadChart(365));
-	
-	});
 </script>
 
 
