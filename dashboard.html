@@ -7,6 +7,8 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
 
 *{
@@ -215,13 +217,8 @@ body{
 
 .chart-box{
     height:380px;
-    border-radius:10px;
-    background:#f7f9fc;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    color:#888;
-    font-size:18px;
+    background:#fff;
+    padding:15px;
 }
 
 .ranking{
@@ -589,8 +586,8 @@ body{
                 <div class="chart-area">
 
                     <div class="chart-box">
-                        Area Grafik (Chart.js / ApexCharts)
-                    </div>
+						<canvas id="goldChart"></canvas>
+					</div>
 
                     <div class="ranking">
 
@@ -677,6 +674,54 @@ body{
 		window.location.href = "login.html";
 	}
 	
+	async function loadChart() {
+
+		const res = await fetch('/api/history');
+		const data = await res.json();
+
+		const labels = data.map(item => item.tanggal);
+
+		const hargaBeli = data.map(item =>
+			Number(item.harga_beli)
+		);
+
+		const hargaJual = data.map(item =>
+			Number(item.harga_jual)
+		);
+
+		const ctx = document
+			.getElementById('goldChart')
+			.getContext('2d');
+
+		new Chart(ctx, {
+			type: 'line',
+			data: {
+				labels: labels,
+				datasets: [
+					{
+						label: 'Harga Beli',
+						data: hargaBeli,
+						borderColor: '#1f86ff',
+						backgroundColor: 'rgba(31,134,255,.1)',
+						tension: 0.4
+					},
+					{
+						label: 'Harga Jual',
+						data: hargaJual,
+						borderColor: '#f39c12',
+						backgroundColor: 'rgba(243,156,18,.1)',
+						tension: 0.4
+					}
+				]
+			},
+			options: {
+				responsive: true,
+				maintainAspectRatio: false
+			}
+		});
+	}
+
+loadChart();
 
 </script>
 
