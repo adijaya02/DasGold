@@ -1,23 +1,27 @@
 export default async function handler(req, res) {
-    try {
-        const response = await fetch(
-            "https://pegadaian.co.id/gold/prices/savings"
-        );
+    const response = await fetch(
+        "https://pegadaian.co.id/gold/prices/savings"
+    );
 
-        const data = await response.json();
+    const data = await response.json();
 
-        // contoh: di sini nanti kamu simpan ke database
-        console.log("Harga Beli:", data.data.hargaBeli);
-        console.log("Harga Jual:", data.data.hargaJual);
+    await fetch(
+        "https://zasjkgrmcvigblpyqsff.supabase.co/rest/v1/harga_emas",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                apikey: process.env.SUPABASE_KEY,
+                Authorization: `Bearer ${process.env.SUPABASE_KEY}`,
+                Prefer: "return=minimal"
+            },
+            body: JSON.stringify({
+                harga_beli: data.data.hargaBeli,
+                harga_jual: data.data.hargaJual,
+                tanggal: data.data.tglBerlaku
+            })
+        }
+    );
 
-        res.status(200).json({
-            success: true,
-            hargaBeli: data.data.hargaBeli,
-            hargaJual: data.data.hargaJual,
-            tanggal: data.data.tglBerlaku
-        });
-
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+    res.json({ success: true });
 }
