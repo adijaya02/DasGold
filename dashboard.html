@@ -679,81 +679,91 @@ body{
 		window.location.href = "login.html";
 	}
 
-	let goldCHart = null;
-	
+	let goldChart = null;
+
+	// ==========================
+	// LOAD CHART FUNCTION
+	// ==========================
 	async function loadChart(days = 7) {
-
-	    const res = await fetch(`/api/history?days=${days}`);
-	    const data = await res.json();
 	
-	    const labels = data.map(item => item.tanggal);
+	    try {
+	        const res = await fetch(`/api/history?days=${days}`);
+	        const data = await res.json();
 	
-	    const hargaBeli = data.map(item =>
-	        Number(item.harga_beli)
-	    );
+	        const labels = data.map(item => item.tanggal);
 	
-	    const hargaJual = data.map(item =>
-	        Number(item.harga_jual)
-	    );
+	        const hargaBeli = data.map(item =>
+	            Number(item.harga_beli)
+	        );
 	
-	    const ctx = document
-	        .getElementById('goldChart')
-	        .getContext('2d');
+	        const hargaJual = data.map(item =>
+	            Number(item.harga_jual)
+	        );
 	
-	    if (goldChart) {
-	        goldChart.destroy();
-	    }
+	        const ctx = document
+	            .getElementById('goldChart')
+	            .getContext('2d');
 	
-	    goldChart = new Chart(ctx, {
-	        type: 'line',
-	        data: {
-	            labels: labels,
-	            datasets: [
-	                {
-	                    label: 'Harga Beli',
-	                    data: hargaBeli,
-	                    borderColor: '#1f86ff',
-	                    backgroundColor:
-	                        'rgba(31,134,255,.1)',
-	                    tension: 0.4,
-	                    fill: true
-	                },
-	                {
-	                    label: 'Harga Jual',
-	                    data: hargaJual,
-	                    borderColor: '#f39c12',
-	                    backgroundColor:
-	                        'rgba(243,156,18,.1)',
-	                    tension: 0.4,
-	                    fill: true
-	                }
-	            ]
-	        },
-	        options: {
-	            responsive: true,
-	            maintainAspectRatio: false
+	        if (goldChart) {
+	            goldChart.destroy();
 	        }
-	    });
+	
+	        goldChart = new Chart(ctx, {
+	            type: 'line',
+	            data: {
+	                labels: labels,
+	                datasets: [
+	                    {
+	                        label: 'Harga Beli',
+	                        data: hargaBeli,
+	                        borderColor: '#1f86ff',
+	                        backgroundColor: 'rgba(31,134,255,0.1)',
+	                        tension: 0.4,
+	                        fill: true
+	                    },
+	                    {
+	                        label: 'Harga Jual',
+	                        data: hargaJual,
+	                        borderColor: '#f39c12',
+	                        backgroundColor: 'rgba(243,156,18,0.1)',
+	                        tension: 0.4,
+	                        fill: true
+	                    }
+	                ]
+	            },
+	            options: {
+	                responsive: true,
+	                maintainAspectRatio: false
+	            }
+	        });
+	
+	    } catch (err) {
+	        console.error("Gagal load chart:", err);
+	    }
 	}
-
-	document
-	    .getElementById("btn7")
-	    .addEventListener("click", () => {
+	
+	// ==========================
+	// DOM READY (AMAN)
+	// ==========================
+	window.addEventListener("DOMContentLoaded", () => {
+	
+	    // default chart
+	    loadChart(7);
+	
+	    // tombol filter
+	    document.getElementById("btn7").addEventListener("click", () => {
 	        loadChart(7);
 	    });
 	
-	document
-	    .getElementById("btn30")
-	    .addEventListener("click", () => {
+	    document.getElementById("btn30").addEventListener("click", () => {
 	        loadChart(30);
 	    });
 	
-	document
-	    .getElementById("btn365")
-	    .addEventListener("click", () => {
+	    document.getElementById("btn365").addEventListener("click", () => {
 	        loadChart(365);
 	    });
-loadChart(7);
+	
+	});
 </script>
 
 
