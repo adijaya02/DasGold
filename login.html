@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - GoldDash</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background:linear-gradient(135deg,#04264a,#1f86ff);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+.login-container{
+    width:100%;
+    max-width:420px;
+}
+
+.login-card{
+    background:#fff;
+    padding:40px;
+    border-radius:24px;
+    box-shadow:0 15px 40px rgba(0,0,0,.15);
+}
+
+.logo{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.logo h1{
+    color:#04264a;
+    font-size:32px;
+    font-weight:700;
+}
+
+.logo p{
+    color:#6b7280;
+    margin-top:5px;
+}
+
+.form-group{
+    margin-bottom:20px;
+}
+
+.form-group label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:500;
+    color:#374151;
+}
+
+.form-group input{
+    width:100%;
+    padding:14px 16px;
+    border:1px solid #d9e1ec;
+    border-radius:12px;
+    outline:none;
+    font-size:14px;
+    transition:.3s;
+}
+
+.form-group input:focus{
+    border-color:#1f86ff;
+    box-shadow:0 0 0 4px rgba(31,134,255,.15);
+}
+
+.login-btn{
+    width:100%;
+    border:none;
+    padding:15px;
+    border-radius:12px;
+    background:#1f86ff;
+    color:#fff;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.login-btn:hover{
+    background:#0b6ce0;
+}
+
+#errorMsg{
+    text-align:center;
+}
+
+@media(max-width:480px){
+
+    .login-card{
+        padding:30px 20px;
+    }
+
+    .logo h1{
+        font-size:28px;
+    }
+
+}
+
+</style>
+</head>
+<body>
+
+<div class="login-container">
+
+    <div class="login-card">
+
+        <div class="logo">
+            <h1>GoldDash</h1>
+            <p>Silakan masuk ke akun Anda</p>
+        </div>
+
+        <form onsubmit="return loginUser(event)">
+
+            <div class="form-group">
+                <label>ID</label>
+                <input
+					type="text"
+					id="userId"
+					placeholder="Masukkan ID"
+					required>
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input
+                    type="password"
+					id="password"
+					placeholder="Masukkan password"
+					required>
+            </div>
+			<br></br>
+            <button type="submit" class="login-btn">
+                Masuk
+            </button>
+			<div id="errorMsg"></div>
+
+        </form>
+    </div>
+</div>
+
+<script>
+	function loginUser(event){
+		event.preventDefault();
+
+		const id = document.getElementById("userId").value;
+		const password = document.getElementById("password").value;
+		const errorMsg = document.getElementById("errorMsg");
+
+		if(id === "1905" && password === "2024"){
+			window.location.href = "dashboard.html";
+    } else {
+        errorMsg.textContent = "ID atau password salah!";
+        errorMsg.style.color = "red";
+        errorMsg.style.marginTop = "10px";
+        errorMsg.style.fontSize = "14px";
+		}
+	}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Emas</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#eef2f7;
+}
+
+.dashboard{
+    display:flex;
+    min-height:100vh;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+    width:260px;
+    background:#04264a;
+    color:#fff;
+    padding:25px 0;
+    transition:all .3s ease;
+    overflow:hidden;
+}
+
+.sidebar.hide{
+    width:0;
+    padding:0;
+}
+
+.logo{
+    font-size:28px;
+    font-weight:700;
+    text-align:center;
+    margin-bottom:40px;
+    white-space:nowrap;
+}
+
+.menu{
+    list-style:none;
+}
+
+.menu li{
+    transition:.3s;
+}
+
+.menu li:hover{
+    background:#0b4f96;
+}
+
+.menu li.active{
+    background:#1f86ff;
+}
+
+.menu li a{
+    display:block;
+    padding:16px 30px;
+    color:#fff;
+    text-decoration:none;
+}
+
+/* MAIN */
+
+.main{
+    flex:1;
+    transition:all .3s ease;
+}
+
+/* TOPBAR */
+
+.topbar{
+    height:75px;
+    background:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 30px;
+    box-shadow:0 2px 10px rgba(0,0,0,.05);
+}
+
+.left-top{
+    font-size:26px;
+    cursor:pointer;
+    user-select:none;
+}
+
+.right-top{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.logout-btn{
+    background:#ff4d4d;
+    color:#fff;
+    border:none;
+    padding:10px 16px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:600;
+    transition:.3s;
+}
+
+.logout-btn:hover{
+    background:#e60000;
+}
+
+/* CONTENT */
+
+.content{
+    padding:25px;
+}
+
+/* CARDS */
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:20px;
+}
+
+.card{
+    background:#fff;
+    border-radius:14px;
+    padding:20px;
+    box-shadow:0 4px 15px rgba(0,0,0,.05);
+}
+
+.card-title{
+    color:#777;
+    font-size:14px;
+}
+
+.card-value{
+    font-size:34px;
+    font-weight:700;
+    margin-top:10px;
+    color:#1b1b1b;
+}
+
+.card-sub{
+    margin-top:12px;
+    color:#666;
+    font-size:14px;
+}
+
+/* PANEL */
+
+.panel{
+    margin-top:25px;
+    background:#fff;
+    border-radius:14px;
+    padding:25px;
+    box-shadow:0 4px 15px rgba(0,0,0,.05);
+}
+
+.panel-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:30px;
+}
+
+.tabs{
+    display:flex;
+    gap:20px;
+}
+
+.tab{
+    cursor:pointer;
+    color:#666;
+}
+
+.tab.active{
+    color:#1f86ff;
+    font-weight:600;
+}
+
+.filter{
+    display:flex;
+    gap:15px;
+}
+
+.filter button{
+    border:none;
+    background:#f4f6fa;
+    padding:8px 15px;
+    border-radius:8px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.filter button:hover{
+    background:#dfe8f5;
+}
+
+.chart-area{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:25px;
+}
+
+.chart-box{
+    height:380px;
+    border-radius:10px;
+    background:#f7f9fc;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:#888;
+    font-size:18px;
+}
+
+.ranking{
+    background:#f7f9fc;
+    border-radius:10px;
+    padding:20px;
+}
+
+.ranking h3{
+    margin-bottom:20px;
+}
+
+.rank-item{
+    display:flex;
+    justify-content:space-between;
+    padding:12px 0;
+    border-bottom:1px solid #e5e5e5;
+}
+
+.rank-item:last-child{
+    border-bottom:none;
+}
+
+/* =========================
+   TABLET
+========================= */
+@media (max-width: 1200px){
+
+    .stats{
+        grid-template-columns: repeat(2,1fr);
+    }
+
+    .chart-area{
+        grid-template-columns: 1fr;
+    }
+
+}
+
+/* =========================
+   MOBILE
+========================= */
+@media (max-width: 768px){
+
+    .dashboard{
+        flex-direction: column;
+    }
+
+    /* Sidebar muncul sebagai drawer */
+    .sidebar{
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100%;
+        z-index: 1000;
+        width: 240px;
+        box-shadow: 0 0 20px rgba(0,0,0,.2);
+    }
+
+    .sidebar.hide{
+        transform: translateX(-100%);
+        width: 240px;
+    }
+
+    .main{
+        width:100%;
+    }
+
+    .topbar{
+        padding:0 15px;
+    }
+
+    .content{
+        padding:15px;
+    }
+
+    /* Card menjadi 1 kolom */
+    .stats{
+        grid-template-columns:1fr;
+        gap:15px;
+    }
+
+    .card{
+        padding:16px;
+    }
+
+    .card-value{
+        font-size:28px;
+    }
+
+    /* Header panel turun ke bawah */
+    .panel-header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:15px;
+    }
+
+    .tabs{
+        width:100%;
+    }
+
+    .filter{
+        width:100%;
+        flex-wrap:wrap;
+    }
+
+    .filter button{
+        flex:1;
+        min-width:90px;
+    }
+
+    .chart-area{
+        grid-template-columns:1fr;
+        gap:15px;
+    }
+
+    .chart-box{
+        height:250px;
+        font-size:15px;
+    }
+
+    .ranking{
+        padding:15px;
+    }
+
+    .rank-item{
+        font-size:14px;
+    }
+
+}
+
+/* =========================
+   EXTRA SMALL DEVICE
+========================= */
+@media (max-width: 480px){
+
+    .logo{
+        font-size:22px;
+    }
+
+    .topbar{
+        height:65px;
+    }
+
+    .left-top{
+        font-size:24px;
+    }
+
+    .card-title{
+        font-size:13px;
+    }
+
+    .card-value{
+        font-size:24px;
+    }
+
+    .card-sub{
+        font-size:12px;
+    }
+
+    .panel{
+        padding:15px;
+    }
+
+    .ranking h3{
+        font-size:16px;
+    }
+
+}
+.sidebar{
+    transition: all .3s ease;
+}
+
+@media (max-width:768px){
+
+    .sidebar{
+        position:fixed;
+        top:0;
+        left:0;
+        width:220px;
+        height:100vh;
+        z-index:1001;
+        transform:translateX(-100%);
+        transition:.3s;
+        box-shadow:0 0 25px rgba(0,0,0,.25);
+    }
+
+    .sidebar.show{
+        transform:translateX(0);
+    }
+
+    .logo{
+        font-size:24px;
+        margin-bottom:25px;
+    }
+
+    .menu li a{
+        padding:14px 20px;
+        font-size:15px;
+    }
+
+    .main{
+        width:100%;
+    }
+
+    .content{
+        padding:12px;
+    }
+
+    .stats{
+        grid-template-columns:1fr;
+        gap:12px;
+    }
+
+    .card{
+        padding:16px;
+    }
+
+    .card-value{
+        font-size:24px;
+    }
+
+    .panel{
+        padding:15px;
+    }
+
+    .panel-header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:12px;
+    }
+
+    .chart-area{
+        grid-template-columns:1fr;
+    }
+
+    .chart-box{
+        height:220px;
+    }
+
+}
+
+#overlay{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.45);
+    z-index:1000;
+    opacity:0;
+    visibility:hidden;
+    transition:.3s;
+}
+
+#overlay.show{
+    opacity:1;
+    visibility:visible;
+}
+.sidebar.hide{
+    width:0;
+    padding:0;
+}
+
+.main{
+    transition:.3s;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="overlay"></div>
+
+<div class="dashboard">
+
+    <aside class="sidebar" id="sidebar">
+
+        <div class="logo">
+            GoldDash
+        </div>
+
+        <ul class="menu">
+            <li class="active">
+                <a href="dashboard.html">Dashboard</a>
+            </li>
+
+            <li>
+                <a href="harga-emas.html">Harga Emas</a>
+            </li>
+
+            <li>
+                <a href="data-emas.html">Data Emas</a>
+            </li>
+
+            <li>
+                <a href="investasi.html">Investasi</a>
+            </li>            
+        </ul>
+
+    </aside>
+
+    <main class="main">
+
+        <div class="topbar">
+
+            <div class="left-top" id="toggleSidebar">
+                ☰
+            </div>
+			
+			<div class="right-top">
+				<button class="logout-btn" onclick="logout()">
+					Logout
+				</button>
+			</div>
+
+        </div>
+
+        <div class="content">
+
+            <div class="stats">
+
+                <div class="card">
+                    <div class="card-title">Harga Beli</div>
+                    <div class="card-value">Rp25.760</div>
+                    <div class="card-sub">+1.2% Hari Ini</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Harga Jual</div>
+                    <div class="card-value">Rp24.470</div>
+                    <div class="card-sub">+0.8% Hari Ini</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Berat</div>
+                    <div class="card-value">1.5 Gr</div>
+                    <div class="card-sub">Berat Emas</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Saldo</div>
+                    <div class="card-value">Rp1.290</div>
+                    <div class="card-sub">Saldo Saat Ini</div>
+                </div>
+
+            </div>
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div class="tabs">
+                        <div class="tab active">Harga Emas</div>
+                    </div>
+
+                    <div class="filter">
+                        <button>7 Hari</button>
+                        <button>30 Hari</button>
+                        <button>1 Tahun</button>
+                    </div>
+
+                </div>
+
+                <div class="chart-area">
+
+                    <div class="chart-box">
+                        Area Grafik (Chart.js / ApexCharts)
+                    </div>
+
+                    <div class="ranking">
+
+                        <h3>Ringkasan</h3>
+
+                        <div class="rank-item">
+                            <span>Pendapatan</span>
+                            <strong>25.760</strong>
+                        </div>
+
+                        <div class="rank-item">
+                            <span>Modal</span>
+                            <strong>24.200</strong>
+                        </div>
+
+                        <div class="rank-item">
+                            <span>Uang di Aplikasi</span>
+                            <strong>25.010</strong>
+                        </div>
+
+                        <div class="rank-item">
+                            <span>Nilai Jual</span>
+                            <strong>25.000</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script>
+
+	const toggleBtn = document.getElementById('toggleSidebar');
+	const sidebar = document.getElementById('sidebar');
+	const overlay = document.getElementById('overlay');
+
+	toggleBtn.addEventListener('click', () => {
+
+		if(window.innerWidth <= 768){
+			sidebar.classList.toggle('show');
+			overlay.classList.toggle('show');
+		} else {
+			sidebar.classList.toggle('hide');
+		}
+
+	});
+
+	overlay.addEventListener('click', () => {
+
+		sidebar.classList.remove('show');
+		overlay.classList.remove('show');
+
+	});
+
+	function logout(){
+		// kalau pakai login sederhana, langsung redirect
+		window.location.href = "login.html";
+	}
+	
+
+</script>
+
+
+</body>
+</html>
