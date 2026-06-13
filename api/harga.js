@@ -1,22 +1,15 @@
 export default async function handler(req, res) {
-    try {
-        const response = await fetch(
-            "https://pegadaian.co.id/gold/prices/savings"
-        );
+    const response = await fetch(
+        "https://zasjkgrmcvigblpyqsff.supabase.co/rest/v1/harga_emas?select=*&order=tanggal.desc&limit=1",
+        {
+            headers: {
+                apikey: process.env.SUPABASE_KEY,
+                Authorization: `Bearer ${process.env.SUPABASE_KEY}`
+            }
+        }
+    );
 
-        const data = await response.json();
+    const data = await response.json();
 
-        res.status(200).json({
-            hargaBeli: data.data.hargaBeli,
-            hargaJual: data.data.hargaJual,
-            tanggal: data.data.tglBerlaku,
-            naikBeli: data.data.isHargaBeliUp,
-            naikJual: data.data.isHargaJualUp
-        });
-
-    } catch (error) {
-        res.status(500).json({
-            error: error.message
-        });
-    }
+    res.json(data[0]);
 }
