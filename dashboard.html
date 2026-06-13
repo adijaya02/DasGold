@@ -219,12 +219,6 @@ body{
     height:380px;
     background:#fff;
     padding:15px;
-	position: relative;
-}
-	
-.filter button.active{
-    background:#1f86ff;
-    color:#fff;
 }
 
 .ranking{
@@ -582,10 +576,10 @@ body{
                     </div>
 
                     <div class="filter">
-					    <button id="btn7">7 Hari</button>
-					    <button id="btn30">30 Hari</button>
-					    <button id="btn365">1 Tahun</button>
-					</div>
+                        <button>7 Hari</button>
+                        <button>30 Hari</button>
+                        <button>1 Tahun</button>
+                    </div>
 
                 </div>
 
@@ -634,24 +628,22 @@ body{
 <script>
 
 	async function loadHarga() {
-	    try {
-	        const res = await fetch('/api/harga');
-	        const data = await res.json();
-	
-	        // 🔥 FIX: Supabase return array
-	        const row = Array.isArray(data) ? data[0] : data;
-	
-	        if (!row) return;
-	
-	        document.getElementById('hargaBeli').innerText =
-	            'Rp ' + Number(row.harga_beli).toLocaleString('id-ID');
-	
-	        document.getElementById('hargaJual').innerText =
-	            'Rp ' + Number(row.harga_jual).toLocaleString('id-ID');
-	
-	    } catch (err) {
-	        console.error(err);
-	    }
+		try {
+			const res = await fetch('/api/harga');
+
+			const data = await res.json();
+
+			if (!data || !data.harga_beli) return;
+
+			document.getElementById('hargaBeli').innerText =
+				'Rp ' + Number(data.harga_beli).toLocaleString('id-ID');
+
+			document.getElementById('hargaJual').innerText =
+				'Rp ' + Number(data.harga_jual).toLocaleString('id-ID');
+
+		} catch (err) {
+			console.error(err);
+		}
 	}
 	loadHarga();
 
@@ -681,55 +673,56 @@ body{
 		// kalau pakai login sederhana, langsung redirect
 		window.location.href = "login.html";
 	}
+	
+	async function loadChart() {
 
-	async function loadChart(days = 7) {
+		const res = await fetch('/api/history');
+		const data = await res.json();
 
-	    try {
-	
-	        const res = await fetch(`/api/history?days=${days}`);
-	        const data = await res.json();
-	
-	        if (!Array.isArray(data)) {
-	            console.error("Data history bukan array:", data);
-	            return;
-	        }
-	
-	        const canvas = document.getElementById('goldChart');
-	
-	        if (!canvas) {
-	            console.error("Canvas tidak ditemukan");
-	            return;
-	        }
-	
-	        const ctx = canvas.getContext('2d');
-	
-	        if (goldChart && typeof goldChart.destroy === "function") {
-	            goldChart.destroy();
-	        }
-	
-	        goldChart = new Chart(ctx, {
-	            type: 'line',
-	            data: {
-	                labels: data.map(d => d.tanggal),
-	                datasets: [
-	                    {
-	                        label: 'Harga Beli',
-	                        data: data.map(d => Number(d.harga_beli)),
-	                        borderColor: 'blue',
-	                        fill: false
-	                    }
-	                ]
-	            },
-	            options: {
-	                responsive: true,
-	                maintainAspectRatio: false
-	            }
-	        });
-	
-	    } catch (err) {
-	        console.error("Error loadChart:", err);
-	    }
+		const labels = data.map(item => item.tanggal);
+
+		const hargaBeli = data.map(item =>
+			Number(item.harga_beli)
+		);
+
+		const hargaJual = data.map(item =>
+			Number(item.harga_jual)
+		);
+
+		const ctx = document
+			.getElementById('goldChart')
+			.getContext('2d');
+
+		new Chart(ctx, {
+			type: 'line',
+			data: {
+				labels: labels,
+				datasets: [
+					{
+						label: 'Harga Beli',
+						data: hargaBeli,
+						borderColor: '#1f86ff',
+						backgroundColor: 'rgba(31,134,255,.1)',
+						tension: 0.4
+					},
+					{
+						label: 'Harga Jual',
+						data: hargaJual,
+						borderColor: '#f39c12',
+						backgroundColor: 'rgba(243,156,18,.1)',
+						tension: 0.4
+					}
+				]
+			},
+			options: {
+				responsive: true,
+				maintainAspectRatio: false
+			}
+		});
 	}
+
+loadChart();
+
 </script>
 
 
