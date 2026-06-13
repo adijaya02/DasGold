@@ -630,21 +630,19 @@ body{
 
 <script>
 
-	async function loadHargaEmas() {
-
-		const response = await fetch('api-harga-emas.php');
-
-		const result = await response.json();
-
-		document.getElementById('hargaBeli').innerText =
-			'Rp ' + Number(result.data.hargaBeli).toLocaleString('id-ID');
-
-		document.getElementById('hargaJual').innerText =
-			'Rp ' + Number(result.data.hargaJual).toLocaleString('id-ID');
+	async function loadHarga() {
+	    const res = await fetch('/api/harga');
+	    const data = await res.json();
+	
+	    document.getElementById('hargaBeli').innerText =
+	        'Rp ' + Number(data.hargaBeli).toLocaleString('id-ID');
+	
+	    document.getElementById('hargaJual').innerText =
+	        'Rp ' + Number(data.hargaJual).toLocaleString('id-ID');
 	}
-
-	loadHargaEmas();
-	setInterval(loadHargaEmas, 60000);
+	
+	loadHarga();
+	setInterval(loadHarga, 60000);
 
 	const toggleBtn = document.getElementById('toggleSidebar');
 	const sidebar = document.getElementById('sidebar');
