@@ -1,7 +1,7 @@
 export default async function handler(req, res) {
     try {
         const response = await fetch(
-            "https://zasjkgrmcvigblpyqsff.supabase.co/rest/v1/harga_emas?select=*&order=tanggal.desc&limit=1",
+            "https://zasjkgrmcvigblpyqsff.supabase.co/rest/v1/harga_emas?select=*&order=tanggal.desc,id.desc&limit=1",
             {
                 headers: {
                     apikey: process.env.SUPABASE_KEY,
@@ -12,17 +12,18 @@ export default async function handler(req, res) {
 
         const data = await response.json();
 
-        if (!data || data.length === 0) {
-            return res.json({
+        if (!data.length) {
+            return res.status(200).json({
                 harga_beli: 0,
-                harga_jual: 0,
-                tanggal: null
+                harga_jual: 0
             });
         }
 
-        res.json(data[0]);
+        res.status(200).json(data[0]);
 
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({
+            error: err.message
+        });
     }
 }
