@@ -220,6 +220,11 @@ body{
     background:#fff;
     padding:15px;
 }
+	
+.filter button.active{
+    background:#1f86ff;
+    color:#fff;
+}
 
 .ranking{
     background:#f7f9fc;
@@ -576,10 +581,10 @@ body{
                     </div>
 
                     <div class="filter">
-                        <button>7 Hari</button>
-                        <button>30 Hari</button>
-                        <button>1 Tahun</button>
-                    </div>
+					    <button id="btn7">7 Hari</button>
+					    <button id="btn30">30 Hari</button>
+					    <button id="btn365">1 Tahun</button>
+					</div>
 
                 </div>
 
@@ -673,56 +678,82 @@ body{
 		// kalau pakai login sederhana, langsung redirect
 		window.location.href = "login.html";
 	}
+
+	let goldCHart = null;
 	
-	async function loadChart() {
+	async function loadChart(days = 7) {
 
-		const res = await fetch('/api/history');
-		const data = await res.json();
-
-		const labels = data.map(item => item.tanggal);
-
-		const hargaBeli = data.map(item =>
-			Number(item.harga_beli)
-		);
-
-		const hargaJual = data.map(item =>
-			Number(item.harga_jual)
-		);
-
-		const ctx = document
-			.getElementById('goldChart')
-			.getContext('2d');
-
-		new Chart(ctx, {
-			type: 'line',
-			data: {
-				labels: labels,
-				datasets: [
-					{
-						label: 'Harga Beli',
-						data: hargaBeli,
-						borderColor: '#1f86ff',
-						backgroundColor: 'rgba(31,134,255,.1)',
-						tension: 0.4
-					},
-					{
-						label: 'Harga Jual',
-						data: hargaJual,
-						borderColor: '#f39c12',
-						backgroundColor: 'rgba(243,156,18,.1)',
-						tension: 0.4
-					}
-				]
-			},
-			options: {
-				responsive: true,
-				maintainAspectRatio: false
-			}
-		});
+	    const res = await fetch(`/api/history?days=${days}`);
+	    const data = await res.json();
+	
+	    const labels = data.map(item => item.tanggal);
+	
+	    const hargaBeli = data.map(item =>
+	        Number(item.harga_beli)
+	    );
+	
+	    const hargaJual = data.map(item =>
+	        Number(item.harga_jual)
+	    );
+	
+	    const ctx = document
+	        .getElementById('goldChart')
+	        .getContext('2d');
+	
+	    if (goldChart) {
+	        goldChart.destroy();
+	    }
+	
+	    goldChart = new Chart(ctx, {
+	        type: 'line',
+	        data: {
+	            labels: labels,
+	            datasets: [
+	                {
+	                    label: 'Harga Beli',
+	                    data: hargaBeli,
+	                    borderColor: '#1f86ff',
+	                    backgroundColor:
+	                        'rgba(31,134,255,.1)',
+	                    tension: 0.4,
+	                    fill: true
+	                },
+	                {
+	                    label: 'Harga Jual',
+	                    data: hargaJual,
+	                    borderColor: '#f39c12',
+	                    backgroundColor:
+	                        'rgba(243,156,18,.1)',
+	                    tension: 0.4,
+	                    fill: true
+	                }
+	            ]
+	        },
+	        options: {
+	            responsive: true,
+	            maintainAspectRatio: false
+	        }
+	    });
 	}
 
-loadChart();
-
+	document
+	    .getElementById("btn7")
+	    .addEventListener("click", () => {
+	        loadChart(7);
+	    });
+	
+	document
+	    .getElementById("btn30")
+	    .addEventListener("click", () => {
+	        loadChart(30);
+	    });
+	
+	document
+	    .getElementById("btn365")
+	    .addEventListener("click", () => {
+	        loadChart(365);
+	    });
+loadChart(7);
 </script>
 
 
