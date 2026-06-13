@@ -506,14 +506,14 @@ body{
 
 					<div class="card">
 						<div class="card-title">Harga Beli</div>
-						<div class="card-value">Rp25.760</div>
-						<div class="card-sub">+1.2% Hari Ini</div>
+						<div class="card-value" id="hargaBeli">Loading...</div>
+						<div class="card-sub">/ 0,01 gr</div>
 					</div>
 
 					<div class="card">
 						<div class="card-title">Harga Jual</div>
-						<div class="card-value">Rp24.470</div>
-						<div class="card-sub">+0.8% Hari Ini</div>
+						<div class="card-value" id="hargaJual">Loading...</div>
+						<div class="card-sub">/ 0,01 gr</div>
 					</div>
 
 				</div>
@@ -578,6 +578,21 @@ body{
 </div>
 
 <script>
+
+	async function loadHarga() {
+	    const res = await fetch('/api/harga');
+	    const data = await res.json();
+	
+	    document.getElementById('hargaBeli').innerText =
+	        'Rp ' + Number(data.hargaBeli).toLocaleString('id-ID');
+	
+	    document.getElementById('hargaJual').innerText =
+	        'Rp ' + Number(data.hargaJual).toLocaleString('id-ID');
+	}
+	
+	loadHarga();
+	setInterval(loadHarga, 60000);
+	
 	const toggleBtn = document.getElementById('toggleSidebar');
 	const sidebar = document.getElementById('sidebar');
 	const overlay = document.getElementById('overlay');
