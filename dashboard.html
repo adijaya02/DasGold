@@ -679,91 +679,37 @@ body{
 		window.location.href = "login.html";
 	}
 
-	let goldChart = null;
-
-	// ==========================
-	// LOAD CHART FUNCTION
-	// ==========================
 	async function loadChart(days = 7) {
+
+	    console.log("loadChart jalan");
 	
-	    try {
-	        const res = await fetch(`/api/history?days=${days}`);
-	        const data = await res.json();
+	    const res = await fetch(`/api/history?days=${days}`);
+	    const data = await res.json();
 	
-	        const labels = data.map(item => item.tanggal);
+	    console.log("DATA:", data);
 	
-	        const hargaBeli = data.map(item =>
-	            Number(item.harga_beli)
-	        );
+	    const canvas = document.getElementById('goldChart');
 	
-	        const hargaJual = data.map(item =>
-	            Number(item.harga_jual)
-	        );
+	    console.log("CANVAS:", canvas);
 	
-	        const ctx = document
-	            .getElementById('goldChart')
-	            .getContext('2d');
+	    const ctx = canvas.getContext('2d');
 	
-	        if (goldChart) {
-	            goldChart.destroy();
-	        }
-	
-	        goldChart = new Chart(ctx, {
-	            type: 'line',
-	            data: {
-	                labels: labels,
-	                datasets: [
-	                    {
-	                        label: 'Harga Beli',
-	                        data: hargaBeli,
-	                        borderColor: '#1f86ff',
-	                        backgroundColor: 'rgba(31,134,255,0.1)',
-	                        tension: 0.4,
-	                        fill: true
-	                    },
-	                    {
-	                        label: 'Harga Jual',
-	                        data: hargaJual,
-	                        borderColor: '#f39c12',
-	                        backgroundColor: 'rgba(243,156,18,0.1)',
-	                        tension: 0.4,
-	                        fill: true
-	                    }
-	                ]
-	            },
-	            options: {
-	                responsive: true,
-	                maintainAspectRatio: false
-	            }
-	        });
-	
-	    } catch (err) {
-	        console.error("Gagal load chart:", err);
+	    if (goldChart) {
+	        goldChart.destroy();
 	    }
+	
+	    goldChart = new Chart(ctx, {
+	        type: 'line',
+	        data: {
+	            labels: data.map(d => d.tanggal),
+	            datasets: [{
+	                label: 'Harga Beli',
+	                data: data.map(d => d.harga_beli),
+	                borderColor: 'blue'
+	            }]
+	        }
+	    });
 	}
-	
-	// ==========================
-	// DOM READY (AMAN)
-	// ==========================
-	window.addEventListener("DOMContentLoaded", () => {
-	
-	    // default chart
-	    loadChart(7);
-	
-	    // tombol filter
-	    document.getElementById("btn7").addEventListener("click", () => {
-	        loadChart(7);
-	    });
-	
-	    document.getElementById("btn30").addEventListener("click", () => {
-	        loadChart(30);
-	    });
-	
-	    document.getElementById("btn365").addEventListener("click", () => {
-	        loadChart(365);
-	    });
-	
-	});
 </script>
 
 
