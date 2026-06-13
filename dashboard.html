@@ -679,39 +679,57 @@ body{
 		window.location.href = "login.html";
 	}
 
+	let goldChart = null;
+
 	async function loadChart(days = 7) {
-
-	    console.log("loadChart jalan");
 	
-	    const res = await fetch(`/api/history?days=${days}`);
-	    const data = await res.json();
+	    try {
+	        console.log("loadChart jalan");
 	
-	    console.log("DATA:", data);
+	        const res = await fetch(`/api/history?days=${days}`);
+	        const data = await res.json();
 	
-	    const canvas = document.getElementById('goldChart');
+	        console.log("DATA:", data);
 	
-	    console.log("CANVAS:", canvas);
+	        const canvas = document.getElementById('goldChart');
 	
-	    const ctx = canvas.getContext('2d');
-	
-	    if (goldChart) {
-	        goldChart.destroy();
-	    }
-	
-	    goldChart = new Chart(ctx, {
-	        type: 'line',
-	        data: {
-	            labels: data.map(d => d.tanggal),
-	            datasets: [{
-	                label: 'Harga Beli',
-	                data: data.map(d => d.harga_beli),
-	                borderColor: 'blue'
-	            }]
+	        if (!canvas) {
+	            console.error("Canvas goldChart tidak ditemukan");
+	            return;
 	        }
-	    });
+	
+	        const ctx = canvas.getContext('2d');
+	
+	        if (goldChart) {
+	            goldChart.destroy();
+	        }
+	
+	        goldChart = new Chart(ctx, {
+	            type: 'line',
+	            data: {
+	                labels: data.map(d => d.tanggal),
+	                datasets: [
+	                    {
+	                        label: 'Harga Beli',
+	                        data: data.map(d => d.harga_beli),
+	                        borderColor: 'blue',
+	                        fill: false
+	                    }
+	                ]
+	            },
+	            options: {
+	                responsive: true,
+	                maintainAspectRatio: false
+	            }
+	        });
+	
+	    } catch (err) {
+	        console.error("Error loadChart:", err);
+	    }
 	}
+	
 	window.addEventListener("DOMContentLoaded", () => {
-
+	
 	    loadChart(7);
 	
 	    document.getElementById("btn7").addEventListener("click", () => loadChart(7));
