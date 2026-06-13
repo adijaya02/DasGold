@@ -710,6 +710,15 @@ body{
 	        }
 	    });
 	}
+	window.addEventListener("DOMContentLoaded", () => {
+
+	    loadChart(7);
+	
+	    document.getElementById("btn7").addEventListener("click", () => loadChart(7));
+	    document.getElementById("btn30").addEventListener("click", () => loadChart(30));
+	    document.getElementById("btn365").addEventListener("click", () => loadChart(365));
+	
+	});
 </script>
 
 
