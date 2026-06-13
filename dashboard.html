@@ -545,16 +545,16 @@ body{
             <div class="stats">
 
                 <div class="card">
-                    <div class="card-title">Harga Beli</div>
-                    <div class="card-value">Rp25.760</div>
-                    <div class="card-sub">+1.2% Hari Ini</div>
-                </div>
+					<div class="card-title">Harga Beli</div>
+					<div class="card-value" id="hargaBeli">Loading...</div>
+					<div class="card-sub" id="statusBeli">Memuat data...</div>
+				</div>
 
-                <div class="card">
-                    <div class="card-title">Harga Jual</div>
-                    <div class="card-value">Rp24.470</div>
-                    <div class="card-sub">+0.8% Hari Ini</div>
-                </div>
+				<div class="card">
+					<div class="card-title">Harga Jual</div>
+					<div class="card-value" id="hargaJual">Loading...</div>
+					<div class="card-sub" id="statusJual">Memuat data...</div>
+				</div>
 
                 <div class="card">
                     <div class="card-title">Berat</div>
@@ -630,11 +630,27 @@ body{
 
 <script>
 
+	async function loadHargaEmas() {
+
+		const response = await fetch('api-harga-emas.php');
+
+		const result = await response.json();
+
+		document.getElementById('hargaBeli').innerText =
+			'Rp ' + Number(result.data.hargaBeli).toLocaleString('id-ID');
+
+		document.getElementById('hargaJual').innerText =
+			'Rp ' + Number(result.data.hargaJual).toLocaleString('id-ID');
+	}
+
+	loadHargaEmas();
+	setInterval(loadHargaEmas, 60000);
+
 	const toggleBtn = document.getElementById('toggleSidebar');
 	const sidebar = document.getElementById('sidebar');
 	const overlay = document.getElementById('overlay');
 
-	toggleBtn.addEventListener('click', () => {
+		toggleBtn.addEventListener('click', () => {
 
 		if(window.innerWidth <= 768){
 			sidebar.classList.toggle('show');
