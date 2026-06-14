@@ -754,14 +754,13 @@ body{
 
         <div class="action-buttons">
 
-            <button class="save-btn">
-                Simpan Data
-            </button>
-
-            <button class="reset-btn">
-                Reset
-            </button>
-
+            <button class="save-btn" id="saveBtn">
+			    Simpan Data
+			</button>
+			
+			<button class="reset-btn" id="resetBtn">
+			    Reset
+			</button>
         </div>
 
     </div>
@@ -908,28 +907,44 @@ body{
 		window.location.href = "login.html";
 	}
 
+	document.addEventListener("DOMContentLoaded", () => {
+
+	    const saveBtn = document.getElementById("saveBtn");
+	    const resetBtn = document.getElementById("resetBtn");
+	
+	    saveBtn.addEventListener("click", simpanData);
+	
+	    resetBtn.addEventListener("click", resetForm);
+	
+	});
+	
 	async function simpanData() {
 
-	    let biayaPembelian;
-	    let aset;
+	    let biayaPembelian = 0;
+	    let aset = 0;
 	
-	    if (gramSection.style.display !== "none") {
+	    const isGramMode =
+	        document.getElementById("gramSection").style.display !== "none";
+	
+	    if (isGramMode) {
 	
 	        aset = parseFloat(gramInput.value) || 0;
 	        biayaPembelian = aset * hargaPerGram;
 	
 	    } else {
 	
-	        biayaPembelian =
-	            parseFloat(hargaInput.value) || 0;
-	
-	        aset =
-	            biayaPembelian / hargaPerGram;
+	        biayaPembelian = parseFloat(hargaInput.value) || 0;
+	        aset = biayaPembelian / hargaPerGram;
 	    }
 	
-	    const response = await fetch(
-	        "/api/simpan-investasi",
-	        {
+	    if (biayaPembelian <= 0 || aset <= 0) {
+	        alert("Input tidak valid");
+	        return;
+	    }
+	
+	    try {
+	
+	        const response = await fetch("/api/simpan-investasi", {
 	            method: "POST",
 	            headers: {
 	                "Content-Type": "application/json"
@@ -938,23 +953,31 @@ body{
 	                biaya_pembelian: biayaPembelian,
 	                aset: aset
 	            })
+	        });
+	
+	        const result = await response.json();
+	
+	        if (response.ok) {
+	            alert("Data berhasil disimpan");
+	            resetForm();
+	        } else {
+	            console.error(result);
+	            alert("Gagal menyimpan data");
 	        }
-	    );
 	
-	    const result = await response.json();
-	
-	    if (response.ok) {
-	
-	        alert("Data berhasil disimpan");
-	
-	    } else {
-	
-	        alert("Gagal menyimpan data");
-	
-	        console.error(result);
+	    } catch (err) {
+	        console.error(err);
+	        alert("Server error");
 	    }
 	}
+	
+	function resetForm() {
 
+	    gramInput.value = "";
+	    hargaInput.value = "";
+	    document.getElementById("totalText").innerHTML = "Rp 0";
+	
+	}
 </script>
 
 
