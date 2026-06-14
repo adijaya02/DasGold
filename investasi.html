@@ -856,19 +856,15 @@ body{
 
 	});
 
-	const gramInput = document.getElementById("gramInput");
-
-	gramInput.addEventListener("input",()=>{
-
-		const gram = parseFloat(gramInput.value) || 0;
-
-		const total = gram * hargaPerGram;
-
-		document.getElementById("totalText").innerHTML =
-			"Rp " + total.toLocaleString("id-ID");
-
-	});
+	function hitungTotal() {
+	    const gram = parseFloat(gramInput.value) || 0;
 	
+	    const total = gram * hargaPerGram;
+	
+	    document.getElementById("totalText").innerHTML =
+	        "Rp " + total.toLocaleString("id-ID");
+	}
+		
 	const hargaInput = document.getElementById("hargaInput");
 
 	hargaInput.addEventListener("input",()=>{
