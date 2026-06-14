@@ -571,7 +571,7 @@ body{
 
 	async function loadHistory() {
 	    try {
-	        const res = await fetch('/api/histori');
+	        const res = await fetch('/api/history');
 	        const data = await res.json();
 	
 	        const tbody = document.getElementById("historyBody");
