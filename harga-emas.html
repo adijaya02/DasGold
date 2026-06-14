@@ -570,38 +570,37 @@ body{
 	loadHarga();
 
 	async function loadHistory() {
-	    const { data, error } = await supabase
-	        .from('harga_emas')
-	        .select('*')
-	        .order('tanggal', { ascending: false }); // terbaru di atas
+	    try {
+	        const res = await fetch('/api/histori');
+	        const data = await res.json();
 	
-	    if (error) {
-	        console.error(error);
-	        return;
+	        const tbody = document.getElementById("historyBody");
+	        tbody.innerHTML = "";
+	
+	        data.forEach((item, index) => {
+	            const tanggalFormatted = new Date(item.tanggal).toLocaleDateString('id-ID', {
+	                weekday: 'long',
+	                year: 'numeric',
+	                month: 'long',
+	                day: 'numeric'
+	            });
+	
+	            tbody.innerHTML += `
+	                <tr>
+	                    <td>${index + 1}</td>
+	                    <td>${tanggalFormatted}</td>
+	                    <td>Rp ${Number(item.harga_beli).toLocaleString('id-ID')}</td>
+	                    <td>Rp ${Number(item.harga_jual).toLocaleString('id-ID')}</td>
+	                </tr>
+	            `;
+	        });
+	
+	    } catch (err) {
+	        console.error(err);
 	    }
-	
-	    const tbody = document.querySelector(".history-table tbody");
-	    tbody.innerHTML = "";
-	
-	    data.forEach((item, index) => {
-	
-	        const row = `
-	            <tr>
-	                <td>${index + 1}</td>
-	                <td>${new Date(item.tanggal).toLocaleDateString('id-ID', {
-	                    weekday: 'long',
-	                    year: 'numeric',
-	                    month: 'long',
-	                    day: 'numeric'
-	                })}</td>
-	                <td>Rp ${Number(item.harga_beli).toLocaleString('id-ID')}</td>
-	                <td>Rp ${Number(item.harga_jual).toLocaleString('id-ID')}</td>
-	            </tr>
-	        `;
-	
-	        tbody.innerHTML += row;
-	    });
 	}
+	
+	loadHistory();
 	
 	const toggleBtn = document.getElementById('toggleSidebar');
 	const sidebar = document.getElementById('sidebar');
