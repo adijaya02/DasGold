@@ -908,6 +908,53 @@ body{
 		window.location.href = "login.html";
 	}
 
+	async function simpanData() {
+
+	    let biayaPembelian;
+	    let aset;
+	
+	    if (gramSection.style.display !== "none") {
+	
+	        aset = parseFloat(gramInput.value) || 0;
+	        biayaPembelian = aset * hargaPerGram;
+	
+	    } else {
+	
+	        biayaPembelian =
+	            parseFloat(hargaInput.value) || 0;
+	
+	        aset =
+	            biayaPembelian / hargaPerGram;
+	    }
+	
+	    const response = await fetch(
+	        "/api/simpan-investasi",
+	        {
+	            method: "POST",
+	            headers: {
+	                "Content-Type": "application/json"
+	            },
+	            body: JSON.stringify({
+	                biaya_pembelian: biayaPembelian,
+	                aset: aset
+	            })
+	        }
+	    );
+	
+	    const result = await response.json();
+	
+	    if (response.ok) {
+	
+	        alert("Data berhasil disimpan");
+	
+	    } else {
+	
+	        alert("Gagal menyimpan data");
+	
+	        console.error(result);
+	    }
+	}
+
 </script>
 
 
