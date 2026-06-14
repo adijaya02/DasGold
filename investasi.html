@@ -649,9 +649,7 @@ body{
 
 					<div class="price-card">
 						<h3>Harga 0.01 Gram</h3>
-						<div class="price-value">
-							Rp 25.100
-						</div>
+						<div class="card-value" id="hargaBeli">Loading...</div>
 					</div>
 
 					<div class="price-card">
@@ -770,6 +768,22 @@ body{
 </div>
 
 <script>
+	async function loadHarga() {
+		try {
+			const res = await fetch('/api/harga');
+
+			const data = await res.json();
+
+			if (!data || !data.harga_beli) return;
+
+			document.getElementById('hargaBeli').innerText =
+				'Rp ' + Number(data.harga_beli).toLocaleString('id-ID');
+
+		} catch (err) {
+			console.error(err);
+		}
+	}
+	loadHarga();
 	
 	const toggleBtn = document.getElementById('toggleSidebar');
 	const sidebar = document.getElementById('sidebar');
