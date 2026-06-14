@@ -580,18 +580,24 @@ body{
 <script>
 
 	async function loadHarga() {
-	    const res = await fetch('/api/harga');
-	    const data = await res.json();
-	
-	    document.getElementById('hargaBeli').innerText =
-	        'Rp ' + Number(data.hargaBeli).toLocaleString('id-ID');
-	
-	    document.getElementById('hargaJual').innerText =
-	        'Rp ' + Number(data.hargaJual).toLocaleString('id-ID');
+		try {
+			const res = await fetch('/api/harga');
+
+			const data = await res.json();
+
+			if (!data || !data.harga_beli) return;
+
+			document.getElementById('hargaBeli').innerText =
+				'Rp ' + Number(data.harga_beli).toLocaleString('id-ID');
+
+			document.getElementById('hargaJual').innerText =
+				'Rp ' + Number(data.harga_jual).toLocaleString('id-ID');
+
+		} catch (err) {
+			console.error(err);
+		}
 	}
-	
 	loadHarga();
-	setInterval(loadHarga, 60000);
 	
 	const toggleBtn = document.getElementById('toggleSidebar');
 	const sidebar = document.getElementById('sidebar');
