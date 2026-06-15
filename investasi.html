@@ -655,9 +655,10 @@ body{
 					</div>
 
 					<div class="price-card">
-						<h3>Harga 1 Gram</h3>
-						<div class="card-value">
-							Rp 2.510.000
+					    <h3>Harga 1 Gram</h3>
+					    <div class="card-value" id="harga1Gram">
+					        Loading...
+					    </div>
 					</div>
 				</div>
 
@@ -770,22 +771,37 @@ body{
 </div>
 
 <script>
+	let hargaPerGram = 0;
+
 	async function loadHarga() {
-		try {
-			const res = await fetch('/api/harga');
-
-			const data = await res.json();
-
-			if (!data || !data.harga_beli) return;
-
-			document.getElementById('hargaBeli').innerText =
-				'Rp ' + Number(data.harga_beli).toLocaleString('id-ID');
-
-		} catch (err) {
-			console.error(err);
-		}
+	    try {
+	        const res = await fetch('/api/harga');
+	        const data = await res.json();
+	
+	        if (!data || !data.harga_beli) return;
+	
+	        // harga 0.01 gram dari API
+	        const harga001Gram = Number(data.harga_beli);
+	
+	        // harga 1 gram = harga 0.01 gram x 100
+	        hargaPerGram = harga001Gram * 100;
+	
+	        // tampilkan harga 0.01 gram
+	        document.getElementById('hargaBeli').innerText =
+	            'Rp ' + harga001Gram.toLocaleString('id-ID');
+	
+	        // tampilkan harga 1 gram
+	        document.getElementById('harga1Gram').innerText =
+	            'Rp ' + hargaPerGram.toLocaleString('id-ID');
+	
+	    } catch (err) {
+	        console.error(err);
+	    }
 	}
+	
 	loadHarga();
+
+	let hargaPerGram = 0;
 	
 	const toggleBtn = document.getElementById('toggleSidebar');
 	const sidebar = document.getElementById('sidebar');
@@ -842,9 +858,6 @@ body{
 	.addEventListener('click',()=>{
 		tanggalInput.showPicker();
 	});
-	
-	
-	const hargaPerGram = 2510000;
 
 	const tabGram = document.getElementById("tabGram");
 	const tabHarga = document.getElementById("tabHarga");
