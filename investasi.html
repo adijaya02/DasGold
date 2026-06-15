@@ -879,9 +879,7 @@ body{
 
 	});
 
-	const gramInput = document.getElementById("gramInput");
-	const hargaInput = document.getElementById("hargaInput");
-
+	
 	function hitungTotal() {
 	    const gram = parseFloat(gramInput.value) || 0;
 	
@@ -891,6 +889,7 @@ body{
 	        "Rp " + total.toLocaleString("id-ID");
 	}
 		
+	const gramInput = document.getElementById("gramInput");
 	const hargaInput = document.getElementById("hargaInput");
 
 	hargaInput.addEventListener("input",()=>{
