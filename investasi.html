@@ -1038,7 +1038,8 @@ body{
 		const gram = harga / hargaPerGram;
 
 		document.getElementById("totalText").innerHTML =
-			gram.toFixed(4) + " gram";
+   		 parseFloat(gram.toFixed(4))
+        .toLocaleString("id-ID") + " gram";
 
 	});
 	
