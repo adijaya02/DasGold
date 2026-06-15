@@ -181,6 +181,43 @@ body{
     padding:20px;
 }
 
+.manual-price{
+    margin-top:15px;
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.manual-price input{
+    flex:1;
+    min-width:180px;
+    padding:10px;
+    border:1px solid #d9e1ec;
+    border-radius:10px;
+}
+
+.manual-price button{
+    border:none;
+    padding:10px 16px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:600;
+}
+
+#editHargaBtn{
+    background:#1f86ff;
+    color:white;
+}
+
+#saveHargaBtn{
+    background:#14b85a;
+    color:white;
+}
+
+#resetHargaBtn{
+    background:#e2e8f0;
+}
+
 .price-card h3{
     margin-bottom:15px;
     color:#04264a;
@@ -650,8 +687,30 @@ body{
 				<div class="price-boxes">
 
 					<div class="price-card">
-						<h3>Harga 0.01 Gram</h3>
-						<div class="card-value" id="hargaBeli">Loading...</div>
+					    <h3>Harga 0.01 Gram</h3>
+					    <div class="card-value" id="hargaBeli">
+					        Loading...
+					    </div>
+					    <div class="manual-price">
+					        <input
+					            type="number"
+					            id="manualHarga"
+					            placeholder="Masukkan harga manual"
+					            style="display:none;">
+					        <button id="editHargaBtn">
+					            Edit Manual
+					        </button>
+					        <button
+					            id="saveHargaBtn"
+					            style="display:none;">
+					            Simpan
+							</button>
+					        <button
+					            id="resetHargaBtn"
+					            style="display:none;">
+					            Auto
+					        </button>
+						</div>
 					</div>
 
 					<div class="price-card">
@@ -768,34 +827,114 @@ body{
 
 <script>
 	let hargaPerGram = 0;
+	let hargaDatabase = 0;
+	let manualMode = false;
 
 	async function loadHarga() {
+
 	    try {
+	
 	        const res = await fetch('/api/harga');
 	        const data = await res.json();
 	
 	        if (!data || !data.harga_beli) return;
 	
-	        // harga 0.01 gram dari API
-	        const harga001Gram = Number(data.harga_beli);
+	        hargaDatabase = Number(data.harga_beli);
 	
-	        // harga 1 gram = harga 0.01 gram x 100
-	        hargaPerGram = harga001Gram * 100;
+	        if (!manualMode) {
 	
-	        // tampilkan harga 0.01 gram
-	        document.getElementById('hargaBeli').innerText =
-	            'Rp ' + harga001Gram.toLocaleString('id-ID');
+	            hargaPerGram = hargaDatabase * 100;
 	
-	        // tampilkan harga 1 gram
-	        document.getElementById('harga1Gram').innerText =
-	            'Rp ' + hargaPerGram.toLocaleString('id-ID');
+	            document.getElementById('hargaBeli').innerText =
+	                'Rp ' +
+	                hargaDatabase.toLocaleString('id-ID');
 	
-	    } catch (err) {
+	            document.getElementById('harga1Gram').innerText =
+	                'Rp ' +
+	                hargaPerGram.toLocaleString('id-ID');
+	        }
+	
+	    } catch(err){
+	
 	        console.error(err);
+	
 	    }
+	
 	}
 	
 	loadHarga();
+
+	const manualInput =
+	document.getElementById("manualHarga");
+	
+	const editBtn =
+	document.getElementById("editHargaBtn");
+	
+	const saveBtnHarga =
+	document.getElementById("saveHargaBtn");
+	
+	const resetBtnHarga =
+	document.getElementById("resetHargaBtn");
+	
+	
+	editBtn.addEventListener("click",()=>{
+	
+	    manualInput.style.display="block";
+	
+	    saveBtnHarga.style.display="inline-block";
+	
+	    resetBtnHarga.style.display="inline-block";
+	
+	});
+	
+	
+	saveBtnHarga.addEventListener("click",()=>{
+	
+	    const manual =
+	        Number(manualInput.value);
+	
+	    if(manual <= 0){
+	
+	        alert("Masukkan harga valid");
+	        return;
+	
+	    }
+	
+	    manualMode = true;
+	
+	    document.getElementById(
+	        "hargaBeli"
+	    ).innerText =
+	        "Rp " +
+	        manual.toLocaleString("id-ID");
+	
+	    hargaPerGram =
+	        manual * 100;
+	
+	    document.getElementById(
+	        "harga1Gram"
+	    ).innerText =
+	        "Rp " +
+	        hargaPerGram.toLocaleString("id-ID");
+	
+	});
+
+
+	resetBtnHarga.addEventListener("click",()=>{
+	
+	    manualMode = false;
+	
+	    manualInput.value="";
+	
+	    manualInput.style.display="none";
+	
+	    saveBtnHarga.style.display="none";
+	
+	    resetBtnHarga.style.display="none";
+	
+	    loadHarga();
+	
+	});
 	
 	const toggleBtn = document.getElementById('toggleSidebar');
 	const sidebar = document.getElementById('sidebar');
