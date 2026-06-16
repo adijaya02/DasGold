@@ -414,6 +414,26 @@ body{
 .main{
     transition:.3s;
 }
+	.profit{
+	color:#0a8f3d;
+	font-weight:600;
+}
+	
+	.loss{
+	color:#d32f2f;
+	font-weight:600;
+}
+	
+	.history-table{
+	width:100%;
+	border-collapse:collapse;
+}
+	
+	.history-table th,
+	.history-table td{
+	padding:12px;
+	text-align:center;
+}
 
 </style>
 </head>
@@ -424,135 +444,121 @@ body{
 
 <div class="dashboard">
 
-    <aside class="sidebar" id="sidebar">
+   <aside class="sidebar" id="sidebar">
 
-        <div class="logo">
-            GoldDash
-        </div>
-
-        <ul class="menu">
-            <li>
-                <a href="dashboard.html">Dashboard</a>
-            </li>
-
-            <li>
-                <a href="harga-emas.html">Harga Emas</a>
-            </li>
-
-            <li class="active">
-                <a href="data-emas.html">Data Emas</a>
-            </li>
-
-            <li>
-                <a href="investasi.html">Investasi</a>
-            </li>
-        </ul>
-
-    </aside>
-
-    <main class="main">
-
-        <div class="topbar">
-
-            <div class="left-top" id="toggleSidebar">
-                ☰
-            </div>
-			
-			<div class="right-top">
-				<button class="logout-btn" onclick="logout()">
-					Logout
-				</button>
-			</div>
-
-        </div>
-		
-		<div class="table-container">
-
-			<div class="table-title">
-				History Aset Emas
-			</div>
-
-			<table class="history-table">
-
-				<thead>
-					<tr>
-						<th>No</th>
-						<th>Hari / Tanggal</th>
-						<th>harga Beli</th>
-						<th>Biaya Pembelian</th>
-						<th>Total Modal</th>
-						<th>Aset</th>
-						<th>Total Aset</th>
-						<th>Harga Jual</th>
-						<th>Jumlah Uang di Aplikasi</th>
-						<th>Untung/Rugi</th>
-					</tr>
-				</thead>
-
-				<tbody>
-
-					<tr>
-						<td>1</td>
-						<td>Senin, 08 Juni 2026</td>
-						<td>Rp 19.825</td>
-						<td>Rp 1.982.500</td>
-						<td>Rp 1.982.500</td>
-						<td>1,0983</td>
-						<td>1,0983</td>
-						<td>17.570</td>
-						<td>1.929.713</td>
-						<td class="profit-loss">Rp 52.787</td>
-					</tr>
-
-					<tr>
-						<td>2</td>
-						<td>Senin, 08 Juni 2026</td>
-						<td>Rp 19.825</td>
-						<td>Rp 1.982.500</td>
-						<td>Rp 1.982.500</td>
-						<td>1,0983</td>
-						<td>1,0983</td>
-						<td>17.570</td>
-						<td>1.929.713</td>
-						<td class="profit-loss">Rp -52.787</td>
-					</tr>
-
-
-					<tr>
-						<td>3</td>
-						<td>Senin, 08 Juni 2026</td>
-						<td>Rp 19.825</td>
-						<td>Rp 1.982.500</td>
-						<td>Rp 1.982.500</td>
-						<td>1,0983</td>
-						<td>1,0983</td>
-						<td>17.570</td>
-						<td>1.929.713</td>
-						<td class="profit-loss">Rp -52.787</td>
-					</tr>
-
-
-					<tr>
-						<td>4</td>
-						<td>Senin, 08 Juni 2026</td>
-						<td>Rp 19.825</td>
-						<td>Rp 1.982.500</td>
-						<td>Rp 1.982.500</td>
-						<td>1,0983</td>
-						<td>1,0983</td>
-						<td>17.570</td>
-						<td>1.929.713</td>
-						<td class="profit-loss">Rp -52.787</td>
-					</tr>
-
-
-				</tbody>
-
-			</table>
-
-		</div>
+	    <div class="logo">
+	        GoldDash
+	    </div>
 	
-    </main>
+	    <ul class="menu">
+	
+	        <li>
+	            <a href="dashboard.html">
+	                Dashboard
+	            </a>
+	        </li>
+	
+	        <li>
+	            <a href="harga-emas.html">
+	                Harga Emas
+	            </a>
+	        </li>
+	
+	        <li class="active">
+	            <a href="data-emas.html">
+	                Data Emas
+	            </a>
+	        </li>
+	
+	        <li>
+	            <a href="investasi.html">
+	                Investasi
+	            </a>
+	        </li>
+	
+	    </ul>
+	
+	</aside>
+	
+	
+	<main class="main">
+	
+	    <div class="topbar">
+	
+	        <div
+	            class="left-top"
+	            id="toggleSidebar">
+	
+	            ☰
+	
+	        </div>
+	
+	        <div class="right-top">
+	
+	            <button
+	                class="logout-btn"
+	                onclick="logout()">
+	
+	                Logout
+	
+	            </button>
+	
+	        </div>
+	
+	    </div>
+	
+	
+	    <div class="table-container">
+	
+	        <div class="table-title">
+	
+	            History Aset Emas
+	
+	        </div>
+	
+	
+	        <table class="history-table">
+	
+	            <thead>
+	
+	                <tr>
+	
+	                    <th>No</th>
+	
+	                    <th>Hari / Tanggal</th>
+	
+	                    <th>Harga Beli</th>
+	
+	                    <th>Biaya Pembelian</th>
+	
+	                    <th>Total Modal</th>
+	
+	                    <th>Aset</th>
+	
+	                    <th>Total Aset</th>
+	
+	                    <th>Harga Jual</th>
+	
+	                    <th>Jumlah Uang di Aplikasi</th>
+	
+	                    <th>Untung / Rugi</th>
+	
+	                </tr>
+	
+	            </thead>
+	
+	
+	            <tbody id="tableBody">
+	
+	                <!-- isi otomatis dari JS -->
+	
+	            </tbody>
+	
+	        </table>
+	
+	    </div>
+	
+	</main>
 
 </div>
 
@@ -597,6 +603,97 @@ body{
 		// kalau pakai login sederhana, langsung redirect
 		window.location.href = "login.html";
 	}
+
+	const tbody =
+	document.getElementById(
+	"tableBody"
+	);
+	
+	const data = [];
+	
+	tbody.innerHTML =
+	data.length
+	? data.map(
+	(item,index)=>{
+	
+	const className =
+	item.untung_rugi >= 0
+	? "profit"
+	: "loss";
+	
+	return `
+	<tr>
+	
+	<td>
+	${index+1}
+	</td>
+	
+	<td>
+	${item.tanggal}
+	</td>
+	
+	<td>
+	Rp ${Number(
+	item.harga_beli
+	).toLocaleString("id-ID")}
+	</td>
+	
+	<td>
+	Rp ${Number(
+	item.biaya_pembelian
+	).toLocaleString("id-ID")}
+	</td>
+	
+	<td>
+	Rp ${Number(
+	item.total_modal
+	).toLocaleString("id-ID")}
+	</td>
+	
+	<td>
+	${item.aset}
+	</td>
+	
+	<td>
+	${item.total_aset}
+	</td>
+	
+	<td>
+	Rp ${Number(
+	item.harga_jual
+	).toLocaleString("id-ID")}
+	</td>
+	
+	<td>
+	Rp ${Number(
+	item.jumlah_uang_aplikasi
+	).toLocaleString("id-ID")}
+	</td>
+	
+	<td class="${className}">
+	Rp ${Number(
+	item.untung_rugi
+	).toLocaleString("id-ID")}
+	</td>
+	
+	</tr>
+	`;
+	
+	}).join("")
+	
+	:
+	
+	`
+	<tr>
+	
+	<td colspan="10">
+	
+	Belum ada data
+	
+	</td>
+	
+	</tr>
+	`;
 	
 </script>
 
