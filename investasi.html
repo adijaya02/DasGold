@@ -878,12 +878,14 @@ body{
 	
 	
 	editBtn.addEventListener("click",()=>{
+
+	    manualInput.style.display = "block";
 	
-	    manualInput.style.display="block";
+	    editBtn.style.display = "none";
 	
-	    saveBtnHarga.style.display="inline-block";
+	    saveBtnHarga.style.display = "inline-block";
 	
-	    resetBtnHarga.style.display="inline-block";
+	    resetBtnHarga.style.display = "inline-block";
 	
 	});
 	
@@ -921,16 +923,18 @@ body{
 
 
 	resetBtnHarga.addEventListener("click",()=>{
-	
+
 	    manualMode = false;
 	
-	    manualInput.value="";
+	    manualInput.value = "";
 	
-	    manualInput.style.display="none";
+	    manualInput.style.display = "none";
 	
-	    saveBtnHarga.style.display="none";
+	    saveBtnHarga.style.display = "none";
 	
-	    resetBtnHarga.style.display="none";
+	    resetBtnHarga.style.display = "none";
+	
+	    editBtn.style.display = "inline-block";
 	
 	    loadHarga();
 	
