@@ -460,12 +460,75 @@ overflow:hidden;
 }
 
 
-/* header tetap */
-	.history-table thead th{
-	position:sticky;
-	top:0;
-	background:#fff;
-	z-index:2;
+/* =========================
+   TABLE HEADER
+========================= */
+
+.history-table{
+width:100%;
+border-collapse:collapse;
+}
+
+
+/* header tabel */
+.history-table thead th{
+
+position:sticky;
+
+top:0;
+
+background:#04264a !important;
+
+color:#ffffff !important;
+
+z-index:100;
+
+padding:14px;
+
+text-align:center;
+
+font-size:14px;
+
+font-weight:600;
+
+border-bottom:1px solid #0b4f96;
+
+}
+
+
+/* isi tabel */
+.history-table tbody td{
+
+padding:14px;
+
+background:#ffffff;
+
+border-bottom:1px solid #e5e5e5;
+
+text-align:center;
+
+white-space:nowrap;
+
+}
+
+
+/* hover */
+.history-table tbody tr:hover{
+
+background:#f7f9fc;
+
+}
+
+
+/* scroll */
+.table-wrapper{
+
+flex:1;
+
+overflow:auto;
+
+border-radius:10px;
+
 }
 
 	.history-table{
