@@ -435,6 +435,74 @@ body{
 	text-align:center;
 }
 
+	/* halaman tidak ikut scroll */
+body{
+height:100vh;
+overflow:hidden;
+}
+
+/* container */
+	.table-container{
+	height:calc(100vh - 120px);
+	display:flex;
+	flex-direction:column;
+	overflow:hidden;
+}
+
+
+/* hanya isi tabel yang scroll */
+	.table-wrapper{
+	flex:1;
+	overflow-y:auto;
+	overflow-x:auto;
+	border:1px solid #ddd;
+	border-radius:10px;
+}
+
+
+/* header tetap */
+	.history-table thead th{
+	position:sticky;
+	top:0;
+	background:#fff;
+	z-index:2;
+}
+
+	.history-table{
+	width:100%;
+	border-collapse:collapse;
+}
+
+	.history-table th,
+	.history-table td{
+	padding:14px;
+	white-space:nowrap;
+}
+
+/* pagination */
+	.pagination{
+	display:flex;
+	justify-content:center;
+	gap:10px;
+	padding:15px;
+}
+
+	.pagination button{
+	padding:8px 14px;
+	border:none;
+	border-radius:8px;
+	cursor:pointer;
+}
+
+
+.pagination button.active{
+
+background:#d4af37;
+
+color:white;
+
+}
+
 </style>
 </head>
 
@@ -508,53 +576,47 @@ body{
 	    </div>
 	
 	
-	    <div class="table-container">
-	
-	        <div class="table-title">
-	
-	            History Aset Emas
-	
-	        </div>
-	
-	
-	        <table class="history-table">
-	
-	            <thead>
-	
-	                <tr>
-	
-	                    <th>No</th>
-	
-	                    <th>Hari / Tanggal</th>
-	
-	                    <th>Harga Beli</th>
-	
-	                    <th>Biaya Pembelian</th>
-	
-	                    <th>Total Modal</th>
-	
-	                    <th>Aset</th>
-	
-	                    <th>Total Aset</th>
-	
-	                    <th>Harga Jual</th>
-	
-	                    <th>Jumlah Uang di Aplikasi</th>
-	
-	                    <th>Untung / Rugi</th>
-	
-	                </tr>
-	
-	            </thead>
-	
-	
-	            <tbody id="tableBody">
-	
-	                <!-- isi otomatis dari JS -->
-	
-	            </tbody>
-	
-	        </table>
+	  <div class="table-container">
+
+<div class="table-title">
+History Aset Emas
+</div>
+
+<div class="table-wrapper">
+
+<table class="history-table">
+
+<thead>
+
+<tr>
+
+<th>No</th>
+<th>Hari / Tanggal</th>
+<th>Harga Beli</th>
+<th>Biaya Pembelian</th>
+<th>Total Modal</th>
+<th>Aset</th>
+<th>Total Aset</th>
+<th>Harga Jual</th>
+<th>Jumlah Uang di Aplikasi</th>
+<th>Untung/Rugi</th>
+
+</tr>
+
+</thead>
+
+<tbody id="tableBody"></tbody>
+
+</table>
+
+</div>
+
+<div
+class="pagination"
+id="pagination"
+></div>
+
+</div>
 	
 	    </div>
 	
@@ -695,21 +757,30 @@ body{
 	</tr>
 	`;
 
-function formatRupiah(value){
+let allData=[];
+
+let currentPage=1;
+
+const rowsPerPage=10;
+
+
+
+function formatRupiah(v){
 
 return Number(
-Math.round(
-value || 0
+Math.round(v||0)
 )
-).toLocaleString("id-ID");
+.toLocaleString(
+"id-ID"
+);
 
 }
 
 
-function formatGram(value){
+function formatGram(v){
 
 return Number(
-value || 0
+v||0
 )
 .toFixed(4)
 .replace(".",",");
@@ -717,11 +788,10 @@ value || 0
 }
 
 
-function formatTanggal(date){
+function formatTanggal(v){
 
-return new Date(
-date
-).toLocaleDateString(
+return new Date(v)
+.toLocaleDateString(
 "id-ID",
 {
 weekday:"long",
@@ -734,60 +804,37 @@ year:"numeric"
 }
 
 
-async function loadData(){
 
-try{
+function renderTable(){
 
-// generate otomatis
-await fetch(
-"/api/generate-data-aset"
+const start=
+(currentPage-1)
+*
+rowsPerPage;
+
+const end=
+start+
+rowsPerPage;
+
+const rows=
+allData.slice(
+start,
+end
 );
 
-
-// ambil data
-const res =
-await fetch(
-"/api/data-aset"
-);
-
-
-const data =
-await res.json();
-
-
-const tbody =
-document.getElementById(
+document
+.getElementById(
 "tableBody"
-);
+)
+.innerHTML=
 
-
-if(
-!data ||
-data.length===0
-){
-
-tbody.innerHTML=
-`
-<tr>
-<td colspan="10">
-Belum ada data
-</td>
-</tr>
-`;
-
-return;
-
-}
-
-
-tbody.innerHTML =
-data.map(
+rows.map(
 (item,index)=>`
 
 <tr>
 
 <td>
-${index+1}
+${start+index+1}
 </td>
 
 <td>
@@ -797,50 +844,36 @@ item.tanggal_aset
 </td>
 
 <td>
-Rp ${formatRupiah(
-item.harga_beli
-)}
+Rp ${formatRupiah(item.harga_beli)}
 </td>
 
 <td>
-Rp ${formatRupiah(
-item.biaya_pembelian
-)}
+Rp ${formatRupiah(item.biaya_pembelian)}
 </td>
 
 <td>
-Rp ${formatRupiah(
-item.total_modal
-)}
+Rp ${formatRupiah(item.total_modal)}
 </td>
 
 <td>
-${formatGram(
-item.aset
-)}
+${formatGram(item.aset)}
 </td>
 
 <td>
-${formatGram(
-item.total_aset
-)}
+${formatGram(item.total_aset)}
 </td>
 
 <td>
-Rp ${formatRupiah(
-item.harga_jual
-)}
+Rp ${formatRupiah(item.harga_jual)}
 </td>
 
 <td>
-Rp ${formatRupiah(
-item.jumlah_uang_aplikasi
-)}
+Rp ${formatRupiah(item.jumlah_uang_aplikasi)}
 </td>
 
 <td
 class="${
-item.untung_rugi >= 0
+item.untung_rugi>=0
 ?
 "profit"
 :
@@ -848,43 +881,128 @@ item.untung_rugi >= 0
 }"
 >
 
-Rp ${
-formatRupiah(
+Rp ${formatRupiah(
 item.untung_rugi
-)
-}
+)}
 
 </td>
 
 </tr>
 
 `
+
 ).join("");
 
+renderPagination();
+
 }
 
-catch(error){
 
-console.log(
-error
+
+function renderPagination(){
+
+const total=
+Math.ceil(
+allData.length
+/
+rowsPerPage
 );
 
+const div=
 document
 .getElementById(
-"tableBody"
+"pagination"
+);
+
+div.innerHTML="";
+
+
+for(
+let i=1;
+i<=total;
+i++
+){
+
+div.innerHTML+=`
+
+<button
+
+class="${
+i===currentPage
+?
+"active"
+:
+""
+}"
+
+onclick="
+changePage(
+${i}
 )
-.innerHTML=
-`
-<tr>
-<td colspan="10">
-Gagal memuat data
-</td>
-</tr>
+"
+
+>
+
+${i}
+
+</button>
+
 `;
 
 }
 
 }
+
+
+
+function changePage(page){
+
+currentPage=
+page;
+
+renderTable();
+
+}
+
+
+
+async function loadData(){
+
+await fetch(
+"/api/generate-data-aset"
+);
+
+const res=
+await fetch(
+"/api/data-aset"
+);
+
+allData=
+await res.json();
+
+
+// terbaru di page 1
+allData.sort(
+
+(a,b)=>
+
+new Date(
+b.tanggal_aset
+)
+
+-
+
+new Date(
+a.tanggal_aset
+)
+
+);
+
+renderTable();
+
+}
+
+
 loadData();
 
 	
