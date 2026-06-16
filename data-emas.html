@@ -694,6 +694,20 @@ body{
 	
 	</tr>
 	`;
+
+	async function loadData(){
+		const response =
+		await fetch(
+		"/api/data-aset"
+		);
+		
+		const data =
+		await response.json();
+		
+		console.log(data);
+	}
+
+loadData();
 	
 </script>
 
