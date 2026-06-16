@@ -1114,10 +1114,11 @@ body{
 	            headers: {
 	                "Content-Type": "application/json"
 	            },
-	            body: JSON.stringify({
-	                biaya_pembelian: biayaPembelian,
-	                aset: aset
-	            })
+	           body: JSON.stringify({
+				    biaya_pembelian: biayaPembelian,
+				    aset: aset,
+				    tanggal_beli: tanggalInput.value
+				})
 	        });
 	
 	        const result = await response.json();
