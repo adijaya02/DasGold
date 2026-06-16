@@ -98,6 +98,9 @@ h.tanggal,
 total_modal:
 totalModal,
 
+total_aset:
+totalAset,
+
 jumlah_uang_aplikasi:
 jumlah,
 
