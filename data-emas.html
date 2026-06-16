@@ -701,9 +701,7 @@ return Number(
 Math.round(
 value || 0
 )
-).toLocaleString(
-"id-ID"
-);
+).toLocaleString("id-ID");
 
 }
 
@@ -714,10 +712,7 @@ return Number(
 value || 0
 )
 .toFixed(4)
-.replace(
-".",
-","
-);
+.replace(".",",");
 
 }
 
@@ -743,18 +738,22 @@ async function loadData(){
 
 try{
 
-const response =
+// generate otomatis
 await fetch(
 "/api/generate-data-aset"
 );
 
-const response =
+
+// ambil data
+const res =
 await fetch(
 "/api/data-aset"
 );
 
+
 const data =
-await response.json();
+await res.json();
+
 
 const tbody =
 document.getElementById(
@@ -764,10 +763,10 @@ document.getElementById(
 
 if(
 !data ||
-data.length === 0
+data.length===0
 ){
 
-tbody.innerHTML =
+tbody.innerHTML=
 `
 <tr>
 <td colspan="10">
@@ -841,9 +840,7 @@ item.jumlah_uang_aplikasi
 
 <td
 class="${
-Number(
-item.untung_rugi
-) >= 0
+item.untung_rugi >= 0
 ?
 "profit"
 :
@@ -851,9 +848,11 @@ item.untung_rugi
 }"
 >
 
-Rp ${formatRupiah(
+Rp ${
+formatRupiah(
 item.untung_rugi
-)}
+)
+}
 
 </td>
 
@@ -874,7 +873,7 @@ document
 .getElementById(
 "tableBody"
 )
-.innerHTML =
+.innerHTML=
 `
 <tr>
 <td colspan="10">
@@ -886,9 +885,8 @@ Gagal memuat data
 }
 
 }
-
-
 loadData();
+
 	
 </script>
 
