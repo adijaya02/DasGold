@@ -2,8 +2,7 @@ export default async function handler(req, res) {
 
 if (req.method !== "POST") {
 return res.status(405).json({
-error:
-"Method not allowed"
+error:"Method not allowed"
 });
 }
 
@@ -12,14 +11,10 @@ try {
 const {
 
 biaya_pembelian,
-
 aset,
-
 tanggal_beli
 
-}
-=
-req.body;
+} = req.body;
 
 if (
 !biaya_pembelian ||
@@ -39,12 +34,11 @@ error:
 const response =
 await fetch(
 
-"https://zasjkgrmcvigblpyqsff.supabase.co/rest/v1/investasi",
+"https://zasjkgrmcvigblpyqsff.supabase.co/rest/v1/investasi?on_conflict=tanggal_beli",
 
 {
 
-method:
-"POST",
+method:"POST",
 
 headers:{
 
@@ -63,7 +57,9 @@ Prefer:
 },
 
 body:
-JSON.stringify({
+JSON.stringify([
+
+{
 
 tanggal_beli,
 
@@ -71,7 +67,9 @@ biaya_pembelian,
 
 aset
 
-})
+}
+
+])
 
 }
 
@@ -80,17 +78,13 @@ aset
 const data =
 await response.json();
 
-if (
-!response.ok
-) {
+if (!response.ok) {
 
 return res
 .status(
 response.status
 )
-.json(
-data
-);
+.json(data);
 
 }
 
@@ -98,8 +92,7 @@ return res
 .status(200)
 .json({
 
-success:
-true,
+success:true,
 
 data
 
