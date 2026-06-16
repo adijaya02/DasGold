@@ -415,10 +415,10 @@ body{
     transition:.3s;
 }
 	.profit{
-	color:#0a8f3d;
+	color:#1b8a3f;
 	font-weight:600;
 }
-	
+
 	.loss{
 	color:#d32f2f;
 	font-weight:600;
@@ -696,16 +696,148 @@ body{
 	`;
 
 	async function loadData(){
-		const response =
-		await fetch(
-		"/api/data-aset"
-		);
-		
-		const data =
-		await response.json();
-		
-		console.log(data);
-	}
+
+try{
+
+const response =
+await fetch(
+"/api/data-aset"
+);
+
+const data =
+await response.json();
+
+const tbody =
+document.getElementById(
+"tableBody"
+);
+
+if(
+!data ||
+data.length===0
+){
+
+tbody.innerHTML=
+`
+<tr>
+<td colspan="10">
+Belum ada data
+</td>
+</tr>
+`;
+
+return;
+
+}
+
+tbody.innerHTML=
+data.map(
+(item,index)=>`
+
+<tr>
+
+<td>
+${index+1}
+</td>
+
+<td>
+${item.tanggal_aset}
+</td>
+
+<td>
+-
+</td>
+
+<td>
+-
+</td>
+
+<td>
+Rp ${
+Number(
+item.total_modal
+)
+.toLocaleString(
+"id-ID"
+)
+}
+</td>
+
+<td>
+-
+</td>
+
+<td>
+${
+item.total_aset
+}
+</td>
+
+<td>
+-
+</td>
+
+<td>
+Rp ${
+Number(
+item.jumlah_uang_aplikasi
+)
+.toLocaleString(
+"id-ID"
+)
+}
+</td>
+
+<td
+class="${
+item.untung_rugi >= 0
+?
+"profit"
+:
+"loss"
+}"
+>
+
+Rp ${
+Number(
+item.untung_rugi
+)
+.toLocaleString(
+"id-ID"
+)
+}
+
+</td>
+
+</tr>
+
+`
+).join("");
+
+}
+
+catch(err){
+
+console.log(
+err
+);
+
+document
+.getElementById(
+"tableBody"
+)
+.innerHTML=
+`
+<tr>
+<td colspan="10">
+Gagal memuat data
+</td>
+</tr>
+`;
+
+}
+
+}
 
 loadData();
 	
