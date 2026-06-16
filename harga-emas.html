@@ -390,9 +390,14 @@ body{
         padding:12px;
     }
 
-    .stats{
-        grid-template-columns:1fr;
+   .stats{
+        display:grid;
+        grid-template-columns:repeat(2,1fr);
         gap:12px;
+    }
+
+    .stats .card:first-child{
+        grid-column:1 / -1;
     }
 
     .card{
