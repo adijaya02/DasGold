@@ -697,8 +697,6 @@ body{
 
 	async function loadData(){
 
-try{
-
 const response =
 await fetch(
 "/api/data-aset"
@@ -712,80 +710,54 @@ document.getElementById(
 "tableBody"
 );
 
-if(
-!data ||
-data.length===0
-){
-
-tbody.innerHTML=
-`
-<tr>
-<td colspan="10">
-Belum ada data
-</td>
-</tr>
-`;
-
-return;
-
-}
-
-tbody.innerHTML=
+tbody.innerHTML =
 data.map(
 (item,index)=>`
 
 <tr>
 
-<td>
-${index+1}
-</td>
+<td>${index+1}</td>
 
 <td>
 ${item.tanggal_aset}
 </td>
 
 <td>
--
+Rp ${Number(
+item.harga_beli
+).toLocaleString("id-ID")}
 </td>
 
 <td>
--
+Rp ${Number(
+item.biaya_pembelian
+).toLocaleString("id-ID")}
 </td>
 
 <td>
-Rp ${
-Number(
+Rp ${Number(
 item.total_modal
-)
-.toLocaleString(
-"id-ID"
-)
-}
+).toLocaleString("id-ID")}
 </td>
 
 <td>
--
+${item.aset}
 </td>
 
 <td>
-${
-item.total_aset
-}
+${item.total_aset}
 </td>
 
 <td>
--
+Rp ${Number(
+item.harga_jual
+).toLocaleString("id-ID")}
 </td>
 
 <td>
-Rp ${
-Number(
+Rp ${Number(
 item.jumlah_uang_aplikasi
-)
-.toLocaleString(
-"id-ID"
-)
-}
+).toLocaleString("id-ID")}
 </td>
 
 <td
@@ -798,14 +770,9 @@ item.untung_rugi >= 0
 }"
 >
 
-Rp ${
-Number(
+Rp ${Number(
 item.untung_rugi
-)
-.toLocaleString(
-"id-ID"
-)
-}
+).toLocaleString("id-ID")}
 
 </td>
 
@@ -815,30 +782,6 @@ item.untung_rugi
 ).join("");
 
 }
-
-catch(err){
-
-console.log(
-err
-);
-
-document
-.getElementById(
-"tableBody"
-)
-.innerHTML=
-`
-<tr>
-<td colspan="10">
-Gagal memuat data
-</td>
-</tr>
-`;
-
-}
-
-}
-
 loadData();
 	
 </script>
