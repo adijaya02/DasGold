@@ -673,52 +673,160 @@ body{
 		window.location.href = "login.html";
 	}
 	
-	async function loadChart() {
+	async function loadChart(){
 
-		const res = await fetch('/api/history');
-		const data = await res.json();
+try{
 
-		const labels = data.map(item => item.tanggal);
+const res =
+await fetch(
+"/api/data-aset"
+);
 
-		const hargaBeli = data.map(item =>
-			Number(item.harga_beli)
-		);
+const data =
+await res.json();
 
-		const hargaJual = data.map(item =>
-			Number(item.harga_jual)
-		);
+if(!data.length){
+return;
+}
 
-		const ctx = document
-			.getElementById('goldChart')
-			.getContext('2d');
+/* urut lama → baru */
+data.sort(
+(a,b)=>
+new Date(a.tanggal_aset)
+-
+new Date(b.tanggal_aset)
+);
 
-		new Chart(ctx, {
-			type: 'line',
-			data: {
-				labels: labels,
-				datasets: [
-					{
-						label: 'Harga Beli',
-						data: hargaBeli,
-						borderColor: '#1f86ff',
-						backgroundColor: 'rgba(31,134,255,.1)',
-						tension: 0.4
-					},
-					{
-						label: 'Harga Jual',
-						data: hargaJual,
-						borderColor: '#f39c12',
-						backgroundColor: 'rgba(243,156,18,.1)',
-						tension: 0.4
-					}
-				]
-			},
-			options: {
-				responsive: true,
-				maintainAspectRatio: false
-			}
-		});
-	}
+/* label tanggal */
+const labels =
+data.map(item=>
+
+new Date(
+item.tanggal_aset
+).toLocaleDateString(
+"id-ID",
+{
+day:"2-digit",
+month:"short"
+})
+
+);
+
+/* ambil untung rugi */
+const profitData =
+data.map(item=>
+Number(
+item.untung_rugi || 0
+)
+);
+
+/* hapus chart lama jika ada */
+if(window.goldChart){
+window.goldChart.destroy();
+}
+
+const ctx =
+document
+.getElementById(
+"goldChart"
+)
+.getContext(
+"2d"
+);
+
+window.goldChart =
+new Chart(
+ctx,
+{
+type:"line",
+
+data:{
+
+labels,
+
+datasets:[
+
+{
+
+label:
+"Profit",
+
+data:
+profitData,
+
+borderColor:
+profitData.at(-1)>=0
+?
+"#16a34a"
+:
+"#e53935",
+
+backgroundColor:
+"rgba(22,163,74,.12)",
+
+fill:true,
+
+tension:0.35,
+
+pointRadius:4,
+
+pointHoverRadius:6
+
+}
+
+]
+
+},
+
+options:{
+
+responsive:true,
+
+maintainAspectRatio:false,
+
+plugins:{
+legend:{
+display:true
+}
+},
+
+scales:{
+
+y:{
+
+ticks:{
+
+callback:
+(value)=>
+
+"Rp "+
+Number(value)
+.toLocaleString(
+"id-ID"
+)
+
+}
+
+}
+
+}
+
+}
+
+}
+
+);
+
+}
+catch(err){
+
+console.log(
+err
+);
+
+}
+
+}
 
 loadChart();
 
