@@ -553,17 +553,17 @@ body{
 					<div class="card-sub">/ 0,01 gr</div>
 				</div>
 
-                <div class="card">
-                    <div class="card-title">Berat</div>
-                    <div class="card-value">1.5 Gr</div>
-                    <div class="card-sub">Berat Emas</div>
-                </div>
-
-                <div class="card">
-                    <div class="card-title">Saldo</div>
-                    <div class="card-value">Rp1.290</div>
-                    <div class="card-sub">Saldo Saat Ini</div>
-                </div>
+               <div class="card">
+				    <div class="card-title">Berat</div>
+				    <div class="card-value" id="berat">0 gr</div>
+				    <div class="card-sub">Total Aset</div>
+				</div>
+				
+				<div class="card">
+				    <div class="card-title">Saldo</div>
+				    <div class="card-value" id="saldo">Rp 0</div>
+				    <div class="card-sub">Saldo Saat Ini</div>
+				</div>
 
             </div>
 
@@ -589,27 +589,31 @@ body{
 						<canvas id="goldChart"></canvas>
 					</div>
 
-                    <div class="ranking">
-
-                        <h3>Ringkasan</h3>
-
-                        <div class="rank-item">
-                            <span>Profit</span>
-                            <strong>25.760</strong>
-                        </div>
-
-                        <div class="rank-item">
-                            <span>Modal</span>
-                            <strong>24.200</strong>
-                        </div>
-
-                        <div class="rank-item">
-                            <span>Uang di Aplikasi</span>
-                            <strong>25.010</strong>
-                        </div>
-
-                    </div>
-
+                   <div class="ranking">
+					   
+						<h3>Ringkasan</h3>
+	
+						<div class="rank-item">
+							<span>Profit</span>
+							<strong id="profit">
+							Rp 0
+							</strong>
+						</div>
+						
+						<div class="rank-item">
+							<span>Modal</span>
+							<strong id="modal">
+							Rp 0
+							</strong>
+						</div>
+						
+						<div class="rank-item">
+							<span>Uang di Aplikasi</span>
+							<strong id="uangApp">
+							Rp 0
+							</strong>
+						</div>
+					</div>
                 </div>
 
             </div>
@@ -717,6 +721,139 @@ body{
 	}
 
 loadChart();
+
+	<script>
+
+function rupiah(n){
+return "Rp " +
+Number(
+Math.round(n || 0)
+).toLocaleString(
+"id-ID"
+);
+}
+
+function gram(n){
+return Number(
+n || 0
+)
+.toFixed(4)
+.replace(".",",");
+}
+
+async function loadDashboardData(){
+
+try{
+
+const res=
+await fetch(
+"/api/data-aset"
+);
+
+const data=
+await res.json();
+
+if(
+!data.length
+){
+return;
+}
+
+/*
+ambil data terbaru
+*/
+const latest=
+data.sort(
+(a,b)=>
+new Date(
+b.tanggal_aset
+)-
+new Date(
+a.tanggal_aset
+)
+)[0];
+
+
+/* CARD */
+
+document
+.getElementById(
+"berat"
+)
+.innerText=
+gram(
+latest.total_aset
+)
++" gr";
+
+document
+.getElementById(
+"saldo"
+)
+.innerText=
+rupiah(
+latest.jumlah_uang_aplikasi
+);
+
+
+/* RINGKASAN */
+
+document
+.getElementById(
+"profit"
+)
+.innerText=
+rupiah(
+latest.untung_rugi
+);
+
+document
+.getElementById(
+"modal"
+)
+.innerText=
+rupiah(
+latest.total_modal
+);
+
+document
+.getElementById(
+"uangApp"
+)
+.innerText=
+rupiah(
+latest.jumlah_uang_aplikasi
+);
+
+
+/* warna profit */
+
+const profit=
+document
+.getElementById(
+"profit"
+);
+
+profit.style.color=
+latest.untung_rugi>=0
+?
+"#16a34a"
+:
+"#e53935";
+
+}
+catch(err){
+
+console.log(err);
+
+}
+
+}
+
+loadDashboardData();
+
+</script>
+	
 
 </script>
 
