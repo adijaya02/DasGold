@@ -159,6 +159,21 @@ body{
 
 /* HISTORY TABLE */
 
+.month-btn{
+    background:#1f86ff;
+    color:#fff;
+    border:none;
+    padding:10px 16px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:600;
+    transition:.3s;
+}
+
+.month-btn:hover{
+    background:#0b4f96;
+}
+	
 .table-container{
     margin-top:25px;
     background:#fff;
@@ -547,7 +562,7 @@ body{
 					flex-wrap:wrap;
 					">
 					
-					    <button id="prevMonth" class="logout-btn">
+					    <button id="prevMonth" class="month-btn">
 					        ← Bulan Sebelumnya
 					    </button>
 					
@@ -564,7 +579,7 @@ body{
 					        ">
 					    </div>
 					
-					    <button id="nextMonth" class="logout-btn">
+					    <button id="nextMonth" class="month-btn">
 					        Bulan Berikutnya →
 					    </button>
 					
