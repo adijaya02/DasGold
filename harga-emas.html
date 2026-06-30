@@ -465,6 +465,56 @@ body{
     transition:.3s;
 }
 
+	/* NAVIGASI BULAN */
+.month-nav{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+#monthLabel{
+    background:#f3f6fa;
+    padding:10px 18px;
+    border-radius:10px;
+    font-weight:600;
+    color:#04264a;
+    min-width:180px;
+    text-align:center;
+}
+
+/* MOBILE */
+@media(max-width:768px){
+
+    .month-nav{
+        width:100%;
+        display:grid;
+
+        grid-template-columns:
+        auto
+        1fr
+        auto;
+
+        align-items:center;
+
+        gap:8px;
+    }
+
+    #monthLabel{
+        min-width:unset;
+        width:100%;
+        font-size:14px;
+        padding:10px;
+    }
+
+    .month-btn{
+        padding:10px 12px;
+        font-size:13px;
+        white-space:nowrap;
+    }
+
+}
+
 </style>
 </head>
 
@@ -555,12 +605,7 @@ body{
 				        History Harga Emas
 				    </div>
 				
-				    <div style="
-					display:flex;
-					align-items:center;
-					gap:10px;
-					flex-wrap:wrap;
-					">
+				    <div class="month-nav">
 					
 					    <button id="prevMonth" class="month-btn">
 					        ← Bulan Sebelumnya
