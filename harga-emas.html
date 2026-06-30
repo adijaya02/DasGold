@@ -540,17 +540,35 @@ body{
 				        History Harga Emas
 				    </div>
 				
-				    <div style="display:flex; gap:10px;">
-				
-				        <button id="prevMonth" class="logout-btn">
-				            ← Bulan Sebelumnya
-				        </button>
-				
-				        <button id="nextMonth" class="logout-btn">
-				            Bulan Berikutnya →
-				        </button>
-				
-				    </div>
+				    <div style="
+					display:flex;
+					align-items:center;
+					gap:10px;
+					flex-wrap:wrap;
+					">
+					
+					    <button id="prevMonth" class="logout-btn">
+					        ← Bulan Sebelumnya
+					    </button>
+					
+					    <div
+					        id="monthLabel"
+					        style="
+					        background:#f3f6fa;
+					        padding:10px 18px;
+					        border-radius:10px;
+					        font-weight:600;
+					        color:#04264a;
+					        min-width:180px;
+					        text-align:center;
+					        ">
+					    </div>
+					
+					    <button id="nextMonth" class="logout-btn">
+					        Bulan Berikutnya →
+					    </button>
+					
+					</div>
 				
 				</div>
 
@@ -638,7 +656,21 @@ body{
 	        59,
 	        59
 	    );
-	
+
+		const label =
+		start.toLocaleDateString(
+		    'id-ID',
+		    {
+		        month:'long',
+		        year:'numeric'
+		    }
+		);
+		
+		document.getElementById(
+		    "monthLabel"
+		).textContent =
+		`Data ${label}`;
+		
 	    const filtered = allHistory
 	
 	        .filter(item => {
