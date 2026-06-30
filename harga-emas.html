@@ -470,17 +470,6 @@ body{
     display:flex;
     align-items:center;
     gap:10px;
-    flex-wrap:wrap;
-}
-
-#monthLabel{
-    background:#f3f6fa;
-    padding:10px 18px;
-    border-radius:10px;
-    font-weight:600;
-    color:#04264a;
-    min-width:180px;
-    text-align:center;
 }
 
 /* MOBILE */
@@ -488,29 +477,53 @@ body{
 
     .month-nav{
         width:100%;
-        display:grid;
-
-        grid-template-columns:
-        auto
-        1fr
-        auto;
-
+        display:flex;
         align-items:center;
-
-        gap:8px;
-    }
-
-    #monthLabel{
-        min-width:unset;
-        width:100%;
-        font-size:14px;
-        padding:10px;
+        gap:6px;
     }
 
     .month-btn{
-        padding:10px 12px;
+        flex:0 0 auto;
+
+        padding:10px 8px;
+
+        font-size:12px;
+
+        min-width:42px;
+    }
+
+    #monthLabel{
+        flex:1;
+
+        min-width:0;
+
+        width:auto;
+
+        padding:10px;
+
         font-size:13px;
+
         white-space:nowrap;
+
+        overflow:hidden;
+
+        text-overflow:ellipsis;
+    }
+
+}
+
+	.mobile-text{
+    display:none;
+}
+
+@media(max-width:768px){
+
+    .desktop-text{
+        display:none;
+    }
+
+    .mobile-text{
+        display:inline;
     }
 
 }
@@ -607,9 +620,15 @@ body{
 				
 				    <div class="month-nav">
 					
-					    <button id="prevMonth" class="month-btn">
-					        ← Bulan Sebelumnya
-					    </button>
+					   <button id="prevMonth" class="month-btn">
+						    <span class="desktop-text">
+						        ← Bulan Sebelumnya
+						    </span>
+						
+						    <span class="mobile-text">
+						        ←
+						    </span>
+						</button>
 					
 					    <div
 					        id="monthLabel"
@@ -625,8 +644,14 @@ body{
 					    </div>
 					
 					    <button id="nextMonth" class="month-btn">
-					        Bulan Berikutnya →
-					    </button>
+						    <span class="desktop-text">
+						        Bulan Berikutnya →
+						    </span>
+						
+						    <span class="mobile-text">
+						        →
+						    </span>
+						</button>
 					
 					</div>
 				
