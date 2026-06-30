@@ -479,29 +479,39 @@ body{
         width:100%;
         display:flex;
         align-items:center;
-        gap:6px;
+        gap:10px;
     }
 
     .month-btn{
+
         flex:0 0 auto;
 
-        padding:10px 8px;
+        min-width:60px;
 
-        font-size:12px;
+        height:44px;
 
-        min-width:42px;
+        padding:0 16px;
+
+        border-radius:12px;
+
+        font-size:18px;
+
+        display:flex;
+
+        align-items:center;
+
+        justify-content:center;
     }
 
     #monthLabel{
+
         flex:1;
 
         min-width:0;
 
-        width:auto;
+        padding:10px 14px;
 
-        padding:10px;
-
-        font-size:13px;
+        font-size:14px;
 
         white-space:nowrap;
 
@@ -511,7 +521,6 @@ body{
     }
 
 }
-
 	.mobile-text{
     display:none;
 }
@@ -526,6 +535,11 @@ body{
         display:inline;
     }
 
+}
+	.mobile-text{
+    font-size:20px;
+    font-weight:700;
+    line-height:1;
 }
 
 </style>
