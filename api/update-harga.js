@@ -28,8 +28,8 @@ export default async function handler(req, res) {
                 },
                 body: JSON.stringify({
                     tanggal: data.data.tglBerlaku,
-                    harga_beli: Number(data.data.hargaBeli),
-                    harga_jual: Number(data.data.hargaJual)
+                    harga_beli: Number(data.data.hargaJual),
+                    harga_jual: Number(data.data.hargaBeli)
                 })
             }
         );
