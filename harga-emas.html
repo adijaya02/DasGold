@@ -527,9 +527,32 @@ body{
 
 		<div class="table-container">
 
-			<div class="table-title">
-				History Harga Emas
-			</div>
+			<div style="
+				display:flex;
+				justify-content:space-between;
+				align-items:center;
+				margin-bottom:15px;
+				flex-wrap:wrap;
+				gap:10px;
+				">
+				
+				    <div class="table-title">
+				        History Harga Emas
+				    </div>
+				
+				    <div style="display:flex; gap:10px;">
+				
+				        <button id="prevMonth" class="logout-btn">
+				            ← Bulan Sebelumnya
+				        </button>
+				
+				        <button id="nextMonth" class="logout-btn">
+				            Bulan Berikutnya →
+				        </button>
+				
+				    </div>
+				
+				</div>
 
 			<table class="history-table">
 
@@ -574,36 +597,127 @@ body{
 	}
 	loadHarga();
 
+	let allHistory = [];
+	let currentOffset = 0;
+	
 	async function loadHistory() {
+	
 	    try {
+	
 	        const res = await fetch('/api/history');
-	        const data = await res.json();
 	
-	        const tbody = document.getElementById("historyBody");
-	        tbody.innerHTML = "";
+	        allHistory = await res.json();
 	
-	        data.forEach((item, index) => {
-	            const tanggalFormatted = new Date(item.tanggal).toLocaleDateString('id-ID', {
-	                weekday: 'long',
-	                year: 'numeric',
-	                month: 'long',
-	                day: 'numeric'
-	            });
-	
-	            tbody.innerHTML += `
-	                <tr>
-	                    <td>${index + 1}</td>
-	                    <td>${tanggalFormatted}</td>
-	                    <td>Rp ${Number(item.harga_beli).toLocaleString('id-ID')}</td>
-	                    <td>Rp ${Number(item.harga_jual).toLocaleString('id-ID')}</td>
-	                </tr>
-	            `;
-	        });
+	        renderHistory();
 	
 	    } catch (err) {
 	        console.error(err);
 	    }
+	
 	}
+	
+	function renderHistory() {
+	
+	    const tbody = document.getElementById("historyBody");
+	
+	    tbody.innerHTML = "";
+	
+	    const today = new Date();
+	
+	    const start = new Date(
+	        today.getFullYear(),
+	        today.getMonth() - currentOffset,
+	        1
+	    );
+	
+	    const end = new Date(
+	        today.getFullYear(),
+	        today.getMonth() - currentOffset + 1,
+	        0,
+	        23,
+	        59,
+	        59
+	    );
+	
+	    const filtered = allHistory
+	
+	        .filter(item => {
+	
+	            const tgl = new Date(item.tanggal);
+	
+	            return tgl >= start && tgl <= end;
+	
+	        })
+	
+	        .sort(
+	            (a,b)=>
+	            new Date(b.tanggal)
+	            -
+	            new Date(a.tanggal)
+	        );
+	
+	    filtered.forEach((item,index)=>{
+	
+	        const tanggalFormatted =
+	        new Date(item.tanggal)
+	        .toLocaleDateString(
+	            'id-ID',
+	            {
+	                weekday:'long',
+	                day:'numeric',
+	                month:'long',
+	                year:'numeric'
+	            }
+	        );
+	
+	        tbody.innerHTML += `
+	            <tr>
+	                <td>${index+1}</td>
+	
+	                <td>
+	                    ${tanggalFormatted}
+	                </td>
+	
+	                <td>
+	                    Rp ${Number(item.harga_beli)
+	                    .toLocaleString('id-ID')}
+	                </td>
+	
+	                <td>
+	                    Rp ${Number(item.harga_jual)
+	                    .toLocaleString('id-ID')}
+	                </td>
+	
+	            </tr>
+	        `;
+	
+	    });
+	
+	}
+
+	document
+	.getElementById("prevMonth")
+	.addEventListener("click",()=>{
+	
+	    currentOffset++;
+	
+	    renderHistory();
+	
+	});
+	
+	document
+	.getElementById("nextMonth")
+	.addEventListener("click",()=>{
+	
+	    if(currentOffset>0){
+	
+	        currentOffset--;
+	
+	        renderHistory();
+	
+	    }
+	
+	});
 	
 	loadHistory();
 	
