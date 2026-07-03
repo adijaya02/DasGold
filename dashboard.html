@@ -654,13 +654,9 @@ body{
 						</div>
 					</div>
                 </div>
-
             </div>
-
         </div>
-
     </main>
-
 </div>
 
 <script>
@@ -706,14 +702,14 @@ body{
 
 		toggleBtn.addEventListener('click', () => {
 
-		if(window.innerWidth <= 768){
-			sidebar.classList.toggle('show');
-			overlay.classList.toggle('show');
-		} else {
-			sidebar.classList.toggle('hide');
-		}
+            if(window.innerWidth <= 768){
+                sidebar.classList.toggle('show');
+                overlay.classList.toggle('show');
+            } else {
+                sidebar.classList.toggle('hide');
+            }
 
-	});
+        });
 
 	overlay.addEventListener('click', () => {
 
@@ -729,274 +725,67 @@ body{
 	
 	async function loadChart(){
 
-try{
+        try{
 
-const res =
-await fetch(
-"/api/data-aset"
-);
+            const res = await fetch("/api/data-aset");
+            const data = await res.json();
 
-const data =
-await res.json();
+            if(!data.length){
+                return;
+            }
 
-if(!data.length){
-return;
-}
+            data.sort((a,b)=>new Date(a.tanggal_aset) - new Date(b.tanggal_aset));
+            const labels = data.map(item=> new Date(item.tanggal_aset).toLocaleDateString("id-ID",{day:"2-digit",month:"short"}));
+            const profitData = data.map(item=>Number(item.untung_rugi || 0));
+            const canvas = document.getElementById("goldChart");
 
-data.sort(
-(a,b)=>
-new Date(a.tanggal_aset)
--
-new Date(b.tanggal_aset)
-);
+            if(window.goldChart && typeof window.goldChart.destroy==="function"){
+                window.goldChart.destroy();
+            }
 
-const labels =
-data.map(item=>
+            window.goldChart = new Chart(canvas,{
+                type:"line", data:{ labels, datasets:[{label:"Profit", data:profitData, borderColor:"#16a34a", backgroundColor:"rgba(22,163,74,.15)", fill:true, tension:.4}]},
+                options:{responsive:true, maintainAspectRatio:false, scales:{y:{ticks:{callback:v=>"Rp "+Number(v).toLocaleString("id-ID")}}}}
+            });
+        }
 
-new Date(
-item.tanggal_aset
-).toLocaleDateString(
-"id-ID",
-{
-day:"2-digit",
-month:"short"
-})
+        catch(err){console.error(err);}
+    }
+    loadChart();
 
-);
+    function rupiah(n){return "Rp " + Number(Math.round(n || 0)).toLocaleString("id-ID");}
+    function gram(n){return Number(n || 0).toFixed(4).replace(".",",");}
 
-const profitData =
-data.map(
-item=>
-Number(
-item.untung_rugi || 0
-)
-);
+    async function loadDashboardData(){
 
-const canvas =
-document.getElementById(
-"goldChart"
-);
+        try{
 
-if(
-window.goldChart &&
-typeof window.goldChart.destroy==="function"
-){
-window.goldChart.destroy();
-}
+            const res=await fetch("/api/data-aset");
+            const data=await res.json();
 
-window.goldChart =
-new Chart(
-canvas,
-{
+            if(!data.length){return;}
 
-type:"line",
+            /*ambil data terbaru*/
+            const latest=data.sort((a,b)=>new Date(b.tanggal_aset)-new Date(a.tanggal_aset))[0];
 
-data:{
+            /* CARD */
+            document.getElementById("berat").innerText=gram(latest.total_aset)+" gr";
+            document.getElementById("saldo").innerText=rupiah(latest.jumlah_uang_aplikasi);
 
-labels,
+            /* RINGKASAN */
+            document.getElementById("profit").innerText=rupiah(latest.untung_rugi);
+            document.getElementById("modal").innerText=rupiah(latest.total_modal);
+            document.getElementById("uangApp").innerText=rupiah(latest.jumlah_uang_aplikasi);
 
-datasets:[
-
-{
-
-label:
-"Profit",
-
-data:
-profitData,
-
-borderColor:
-"#16a34a",
-
-backgroundColor:
-"rgba(22,163,74,.15)",
-
-fill:true,
-
-tension:.4
-
-}
-
-]
-
-},
-
-options:{
-
-responsive:true,
-
-maintainAspectRatio:false,
-
-scales:{
-
-y:{
-
-ticks:{
-
-callback:
-v=>
-
-"Rp "+
-Number(v)
-.toLocaleString(
-"id-ID"
-)
-
-}
-
-}
-
-}
-
-}
-
-}
-
-);
-
-}
-catch(err){
-
-console.error(
-err
-);
-
-}
-
-}
-
-loadChart();
-
-function rupiah(n){
-return "Rp " +
-Number(
-Math.round(n || 0)
-).toLocaleString(
-"id-ID"
-);
-}
-
-function gram(n){
-return Number(
-n || 0
-)
-.toFixed(4)
-.replace(".",",");
-}
-
-async function loadDashboardData(){
-
-try{
-
-const res=
-await fetch(
-"/api/data-aset"
-);
-
-const data=
-await res.json();
-
-if(
-!data.length
-){
-return;
-}
-
-/*
-ambil data terbaru
-*/
-const latest=
-data.sort(
-(a,b)=>
-new Date(
-b.tanggal_aset
-)-
-new Date(
-a.tanggal_aset
-)
-)[0];
-
-
-/* CARD */
-
-document
-.getElementById(
-"berat"
-)
-.innerText=
-gram(
-latest.total_aset
-)
-+" gr";
-
-document
-.getElementById(
-"saldo"
-)
-.innerText=
-rupiah(
-latest.jumlah_uang_aplikasi
-);
-
-
-/* RINGKASAN */
-
-document
-.getElementById(
-"profit"
-)
-.innerText=
-rupiah(
-latest.untung_rugi
-);
-
-document
-.getElementById(
-"modal"
-)
-.innerText=
-rupiah(
-latest.total_modal
-);
-
-document
-.getElementById(
-"uangApp"
-)
-.innerText=
-rupiah(
-latest.jumlah_uang_aplikasi
-);
-
-
-/* warna profit */
-
-const profit=
-document
-.getElementById(
-"profit"
-);
-
-profit.style.color=
-latest.untung_rugi>=0
-?
-"#16a34a"
-:
-"#e53935";
-
-}
-catch(err){
-
-console.log(err);
-
-}
-
-}
-
+            /* warna profit */
+            const profit=
+            document.getElementById("profit");
+            profit.style.color=latest.untung_rugi>=0?"#16a34a":"#e53935";
+        }
+        catch(err){console.log(err);}
+    }
 loadDashboardData();
 
 </script>
-
-
 </body>
 </html>
