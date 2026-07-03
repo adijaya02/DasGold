@@ -153,6 +153,21 @@ body{
     color:#1b1b1b;
 }
 
+.price-row{
+    display:flex;
+    align-items:flex-end;
+    gap:8px;
+    margin-top:10px;
+    flex-wrap:wrap;
+}
+
+.price-unit{
+    font-size:14px;
+    color:#666;
+    font-weight:500;
+    margin-bottom:6px;
+}
+
 .card-sub{
     margin-top:12px;
     color:#666;
@@ -485,6 +500,13 @@ body{
 .main{
     transition:.3s;
 }
+	
+@media(max-width:768px){
+    .price-unit{
+        font-size:13px;
+    }
+
+}
 
 </style>
 </head>
@@ -541,16 +563,30 @@ body{
 
             <div class="stats">
 
-                <div class="card">
-					<div class="card-title">Harga Beli</div>
-					<div class="card-value" id="hargaBeli">Loading...</div>
-					<div class="card-sub">/ 0,01 gr</div>
+               <div class="card">
+				    <div class="card-title">Harga Beli</div>
+				
+				    <div class="price-row">
+				        <div class="card-value" id="hargaBeli">Loading...</div>
+				        <span class="price-unit">/ 0,01 gr</span>
+				    </div>
+				
+				    <div class="card-sub" id="tanggalHarga">
+				        Loading...
+				    </div>
 				</div>
 
 				<div class="card">
-					<div class="card-title">Harga Jual</div>
-					<div class="card-value" id="hargaJual">Loading...</div>
-					<div class="card-sub">/ 0,01 gr</div>
+				    <div class="card-title">Harga Jual</div>
+				
+				    <div class="price-row">
+				        <div class="card-value" id="hargaJual">Loading...</div>
+				        <span class="price-unit">/ 0,01 gr</span>
+				    </div>
+				
+				    <div class="card-sub" id="tanggalHarga2">
+				        Loading...
+				    </div>
 				</div>
 
                <div class="card">
@@ -627,22 +663,37 @@ body{
 <script>
 
 	async function loadHarga() {
-		try {
-			const res = await fetch('/api/harga');
 
-			const data = await res.json();
-
-			if (!data || !data.harga_beli) return;
-
-			document.getElementById('hargaBeli').innerText =
-				'Rp ' + Number(data.harga_beli).toLocaleString('id-ID');
-
-			document.getElementById('hargaJual').innerText =
-				'Rp ' + Number(data.harga_jual).toLocaleString('id-ID');
-
-		} catch (err) {
-			console.error(err);
-		}
+	    try {
+	
+	        const res = await fetch('/api/harga');
+	        const data = await res.json();
+	
+	        if (!data || !data.harga_beli) return;
+	
+	        document.getElementById('hargaBeli').innerText =
+	            'Rp ' + Number(data.harga_beli).toLocaleString('id-ID');
+	
+	        document.getElementById('hargaJual').innerText =
+	            'Rp ' + Number(data.harga_jual).toLocaleString('id-ID');
+	
+	        const tanggal = new Date(data.tanggal)
+	            .toLocaleDateString('id-ID',{
+	                weekday:'long',
+	                day:'numeric',
+	                month:'long',
+	                year:'numeric'
+	            });
+	
+	        document.getElementById('tanggalHarga').innerText = tanggal;
+	        document.getElementById('tanggalHarga2').innerText = tanggal;
+	
+	    } catch (err) {
+	
+	        console.error(err);
+	
+	    }
+	
 	}
 	loadHarga();
 
