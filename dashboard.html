@@ -281,26 +281,42 @@ body{
 /* =========================
    MOBILE
 ========================= */
-@media (max-width: 768px){
+@media (max-width:768px){
 
     .dashboard{
-        flex-direction: column;
+        flex-direction:column;
     }
 
-    /* Sidebar muncul sebagai drawer */
+    /* Sidebar */
     .sidebar{
-        position: fixed;
-        left: 0;
-        top: 0;
-        height: 100%;
-        z-index: 1000;
-        width: 240px;
-        box-shadow: 0 0 20px rgba(0,0,0,.2);
+        position:fixed;
+        top:0;
+        left:0;
+        width:220px;
+        height:100vh;
+        z-index:1001;
+        transform:translateX(-100%);
+        transition:.3s;
+        box-shadow:0 0 25px rgba(0,0,0,.25);
+    }
+
+    .sidebar.show{
+        transform:translateX(0);
     }
 
     .sidebar.hide{
-        transform: translateX(-100%);
-        width: 240px;
+        transform:translateX(-100%);
+        width:220px;
+    }
+
+    .logo{
+        font-size:24px;
+        margin-bottom:25px;
+    }
+
+    .menu li a{
+        padding:14px 20px;
+        font-size:15px;
     }
 
     .main{
@@ -312,13 +328,13 @@ body{
     }
 
     .content{
-        padding:15px;
+        padding:12px;
     }
 
-    /* Card menjadi 1 kolom */
+    /* CARD */
     .stats{
         grid-template-columns:1fr;
-        gap:15px;
+        gap:12px;
     }
 
     .card{
@@ -326,14 +342,22 @@ body{
     }
 
     .card-value{
-        font-size:28px;
+        font-size:24px;
     }
 
-    /* Header panel turun ke bawah */
+    .price-unit{
+        font-size:13px;
+    }
+
+    /* PANEL */
+    .panel{
+        padding:15px;
+    }
+
     .panel-header{
         flex-direction:column;
         align-items:flex-start;
-        gap:15px;
+        gap:12px;
     }
 
     .tabs{
@@ -356,8 +380,7 @@ body{
     }
 
     .chart-box{
-        height:250px;
-        font-size:15px;
+        height:220px;
     }
 
     .ranking{
@@ -409,81 +432,10 @@ body{
     }
 
 }
-.sidebar{
-    transition: all .3s ease;
+
+.price-unit{
+    font-size:13px;
 }
-
-@media (max-width:768px){
-
-    .sidebar{
-        position:fixed;
-        top:0;
-        left:0;
-        width:220px;
-        height:100vh;
-        z-index:1001;
-        transform:translateX(-100%);
-        transition:.3s;
-        box-shadow:0 0 25px rgba(0,0,0,.25);
-    }
-
-    .sidebar.show{
-        transform:translateX(0);
-    }
-
-    .logo{
-        font-size:24px;
-        margin-bottom:25px;
-    }
-
-    .menu li a{
-        padding:14px 20px;
-        font-size:15px;
-    }
-
-    .main{
-        width:100%;
-    }
-
-    .content{
-        padding:12px;
-    }
-
-    .stats{
-        grid-template-columns:1fr;
-        gap:12px;
-    }
-
-    .card{
-        padding:16px;
-    }
-
-    .card-value{
-        font-size:24px;
-    }
-
-    .panel{
-        padding:15px;
-    }
-
-    .panel-header{
-        flex-direction:column;
-        align-items:flex-start;
-        gap:12px;
-    }
-
-    .chart-area{
-        grid-template-columns:1fr;
-    }
-
-    .chart-box{
-        height:220px;
-    }
-
-}
-	 .price-unit{
-        font-size:13px;
-    }
 
 #overlay{
     position:fixed;
@@ -501,10 +453,6 @@ body{
 #overlay.show{
     opacity:1;
     visibility:visible;
-}
-.sidebar.hide{
-    width:0;
-    padding:0;
 }
 
 .main{
