@@ -174,6 +174,12 @@ body{
     font-size:14px;
 }
 
+.price-cards{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:20px;
+}
+	
 /* PANEL */
 
 .panel{
@@ -364,6 +370,28 @@ body{
 
 }
 
+.price-cards{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+}
+
+.price-cards .card{
+    padding:14px;
+}
+
+.price-cards .card-value{
+    font-size:20px;
+}
+
+.price-cards .price-unit{
+    font-size:11px;
+}
+
+.price-cards .card-sub{
+    font-size:11px;
+}
+	
 /* =========================
    EXTRA SMALL DEVICE
 ========================= */
@@ -474,6 +502,9 @@ body{
     }
 
 }
+	 .price-unit{
+        font-size:13px;
+    }
 
 #overlay{
     position:fixed;
@@ -501,13 +532,6 @@ body{
     transition:.3s;
 }
 	
-@media(max-width:768px){
-    .price-unit{
-        font-size:13px;
-    }
-
-}
-
 </style>
 </head>
 
@@ -563,7 +587,7 @@ body{
 
             <div class="stats">
 
-               <div class="card">
+               <div class="price-card">
 				    <div class="card-title">Harga Beli</div>
 				
 				    <div class="price-row">
@@ -574,9 +598,7 @@ body{
 				    <div class="card-sub" id="tanggalHarga">
 				        Loading...
 				    </div>
-				</div>
 
-				<div class="card">
 				    <div class="card-title">Harga Jual</div>
 				
 				    <div class="price-row">
