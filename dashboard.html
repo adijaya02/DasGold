@@ -564,8 +564,8 @@ body{
 
                     <div class="filter">
                         <button>7 Hari</button>
-                        <button>30 Hari</button>
                         <button>1 Tahun</button>
+                        <button>All Data</button>
                     </div>
 
                 </div>
@@ -671,34 +671,80 @@ body{
 		window.location.href = "login.html";
 	}
 	
-	async function loadChart(){
+	async function loadChart() {
 
-        try{
+        try {
 
             const res = await fetch("/api/data-aset");
             const data = await res.json();
 
-            if(!data.length){
+            if (!data.length) {
                 return;
             }
 
-            data.sort((a,b)=>new Date(a.tanggal_aset) - new Date(b.tanggal_aset));
-            const labels = data.map(item=> new Date(item.tanggal_aset).toLocaleDateString("id-ID",{day:"2-digit",month:"short"}));
-            const profitData = data.map(item=>Number(item.untung_rugi || 0));
+            // Urutkan berdasarkan tanggal
+            data.sort((a, b) => new Date(a.tanggal_aset) - new Date(b.tanggal_aset));
+
+            // Data terbaru
+            const latestDate = new Date(data[data.length - 1].tanggal_aset);
+
+            // 30 hari terakhir
+            const startDate = new Date(latestDate);
+            startDate.setDate(startDate.getDate() - 29);
+
+            // Filter data
+            const filteredData = data.filter(item => {
+                const tgl = new Date(item.tanggal_aset);
+                return tgl >= startDate && tgl <= latestDate;
+            });
+
+            const labels = filteredData.map(item =>
+                new Date(item.tanggal_aset).toLocaleDateString("id-ID", {
+                    day: "2-digit",
+                    month: "short"
+                })
+            );
+
+            const profitData = filteredData.map(item =>
+                Number(item.untung_rugi || 0)
+            );
             const canvas = document.getElementById("goldChart");
 
-            if(window.goldChart && typeof window.goldChart.destroy==="function"){
+            if (window.goldChart && typeof window.goldChart.destroy === "function") {
                 window.goldChart.destroy();
             }
 
-            window.goldChart = new Chart(canvas,{
-                type:"line", data:{ labels, datasets:[{label:"Profit", data:profitData, borderColor:"#16a34a", backgroundColor:"rgba(22,163,74,.15)", fill:true, tension:.4}]},
-                options:{responsive:true, maintainAspectRatio:false, scales:{y:{ticks:{callback:v=>"Rp "+Number(v).toLocaleString("id-ID")}}}}
+            window.goldChart = new Chart(canvas, {
+                type: "line",
+                data: {
+                    labels,
+                    datasets: [{
+                        label: "Profit",
+                        data: profitData,
+                        borderColor: "#16a34a",
+                        backgroundColor: "rgba(22,163,74,.15)",
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: v => "Rp " + Number(v).toLocaleString("id-ID")
+                            }
+                        }
+                    }
+                }
             });
-        }
 
-        catch(err){console.error(err);}
+        } catch (err) {
+            console.error(err);
+        }
     }
+
     loadChart();
 
     function rupiah(n){return "Rp " + Number(Math.round(n || 0)).toLocaleString("id-ID");}
