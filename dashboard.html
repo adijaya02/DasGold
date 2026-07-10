@@ -230,6 +230,11 @@ body{
     background:#dfe8f5;
 }
 
+.filter button.active {
+    background: #1f86ff;
+    color: white;
+}
+
 .chart-area{
     display:grid;
     grid-template-columns:2fr 1fr;
@@ -563,9 +568,9 @@ body{
                     </div>
 
                     <div class="filter">
-                        <button>7 Hari</button>
-                        <button>1 Tahun</button>
-                        <button>All Data</button>
+                        <button data-filter="7" class="active">7 Hari</button>
+                        <button data-filter="365">1 Tahun</button>
+                        <button data-filter="all">Semua Data</button>
                     </div>
 
                 </div>
@@ -671,6 +676,28 @@ body{
 		window.location.href = "login.html";
 	}
 	
+    const filterButtons = document.querySelectorAll(".filter button");
+
+    filterButtons.forEach(button => {
+        button.addEventListener("click", () => {
+
+            // Hapus active dari semua tombol
+            filterButtons.forEach(btn => btn.classList.remove("active"));
+
+            // Tambahkan active ke tombol yang diklik
+            button.classList.add("active");
+
+            // Ambil filter yang dipilih
+            const filter = button.dataset.filter;
+
+            // Panggil fungsi untuk memuat chart
+            loadChart(filter);
+        });
+    });
+    loadChart("7");     // 7 hari
+    loadChart("365");   // 1 tahun
+    loadChart("all");   // semua data
+
 	async function loadChart() {
 
         try {
