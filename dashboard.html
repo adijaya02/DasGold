@@ -676,28 +676,6 @@ body{
 		window.location.href = "login.html";
 	}
 	
-    const filterButtons = document.querySelectorAll(".filter button");
-
-    filterButtons.forEach(button => {
-        button.addEventListener("click", () => {
-
-            // Hapus active dari semua tombol
-            filterButtons.forEach(btn => btn.classList.remove("active"));
-
-            // Tambahkan active ke tombol yang diklik
-            button.classList.add("active");
-
-            // Ambil filter yang dipilih
-            const filter = button.dataset.filter;
-
-            // Panggil fungsi untuk memuat chart
-            loadChart(filter);
-        });
-    });
-    loadChart("7");     // 7 hari
-    loadChart("365");   // 1 tahun
-    loadChart("all");   // semua data
-
     // Variabel global
     let chartData = [];
     const canvas = document.getElementById("goldChart");
@@ -789,11 +767,9 @@ body{
         }
     }
 
-    // Load pertama kali
-    loadChart("7");
-
     // Event tombol filter
-
+    const filterButtons = document.querySelectorAll(".filter button");
+    
     filterButtons.forEach(button => {
 
         button.addEventListener("click", () => {
