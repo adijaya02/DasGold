@@ -815,26 +815,6 @@ body{
 
     loadChart("7"); // Load chart default untuk 7 hari
 
-    const filterButtons = document.querySelectorAll(".filter button");
-
-    filterButtons.forEach(button => {
-
-        button.addEventListener("click", () => {
-
-            // pindahkan active
-            filterButtons.forEach(btn =>
-                btn.classList.remove("active")
-            );
-
-            button.classList.add("active");
-
-            // load chart sesuai filter
-            loadChart(button.dataset.filter);
-
-        });
-
-    });
-
     function rupiah(n){return "Rp " + Number(Math.round(n || 0)).toLocaleString("id-ID");}
     function gram(n){return Number(n || 0).toFixed(4).replace(".",",");}
 
