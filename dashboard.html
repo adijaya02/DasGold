@@ -568,7 +568,7 @@ body{
                     </div>
 
                     <div class="filter">
-                        <button data-filter="7" class="active">7 Hari</button>
+                        <button class="active" data-filter="7">7 Hari</button>
                         <button data-filter="365">1 Tahun</button>
                         <button data-filter="all">Semua Data</button>
                     </div>
@@ -698,32 +698,47 @@ body{
     loadChart("365");   // 1 tahun
     loadChart("all");   // semua data
 
-	async function loadChart() {
+    // Variabel global
+    let chartData = [];
+    const canvas = document.getElementById("goldChart");
+
+    async function loadChart(filter = "7") {
 
         try {
 
-            const res = await fetch("/api/data-aset");
-            const data = await res.json();
+            // Ambil data hanya sekali
+            if (chartData.length === 0) {
 
-            if (!data.length) {
-                return;
+                const res = await fetch("/api/data-aset");
+                chartData = await res.json();
+
+                if (!chartData.length) return;
+
+                // Urutkan sekali saja
+                chartData.sort((a, b) =>
+                    new Date(a.tanggal_aset) - new Date(b.tanggal_aset)
+                );
             }
 
-            // Urutkan berdasarkan tanggal
-            data.sort((a, b) => new Date(a.tanggal_aset) - new Date(b.tanggal_aset));
+            let filteredData = [];
 
-            // Data terbaru
-            const latestDate = new Date(data[data.length - 1].tanggal_aset);
+            if (filter === "all") {
 
-            // 30 hari terakhir
-            const startDate = new Date(latestDate);
-            startDate.setDate(startDate.getDate() - 29);
+                filteredData = [...chartData];
 
-            // Filter data
-            const filteredData = data.filter(item => {
-                const tgl = new Date(item.tanggal_aset);
-                return tgl >= startDate && tgl <= latestDate;
-            });
+            } else {
+
+                const latestDate = new Date(chartData[chartData.length - 1].tanggal_aset);
+
+                const startDate = new Date(latestDate);
+                startDate.setDate(startDate.getDate() - (Number(filter) - 1));
+
+                filteredData = chartData.filter(item => {
+                    const tgl = new Date(item.tanggal_aset);
+                    return tgl >= startDate && tgl <= latestDate;
+                });
+
+            }
 
             const labels = filteredData.map(item =>
                 new Date(item.tanggal_aset).toLocaleDateString("id-ID", {
@@ -735,12 +750,13 @@ body{
             const profitData = filteredData.map(item =>
                 Number(item.untung_rugi || 0)
             );
-            const canvas = document.getElementById("goldChart");
 
+            // Hapus chart lama
             if (window.goldChart && typeof window.goldChart.destroy === "function") {
                 window.goldChart.destroy();
             }
 
+            // Buat chart baru
             window.goldChart = new Chart(canvas, {
                 type: "line",
                 data: {
@@ -760,7 +776,8 @@ body{
                     scales: {
                         y: {
                             ticks: {
-                                callback: v => "Rp " + Number(v).toLocaleString("id-ID")
+                                callback: value =>
+                                    "Rp " + Number(value).toLocaleString("id-ID")
                             }
                         }
                     }
@@ -772,7 +789,51 @@ body{
         }
     }
 
-    loadChart();
+    // Load pertama kali
+    loadChart("7");
+
+    // Event tombol filter
+    const filterButtons = document.querySelectorAll(".filter button");
+
+    filterButtons.forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            // Pindahkan active
+            filterButtons.forEach(btn =>
+                btn.classList.remove("active")
+            );
+
+            button.classList.add("active");
+
+            // Tampilkan chart sesuai filter
+            loadChart(button.dataset.filter);
+
+        });
+
+    });
+
+    loadChart("7"); // Load chart default untuk 7 hari
+
+    const filterButtons = document.querySelectorAll(".filter button");
+
+    filterButtons.forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            // pindahkan active
+            filterButtons.forEach(btn =>
+                btn.classList.remove("active")
+            );
+
+            button.classList.add("active");
+
+            // load chart sesuai filter
+            loadChart(button.dataset.filter);
+
+        });
+
+    });
 
     function rupiah(n){return "Rp " + Number(Math.round(n || 0)).toLocaleString("id-ID");}
     function gram(n){return Number(n || 0).toFixed(4).replace(".",",");}
