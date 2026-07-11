@@ -568,7 +568,8 @@ body{
                     </div>
 
                     <div class="filter">
-                        <button class="active" data-filter="7">7 Hari</button>
+                        <button data-filter="7">7 Hari</button>
+                        <button class="active" data-filter="30">30 Hari</button>
                         <button data-filter="365">1 Tahun</button>
                         <button data-filter="all">Semua Data</button>
                     </div>
@@ -769,7 +770,7 @@ body{
 
     // Event tombol filter
     const filterButtons = document.querySelectorAll(".filter button");
-    
+
     filterButtons.forEach(button => {
 
         button.addEventListener("click", () => {
@@ -788,7 +789,7 @@ body{
 
     });
 
-    loadChart("7"); // Load chart default untuk 7 hari
+    loadChart("30"); // Load chart default untuk 7 hari
 
     function rupiah(n){return "Rp " + Number(Math.round(n || 0)).toLocaleString("id-ID");}
     function gram(n){return Number(n || 0).toFixed(4).replace(".",",");}
