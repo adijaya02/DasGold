@@ -638,226 +638,236 @@ body{
     </main>
 </div>
 
-<script>
+    <script>
 
-	async function loadHarga() {
+        async function loadHarga() {
 
-	    try {
-	
-	        const res = await fetch('/api/harga');
-	        const data = await res.json();
-	
-	        if (!data || !data.harga_beli) return;
-	
-	        document.getElementById('hargaBeli').innerText =
-	            'Rp ' + Number(data.harga_beli).toLocaleString('id-ID');
-	
-	        document.getElementById('hargaJual').innerText =
-	            'Rp ' + Number(data.harga_jual).toLocaleString('id-ID');
-	
-	        const tanggal = new Date(data.tanggal)
-	            .toLocaleDateString('id-ID',{
-	                weekday:'long',
-	                day:'numeric',
-	                month:'long',
-	                year:'numeric'
-	            });
-	
-	        document.getElementById('tanggalHarga').innerText = tanggal;
-	        document.getElementById('tanggalHarga2').innerText = tanggal;
-	
-	    } catch (err) {
-	
-	        console.error(err);
-	
-	    }
-	
-	}
-	loadHarga();
-
-	const toggleBtn = document.getElementById('toggleSidebar');
-	const sidebar = document.getElementById('sidebar');
-	const overlay = document.getElementById('overlay');
-
-		toggleBtn.addEventListener('click', () => {
-
-            if(window.innerWidth <= 768){
-                sidebar.classList.toggle('show');
-                overlay.classList.toggle('show');
-            } else {
-                sidebar.classList.toggle('hide');
+            try {
+        
+                const res = await fetch('/api/harga');
+                const data = await res.json();
+        
+                if (!data || !data.harga_beli) return;
+        
+                document.getElementById('hargaBeli').innerText =
+                    'Rp ' + Number(data.harga_beli).toLocaleString('id-ID');
+        
+                document.getElementById('hargaJual').innerText =
+                    'Rp ' + Number(data.harga_jual).toLocaleString('id-ID');
+        
+                const tanggal = new Date(data.tanggal)
+                    .toLocaleDateString('id-ID',{
+                        weekday:'long',
+                        day:'numeric',
+                        month:'long',
+                        year:'numeric'
+                    });
+        
+                document.getElementById('tanggalHarga').innerText = tanggal;
+                document.getElementById('tanggalHarga2').innerText = tanggal;
+        
+            } catch (err) {
+        
+                console.error(err);
+        
             }
+        
+        }
+        loadHarga();
+
+        const toggleBtn = document.getElementById('toggleSidebar');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+
+            toggleBtn.addEventListener('click', () => {
+
+                if(window.innerWidth <= 768){
+                    sidebar.classList.toggle('show');
+                    overlay.classList.toggle('show');
+                } else {
+                    sidebar.classList.toggle('hide');
+                }
+
+            });
+
+        overlay.addEventListener('click', () => {
+
+            sidebar.classList.remove('show');
+            overlay.classList.remove('show');
 
         });
 
-	overlay.addEventListener('click', () => {
+        function logout(){
+            // kalau pakai login sederhana, langsung redirect
+            window.location.href = "login.html";
+        }
+        
+        // Variabel global
+        let chartData = [];
+        const canvas = document.getElementById("goldChart");
 
-		sidebar.classList.remove('show');
-		overlay.classList.remove('show');
+        async function loadChart(filter = "7") {
 
-	});
+            try {
 
-	function logout(){
-		// kalau pakai login sederhana, langsung redirect
-		window.location.href = "login.html";
-	}
-	
-    // Variabel global
-    let chartData = [];
-    const canvas = document.getElementById("goldChart");
+                // Ambil data hanya sekali
+                if (chartData.length === 0) {
 
-    async function loadChart(filter = "7") {
+                    const res = await fetch("/api/data-aset");
+                    chartData = await res.json();
 
-        try {
+                    if (!chartData.length) return;
 
-            // Ambil data hanya sekali
-            if (chartData.length === 0) {
+                    // Urutkan sekali saja
+                    chartData.sort((a, b) =>
+                        new Date(a.tanggal_aset) - new Date(b.tanggal_aset)
+                    );
+                }
 
-                const res = await fetch("/api/data-aset");
-                chartData = await res.json();
+                let filteredData = [];
 
-                if (!chartData.length) return;
+                if (filter === "all") {
 
-                // Urutkan sekali saja
-                chartData.sort((a, b) =>
-                    new Date(a.tanggal_aset) - new Date(b.tanggal_aset)
+                    filteredData = [...chartData];
+
+                } else {
+
+                    const latestDate = new Date(chartData[chartData.length - 1].tanggal_aset);
+
+                    const startDate = new Date(latestDate);
+                    startDate.setDate(startDate.getDate() - (Number(filter) - 1));
+
+                    filteredData = chartData.filter(item => {
+                        const tgl = new Date(item.tanggal_aset);
+                        return tgl >= startDate && tgl <= latestDate;
+                    });
+
+                }
+
+                const labels = filteredData.map(item =>
+                    new Date(item.tanggal_aset).toLocaleDateString("id-ID", {
+                        day: "2-digit",
+                        month: "short"
+                    })
                 );
-            }
 
-            let filteredData = [];
+                const profitData = filteredData.map(item =>
+                    Number(item.untung_rugi || 0)
+                );
 
-            if (filter === "all") {
+                // Hapus chart lama
+                if (window.goldChart && typeof window.goldChart.destroy === "function") {
+                    window.goldChart.destroy();
+                }
 
-                filteredData = [...chartData];
+                const latestProfit = Number(
+                    filteredData[filteredData.length - 1].untung_rugi || 0
+                );
+                const chartColor = latestProfit >= 0
+                    ? "#1f86ff"
+                    : "#e53935";
 
-            } else {
+                // Buat chart baru
+                window.goldChart = new Chart(canvas, {
+                    type: "line",
+                    data: {
+                        labels,
+                        datasets: [{
+                            label: "Profit",
+                            data: profitData,
+                            borderColor: chartColor,
+                            backgroundColor: latestProfit >= 0
+                                ? "rgba(31,134,255,0.15)"
+                                : "rgba(229,57,53,0.15)",
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
 
-                const latestDate = new Date(chartData[chartData.length - 1].tanggal_aset);
-
-                const startDate = new Date(latestDate);
-                startDate.setDate(startDate.getDate() - (Number(filter) - 1));
-
-                filteredData = chartData.filter(item => {
-                    const tgl = new Date(item.tanggal_aset);
-                    return tgl >= startDate && tgl <= latestDate;
-                });
-
-            }
-
-            const labels = filteredData.map(item =>
-                new Date(item.tanggal_aset).toLocaleDateString("id-ID", {
-                    day: "2-digit",
-                    month: "short"
-                })
-            );
-
-            const profitData = filteredData.map(item =>
-                Number(item.untung_rugi || 0)
-            );
-
-            // Hapus chart lama
-            if (window.goldChart && typeof window.goldChart.destroy === "function") {
-                window.goldChart.destroy();
-            }
-
-            // Buat chart baru
-            window.goldChart = new Chart(canvas, {
-                type: "line",
-                data: {
-                    labels,
-                    datasets: [{
-                        label: "Profit",
-                        data: profitData,
-                        borderColor: "#16a34a",
-                        backgroundColor: "rgba(22,163,74,.15)",
-                        fill: true,
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            ticks: {
-                                callback: value =>
-                                    "Rp " + Number(value).toLocaleString("id-ID")
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                ticks: {
+                                    callback: value =>
+                                        "Rp " + Number(value).toLocaleString("id-ID")
+                                }
                             }
                         }
                     }
-                }
-            });
+                });
 
-        } catch (err) {
-            console.error(err);
+            } catch (err) {
+                console.error(err);
+            }
         }
-    }
 
-    // Event tombol filter
-    const filterButtons = document.querySelectorAll(".filter button");
+        // Event tombol filter
+        const filterButtons = document.querySelectorAll(".filter button");
 
-    filterButtons.forEach(button => {
+        filterButtons.forEach(button => {
 
-        button.addEventListener("click", () => {
+            button.addEventListener("click", () => {
 
-            // Pindahkan active
-            filterButtons.forEach(btn =>
-                btn.classList.remove("active")
-            );
+                // Pindahkan active
+                filterButtons.forEach(btn =>
+                    btn.classList.remove("active")
+                );
 
-            button.classList.add("active");
+                button.classList.add("active");
 
-            // Tampilkan chart sesuai filter
-            loadChart(button.dataset.filter);
+                // Tampilkan chart sesuai filter
+                loadChart(button.dataset.filter);
+
+            });
 
         });
 
-    });
+        loadChart("30"); // Load chart default untuk 30 hari
 
-    loadChart("30"); // Load chart default untuk 7 hari
+        function rupiah(n){return "Rp " + Number(Math.round(n || 0)).toLocaleString("id-ID");}
+        function gram(n){return Number(n || 0).toFixed(4).replace(".",",");}
 
-    function rupiah(n){return "Rp " + Number(Math.round(n || 0)).toLocaleString("id-ID");}
-    function gram(n){return Number(n || 0).toFixed(4).replace(".",",");}
+        async function loadDashboardData(){
 
-    async function loadDashboardData(){
+            try{
 
-        try{
+                const res=await fetch("/api/data-aset");
+                const data=await res.json();
 
-            const res=await fetch("/api/data-aset");
-            const data=await res.json();
+                if(!data.length){return;}
 
-            if(!data.length){return;}
+                /*ambil data terbaru*/
+                const latest=data.sort((a,b)=>new Date(b.tanggal_aset)-new Date(a.tanggal_aset))[0];
 
-            /*ambil data terbaru*/
-            const latest=data.sort((a,b)=>new Date(b.tanggal_aset)-new Date(a.tanggal_aset))[0];
+                const tanggal = new Date(latest.tanggal_aset)
+                .toLocaleDateString("id-ID", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric"
+                });
 
-            const tanggal = new Date(latest.tanggal_aset)
-            .toLocaleDateString("id-ID", {
-                day: "numeric",
-                month: "long",
-                year: "numeric"
-            });
+                /* CARD */
+                document.getElementById("berat").innerText=gram(latest.total_aset)+" gr";
+                document.getElementById("saldo").innerText=rupiah(latest.jumlah_uang_aplikasi);
+                document.getElementById("tanggalSaldo").innerText=tanggal;
 
-            /* CARD */
-            document.getElementById("berat").innerText=gram(latest.total_aset)+" gr";
-            document.getElementById("saldo").innerText=rupiah(latest.jumlah_uang_aplikasi);
-            document.getElementById("tanggalSaldo").innerText=tanggal;
+                /* RINGKASAN */
+                document.getElementById("tanggalRingkasan").innerText = tanggal;
+                document.getElementById("profit").innerText=rupiah(latest.untung_rugi);
+                document.getElementById("modal").innerText=rupiah(latest.total_modal);
+                document.getElementById("uangApp").innerText=rupiah(latest.jumlah_uang_aplikasi);
 
-            /* RINGKASAN */
-            document.getElementById("tanggalRingkasan").innerText = tanggal;
-            document.getElementById("profit").innerText=rupiah(latest.untung_rugi);
-            document.getElementById("modal").innerText=rupiah(latest.total_modal);
-            document.getElementById("uangApp").innerText=rupiah(latest.jumlah_uang_aplikasi);
-
-            /* warna profit */
-            const profit=
-            document.getElementById("profit");
-            profit.style.color=latest.untung_rugi>=0?"#16a34a":"#e53935";
+                /* warna profit */
+                const profit=
+                document.getElementById("profit");
+                profit.style.color=latest.untung_rugi>=0?"#16a34a":"#e53935";
+            }
+            catch(err){console.log(err);}
         }
-        catch(err){console.log(err);}
-    }
-loadDashboardData();
+        loadDashboardData();
 
-</script>
+    </script>
 </body>
 </html>
