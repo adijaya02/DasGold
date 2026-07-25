@@ -18,11 +18,14 @@
 
 body{
     background:#eef2f7;
+    overflow:hidden;
+    height:100vh;
 }
 
 .dashboard{
     display:flex;
     min-height:100vh;
+    overflow:hidden;
 }
 
 /* SIDEBAR */
@@ -76,7 +79,9 @@ body{
 
 .main{
     flex:1;
-    transition:all .3s ease;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
 }
 
 /* TOPBAR */
@@ -122,6 +127,7 @@ body{
 
 .content{
     padding:25px;
+    flex-shrink:0;
 }
 
 /* CARDS */
@@ -175,12 +181,17 @@ body{
 }
 	
 .table-container{
-    margin-top:25px;
+    flex:1;
+    margin:0 25px 25px;
     background:#fff;
     border-radius:14px;
     padding:20px;
     box-shadow:0 4px 15px rgba(0,0,0,.05);
-    overflow-x:auto;
+
+    display:flex;
+    flex-direction:column;
+
+    overflow:hidden;
 }
 
 .table-title{
@@ -213,6 +224,19 @@ body{
     background:#f7f9fc;
 }
 
+.table-scroll{
+    flex:1;
+    overflow-y:auto;
+    overflow-x:auto;
+}
+
+.history-table thead th{
+    position:sticky;
+    top:0;
+    z-index:10;
+    background:#04264a;
+}
+
 @media(max-width:768px){
 
     .history-table th,
@@ -238,31 +262,44 @@ body{
 
 }
 
-/* =========================
+/* ===========================
    MOBILE
-========================= */
-@media (max-width: 768px){
+=========================== */
+@media (max-width:768px){
 
-    .dashboard{
-        flex-direction: column;
+    /* Sidebar */
+    .sidebar{
+        position:fixed;
+        top:0;
+        left:0;
+        width:220px;
+        height:100vh;
+        z-index:1001;
+        transform:translateX(-100%);
+        transition:.3s;
+        box-shadow:0 0 25px rgba(0,0,0,.25);
     }
 
-    /* Sidebar muncul sebagai drawer */
-    .sidebar{
-        position: fixed;
-        left: 0;
-        top: 0;
-        height: 100%;
-        z-index: 1000;
-        width: 240px;
-        box-shadow: 0 0 20px rgba(0,0,0,.2);
+    .sidebar.show{
+        transform:translateX(0);
     }
 
     .sidebar.hide{
-        transform: translateX(-100%);
-        width: 240px;
+        transform:translateX(-100%);
+        width:220px;
     }
 
+    .logo{
+        font-size:24px;
+        margin-bottom:25px;
+    }
+
+    .menu li a{
+        padding:14px 20px;
+        font-size:15px;
+    }
+
+    /* Main */
     .main{
         width:100%;
     }
@@ -272,13 +309,18 @@ body{
     }
 
     .content{
-        padding:15px;
+        padding:12px;
     }
 
-    /* Card menjadi 1 kolom */
+    /* Cards */
     .stats{
-        grid-template-columns:1fr;
-        gap:15px;
+        display:grid;
+        grid-template-columns:repeat(2,1fr);
+        gap:12px;
+    }
+
+    .stats .card:first-child{
+        grid-column:1 / -1;
     }
 
     .card{
@@ -286,48 +328,54 @@ body{
     }
 
     .card-value{
-        font-size:28px;
+        font-size:24px;
     }
 
-    /* Header panel turun ke bawah */
-    .panel-header{
-        flex-direction:column;
-        align-items:flex-start;
-        gap:15px;
+    /* Table */
+    .history-table th,
+    .history-table td{
+        padding:10px;
+        font-size:13px;
     }
 
-    .tabs{
+    /* Month Navigation */
+    .month-nav{
         width:100%;
+        display:flex;
+        gap:10px;
     }
 
-    .filter{
-        width:100%;
-        flex-wrap:wrap;
+    .month-btn{
+        min-width:60px;
+        height:44px;
+        padding:0 16px;
+        font-size:18px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
     }
 
-    .filter button{
+    #monthLabel{
         flex:1;
-        min-width:90px;
-    }
-
-    .chart-area{
-        grid-template-columns:1fr;
-        gap:15px;
-    }
-
-    .chart-box{
-        height:250px;
-        font-size:15px;
-    }
-
-    .ranking{
-        padding:15px;
-    }
-
-    .rank-item{
+        min-width:0;
+        padding:10px 14px;
         font-size:14px;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
     }
 
+    /* Desktop/Mobile Text */
+    .desktop-text{
+        display:none;
+    }
+
+    .mobile-text{
+        display:inline;
+        font-size:20px;
+        font-weight:700;
+        line-height:1;
+    }
 }
 
 /* =========================
@@ -369,80 +417,6 @@ body{
 
 }
 
-@media (max-width:768px){
-
-    .sidebar{
-        position:fixed;
-        top:0;
-        left:0;
-        width:220px;
-        height:100vh;
-        z-index:1001;
-        transform:translateX(-100%);
-        transition:.3s;
-        box-shadow:0 0 25px rgba(0,0,0,.25);
-    }
-
-    .sidebar.show{
-        transform:translateX(0);
-    }
-
-    .logo{
-        font-size:24px;
-        margin-bottom:25px;
-    }
-
-    .menu li a{
-        padding:14px 20px;
-        font-size:15px;
-    }
-
-    .main{
-        width:100%;
-    }
-
-    .content{
-        padding:12px;
-    }
-
-   .stats{
-        display:grid;
-        grid-template-columns:repeat(2,1fr);
-        gap:12px;
-    }
-
-    .stats .card:first-child{
-        grid-column:1 / -1;
-    }
-
-    .card{
-        padding:16px;
-    }
-
-    .card-value{
-        font-size:24px;
-    }
-
-    .panel{
-        padding:15px;
-    }
-
-    .panel-header{
-        flex-direction:column;
-        align-items:flex-start;
-        gap:12px;
-    }
-
-    .chart-area{
-        grid-template-columns:1fr;
-    }
-
-    .chart-box{
-        height:220px;
-    }
-
-}
-
 #overlay{
     position:fixed;
     top:0;
@@ -472,55 +446,6 @@ body{
     gap:10px;
 }
 
-/* MOBILE */
-@media(max-width:768px){
-
-    .month-nav{
-        width:100%;
-        display:flex;
-        align-items:center;
-        gap:10px;
-    }
-
-    .month-btn{
-
-        flex:0 0 auto;
-
-        min-width:60px;
-
-        height:44px;
-
-        padding:0 16px;
-
-        border-radius:12px;
-
-        font-size:18px;
-
-        display:flex;
-
-        align-items:center;
-
-        justify-content:center;
-    }
-
-    #monthLabel{
-
-        flex:1;
-
-        min-width:0;
-
-        padding:10px 14px;
-
-        font-size:14px;
-
-        white-space:nowrap;
-
-        overflow:hidden;
-
-        text-overflow:ellipsis;
-    }
-
-}
 	.mobile-text{
     display:none;
 }
@@ -671,20 +596,22 @@ body{
 				
 				</div>
 
-			<table class="history-table">
+            <div class="table-scroll">
+                <table class="history-table">
 
-				<thead>
-					<tr>
-						<th>No</th>
-						<th>Hari / Tanggal</th>
-						<th>Harga Beli</th>
-						<th>Harga Jual</th>
-					</tr>
-				</thead>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Hari / Tanggal</th>
+                            <th>Harga Beli</th>
+                            <th>Harga Jual</th>
+                        </tr>
+                    </thead>
 
-				<tbody id="historyBody">
-				</tbody>
-			</table>
+                    <tbody id="historyBody">
+                    </tbody>
+                </table>
+            </div>
 
 		</div>
 
