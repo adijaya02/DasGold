@@ -575,7 +575,7 @@ body{
 				    <div class="card-title">Saldo</div>
 				    <div class="card-value" id="saldo">Rp 0</div>
 				    <div class="card-sub" id="tanggalSaldo">
-                        Saldo Saat Ini
+                        Loading...
                     </div>
 				</div>
 
@@ -777,6 +777,13 @@ body{
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+
                         scales: {
                             y: {
                                 ticks: {
