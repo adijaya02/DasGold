@@ -7,7 +7,7 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
 
 <style>
 
@@ -601,7 +601,7 @@ body{
                 <div class="chart-area">
 
                     <div class="chart-box">
-						<canvas id="goldChart"></canvas>
+						<div id="goldChart"></div>
 					</div>
 
                    <div class="ranking">
@@ -704,9 +704,9 @@ body{
         
         // Variabel global
         let chartData = [];
-        const canvas = document.getElementById("goldChart");
+        let goldChart = null;
 
-        async function loadChart(filter = "7") {
+        async function loadChart(filter = "30") {
 
             try {
 
@@ -718,10 +718,11 @@ body{
 
                     if (!chartData.length) return;
 
-                    // Urutkan sekali saja
                     chartData.sort((a, b) =>
-                        new Date(a.tanggal_aset) - new Date(b.tanggal_aset)
+                        new Date(a.tanggal_aset) -
+                        new Date(b.tanggal_aset)
                     );
+
                 }
 
                 let filteredData = [];
@@ -732,14 +733,22 @@ body{
 
                 } else {
 
-                    const latestDate = new Date(chartData[chartData.length - 1].tanggal_aset);
+                    const latestDate = new Date(
+                        chartData[chartData.length - 1].tanggal_aset
+                    );
 
                     const startDate = new Date(latestDate);
-                    startDate.setDate(startDate.getDate() - (Number(filter) - 1));
+
+                    startDate.setDate(
+                        startDate.getDate() - (Number(filter) - 1)
+                    );
 
                     filteredData = chartData.filter(item => {
+
                         const tgl = new Date(item.tanggal_aset);
+
                         return tgl >= startDate && tgl <= latestDate;
+
                     });
 
                 }
@@ -755,54 +764,158 @@ body{
                     Number(item.untung_rugi || 0)
                 );
 
-                // Hapus chart lama
-                if (window.goldChart && typeof window.goldChart.destroy === "function") {
-                    window.goldChart.destroy();
+                // Inisialisasi chart hanya sekali
+                if (!goldChart) {
+                    goldChart = echarts.init(
+                        document.getElementById("goldChart")
+                    );
                 }
 
-                const latestProfit = Number(
-                    filteredData[filteredData.length - 1].untung_rugi || 0
-                );
-                const chartColor = latestProfit >= 0
-                    ? "#1f86ff"
-                    : "#e53935";
+                const option = {
 
-                // Buat chart baru
-                window.goldChart = new Chart(canvas, {
-                    type: "line",
-                    data: {
-                        labels,
-                        datasets: [{
-                            label: "Profit",
-                            data: profitData,
-                            borderColor: chartColor,
-                            backgroundColor: latestProfit >= 0
-                                ? "rgba(31,134,255,0.15)"
-                                : "rgba(229,57,53,0.15)",
-                            fill: true,
-                            tension: 0.4
-                        }]
+                    animationDuration: 700,
+
+                    tooltip: {
+
+                        trigger: "axis",
+
+                        formatter(params) {
+
+                            const p = params[0];
+
+                            return `
+                                <b>${p.axisValue}</b><br>
+                                Profit :
+                                Rp ${Number(p.value).toLocaleString("id-ID")}
+                            `;
+
+                        }
+
                     },
 
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                ticks: {
-                                    callback: value =>
-                                        "Rp " + Number(value).toLocaleString("id-ID")
-                                }
+                    grid: {
+
+                        left: 70,
+                        right: 30,
+                        top: 30,
+                        bottom: 40
+
+                    },
+
+                    xAxis: {
+
+                        type: "category",
+
+                        boundaryGap: false,
+
+                        data: labels,
+
+                        axisLine: {
+
+                            lineStyle: {
+                                color: "#999"
                             }
+
                         }
-                    }
+
+                    },
+
+                    yAxis: {
+
+                        type: "value",
+
+                        axisLabel: {
+
+                            formatter(value) {
+
+                                return "Rp " +
+                                    Number(value).toLocaleString("id-ID");
+
+                            }
+
+                        },
+
+                        splitLine: {
+
+                            lineStyle: {
+                                color: "#ececec"
+                            }
+
+                        }
+
+                    },
+
+                    visualMap: {
+
+                        show: false,
+
+                        dimension: 1,
+
+                        pieces: [
+
+                            {
+                                gt: 0,
+                                color: "#1f86ff"
+                            },
+
+                            {
+                                lte: 0,
+                                color: "#e53935"
+                            }
+
+                        ]
+
+                    },
+
+                    series: [
+
+                        {
+
+                            name: "Profit",
+
+                            type: "line",
+
+                            smooth: true,
+
+                            symbol: "circle",
+
+                            symbolSize: 6,
+
+                            data: profitData,
+
+                            lineStyle: {
+
+                                width: 3
+
+                            },
+
+                            areaStyle: {
+
+                                opacity: 0.18
+
+                            }
+
+                        }
+
+                    ]
+
+                };
+
+                goldChart.setOption(option, true);
+
+                window.addEventListener("resize", () => {
+
+                    goldChart.resize();
+
                 });
 
             } catch (err) {
-                console.error(err);
-            }
-        }
 
+                console.error(err);
+
+            }
+
+        }
         // Event tombol filter
         const filterButtons = document.querySelectorAll(".filter button");
 
