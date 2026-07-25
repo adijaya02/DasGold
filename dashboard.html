@@ -253,8 +253,21 @@ body{
     padding:20px;
 }
 
-.ranking h3{
+.ranking-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
     margin-bottom:20px;
+}
+
+.ranking-header h3{
+    margin:0;
+}
+
+#tanggalRingkasan{
+    font-size:13px;
+    color:#666;
+    font-weight:500;
 }
 
 .rank-item{
@@ -392,6 +405,17 @@ body{
         padding:15px;
     }
 
+     .ranking-header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:4px;
+    }
+
+    #tanggalRingkasan{
+        text-align:left;
+        font-size:12px;
+    }
+
     .rank-item{
         font-size:14px;
     }
@@ -430,10 +454,6 @@ body{
 
     .panel{
         padding:15px;
-    }
-
-    .ranking h3{
-        font-size:16px;
     }
 
 }
@@ -554,7 +574,9 @@ body{
 				<div class="card">
 				    <div class="card-title">Saldo</div>
 				    <div class="card-value" id="saldo">Rp 0</div>
-				    <div class="card-sub">Saldo Saat Ini</div>
+				    <div class="card-sub" id="tanggalSaldo">
+                        Saldo Saat Ini
+                    </div>
 				</div>
 
             </div>
@@ -584,8 +606,11 @@ body{
 
                    <div class="ranking">
 					   
-						<h3>Ringkasan</h3>
-	
+						<div class="ranking-header">
+                            <h3>Ringkasan</h3>
+                            <span id="tanggalRingkasan">-</span>
+                        </div>
+                            
 						<div class="rank-item">
 							<span>Profit</span>
 							<strong id="profit">
@@ -806,11 +831,20 @@ body{
             /*ambil data terbaru*/
             const latest=data.sort((a,b)=>new Date(b.tanggal_aset)-new Date(a.tanggal_aset))[0];
 
+            const tanggal = new Date(latest.tanggal_aset)
+            .toLocaleDateString("id-ID", {
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            });
+
             /* CARD */
             document.getElementById("berat").innerText=gram(latest.total_aset)+" gr";
             document.getElementById("saldo").innerText=rupiah(latest.jumlah_uang_aplikasi);
+            document.getElementById("tanggalSaldo").innerText=tanggal;
 
             /* RINGKASAN */
+            document.getElementById("tanggalRingkasan").innerText = tanggal;
             document.getElementById("profit").innerText=rupiah(latest.untung_rugi);
             document.getElementById("modal").innerText=rupiah(latest.total_modal);
             document.getElementById("uangApp").innerText=rupiah(latest.jumlah_uang_aplikasi);
