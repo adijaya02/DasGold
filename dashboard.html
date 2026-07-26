@@ -672,50 +672,54 @@ body{
         }
         loadHarga();
 
-        const toggleBtn = document.getElementById('toggleSidebar');
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
+        const toggleBtn = document.getElementById("toggleSidebar");
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("overlay");
 
-            toggleBtn.addEventListener("click", () => {
+        // Default: desktop sidebar disembunyikan
+        if (window.innerWidth > 768) {
+            sidebar.classList.add("hide");
+        }
 
-                if (window.innerWidth <= 768) {
+        toggleBtn.addEventListener("click", () => {
 
-                    // Hapus hide saat mode mobile
-                    sidebar.classList.remove("hide");
+            if (window.innerWidth <= 768) {
 
-                    sidebar.classList.toggle("show");
-                    overlay.classList.toggle("show");
+                sidebar.classList.remove("hide");
+                sidebar.classList.toggle("show");
+                overlay.classList.toggle("show");
 
-                } else {
+            } else {
 
-                    sidebar.classList.toggle("hide");
+                sidebar.classList.toggle("hide");
 
-                }
+            }
 
-            });
-            window.addEventListener("resize", () => {
+        });
 
-                if (window.innerWidth > 768) {
+        window.addEventListener("resize", () => {
 
-                    sidebar.classList.remove("show");
-                    overlay.classList.remove("show");
+            if (window.innerWidth > 768) {
 
-                    // Kembali ke kondisi default desktop (tersembunyi)
-                    sidebar.classList.add("hide");
+                sidebar.classList.remove("show");
+                overlay.classList.remove("show");
 
-                } else {
+                // Desktop selalu default tersembunyi
+                sidebar.classList.add("hide");
 
-                    // Di mobile jangan gunakan class hide
-                    sidebar.classList.remove("hide");
+            } else {
 
-                }
+                // Mobile tidak menggunakan class hide
+                sidebar.classList.remove("hide");
 
-            });
+            }
 
-        overlay.addEventListener('click', () => {
+        });
 
-            sidebar.classList.remove('show');
-            overlay.classList.remove('show');
+        overlay.addEventListener("click", () => {
+
+            sidebar.classList.remove("show");
+            overlay.classList.remove("show");
 
         });
 
