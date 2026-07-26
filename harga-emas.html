@@ -161,6 +161,25 @@ body{
 
 /* HISTORY TABLE */
 
+.table-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.month-label{
+    background:#f3f6fa;
+    padding:10px 18px;
+    border-radius:10px;
+    font-weight:600;
+    color:#04264a;
+    min-width:180px;
+    text-align:center;
+}
+
 .month-btn{
     background:#1f86ff;
     color:#fff;
@@ -325,10 +344,16 @@ body{
     }
 
     /* Table */
+
     .history-table th,
     .history-table td{
         padding:10px;
         font-size:13px;
+    }
+
+     .table-header{
+        flex-direction:column;
+        align-items:flex-start;
     }
 
     /* Month Navigation */
@@ -336,6 +361,7 @@ body{
         width:100%;
         display:flex;
         gap:10px;
+        justify-content:space-between;
     }
 
     .month-btn{
@@ -348,7 +374,7 @@ body{
         justify-content:center;
     }
 
-    #monthLabel{
+    #month-Label{
         flex:1;
         min-width:0;
         padding:10px 14px;
@@ -537,14 +563,7 @@ body{
 
 		<div class="table-container">
 
-			<div style="
-				display:flex;
-				justify-content:space-between;
-				align-items:center;
-				margin-bottom:15px;
-				flex-wrap:wrap;
-				gap:10px;
-				">
+			<div class="table-header">
 				
 				    <div class="table-title">
 				        History Harga Emas
@@ -562,18 +581,7 @@ body{
 						    </span>
 						</button>
 					
-					    <div
-					        id="monthLabel"
-					        style="
-					        background:#f3f6fa;
-					        padding:10px 18px;
-					        border-radius:10px;
-					        font-weight:600;
-					        color:#04264a;
-					        min-width:180px;
-					        text-align:center;
-					        ">
-					    </div>
+					    <div id="monthLabel" class="month-label"></div>
 					
 					    <button id="nextMonth" class="month-btn">
 						    <span class="desktop-text">
@@ -587,7 +595,7 @@ body{
 					
 					</div>
 				
-				</div>
+			</div>
 
             <div class="table-scroll">
                 <table class="history-table">
