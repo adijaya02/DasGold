@@ -173,6 +173,13 @@ body{
 .month-btn:hover{
     background:#0b4f96;
 }
+
+/* NAVIGASI BULAN */
+.month-nav{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
 	
 .table-container{
     margin-top:25px;
@@ -213,6 +220,12 @@ body{
     background:#f7f9fc;
 }
 
+.mobile-text{
+    display:none;
+    font-size:20px;
+    font-weight:700;
+    line-height:1;
+}
 
 /* =========================
    TABLET
@@ -221,10 +234,6 @@ body{
 
     .stats{
         grid-template-columns: repeat(2,1fr);
-    }
-
-    .chart-area{
-        grid-template-columns: 1fr;
     }
 
 }
@@ -294,8 +303,24 @@ body{
         padding:16px;
     }
 
+    .card-title{
+        font-size:13px;
+    }
+
     .card-value{
         font-size:24px;
+    }
+
+    .card-sub{
+        font-size:12px;
+    }
+
+    .left-top{
+        font-size:24px;
+    }
+
+    .topbar{
+        height:65px;
     }
 
     /* Table */
@@ -305,17 +330,20 @@ body{
         font-size:13px;
     }
 
-    /* Month Navigation */
+    /* Navigasi Bulan */
     .month-nav{
         width:100%;
         display:flex;
+        align-items:center;
         gap:10px;
     }
 
     .month-btn{
+        flex:0 0 auto;
         min-width:60px;
         height:44px;
         padding:0 16px;
+        border-radius:12px;
         font-size:18px;
         display:flex;
         align-items:center;
@@ -332,16 +360,13 @@ body{
         text-overflow:ellipsis;
     }
 
-    /* Desktop/Mobile Text */
+    /* Text tombol */
     .desktop-text{
         display:none;
     }
 
     .mobile-text{
         display:inline;
-        font-size:20px;
-        font-weight:700;
-        line-height:1;
     }
 }
 
@@ -374,14 +399,6 @@ body{
         font-size:12px;
     }
 
-    .panel{
-        padding:15px;
-    }
-
-    .ranking h3{
-        font-size:16px;
-    }
-
 }
 
 #overlay{
@@ -400,87 +417,6 @@ body{
 #overlay.show{
     opacity:1;
     visibility:visible;
-}
-
-.main{
-    transition:.3s;
-}
-
-	/* NAVIGASI BULAN */
-.month-nav{
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
-
-/* MOBILE */
-@media(max-width:768px){
-
-    .month-nav{
-        width:100%;
-        display:flex;
-        align-items:center;
-        gap:10px;
-    }
-
-    .month-btn{
-
-        flex:0 0 auto;
-
-        min-width:60px;
-
-        height:44px;
-
-        padding:0 16px;
-
-        border-radius:12px;
-
-        font-size:18px;
-
-        display:flex;
-
-        align-items:center;
-
-        justify-content:center;
-    }
-
-    #monthLabel{
-
-        flex:1;
-
-        min-width:0;
-
-        padding:10px 14px;
-
-        font-size:14px;
-
-        white-space:nowrap;
-
-        overflow:hidden;
-
-        text-overflow:ellipsis;
-    }
-
-}
-	.mobile-text{
-    display:none;
-}
-
-@media(max-width:768px){
-
-    .desktop-text{
-        display:none;
-    }
-
-    .mobile-text{
-        display:inline;
-    }
-
-}
-	.mobile-text{
-    font-size:20px;
-    font-weight:700;
-    line-height:1;
 }
 
 </style>
@@ -793,27 +729,78 @@ body{
 	
 	loadHistory();
 	
-	const toggleBtn = document.getElementById('toggleSidebar');
-	const sidebar = document.getElementById('sidebar');
-	const overlay = document.getElementById('overlay');
+    const toggleBtn = document.getElementById("toggleSidebar");
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
 
-	toggleBtn.addEventListener('click', () => {
+    // Default: desktop sidebar disembunyikan
+    if (window.innerWidth > 768) {
+        sidebar.classList.add("hide");
+    }
 
-		if(window.innerWidth <= 768){
-			sidebar.classList.toggle('show');
-			overlay.classList.toggle('show');
-		} else {
-			sidebar.classList.toggle('hide');
-		}
+    toggleBtn.addEventListener("click", (e) => {
 
-	});
+        e.stopPropagation();
 
-	overlay.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
 
-		sidebar.classList.remove('show');
-		overlay.classList.remove('show');
+            sidebar.classList.remove("hide");
+            sidebar.classList.toggle("show");
+            overlay.classList.toggle("show");
 
-	});
+        } else {
+
+            sidebar.classList.toggle("hide");
+
+        }
+
+    });
+
+    window.addEventListener("resize", () => {
+
+        if (window.innerWidth > 768) {
+
+            sidebar.classList.remove("show");
+            overlay.classList.remove("show");
+
+            // Desktop selalu default tersembunyi
+            sidebar.classList.add("hide");
+
+        } else {
+
+            // Mobile tidak menggunakan class hide
+            sidebar.classList.remove("hide");
+
+        }
+
+    });
+
+    overlay.addEventListener("click", () => {
+
+        sidebar.classList.remove("show");
+        overlay.classList.remove("show");
+
+    });
+
+    const main = document.querySelector(".main");
+
+        main.addEventListener("click", (e) => {
+
+            // Jangan tutup jika klik di dalam sidebar
+            if (sidebar.contains(e.target)) return;
+
+            if (window.innerWidth > 768) {
+
+                sidebar.classList.add("hide");
+
+            } else {
+
+                sidebar.classList.remove("show");
+                overlay.classList.remove("show");
+
+            }
+
+        });
 
 	function updatePerthTime(){
 
