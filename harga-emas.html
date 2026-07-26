@@ -16,6 +16,11 @@
     font-family:'Poppins',sans-serif;
 }
 
+html,
+body{
+    height:100%;
+}
+
 body{
     background:#eef2f7;
     height:100vh;
@@ -24,6 +29,7 @@ body{
 .dashboard{
     display:flex;
     min-height:100vh;
+}
 
 /* SIDEBAR */
 
@@ -75,9 +81,9 @@ body{
 /* MAIN */
 
 .main{
-    flex:1;
     display:flex;
     flex-direction:column;
+    height:100vh;
 }
 
 /* TOPBAR */
@@ -196,8 +202,7 @@ body{
 }
 	
 .table-container{
-    flex:1;
-    margin:0 25px 25px;
+    margin-top:25px;
     background:#fff;
     border-radius:14px;
     padding:20px;
@@ -205,6 +210,8 @@ body{
 
     display:flex;
     flex-direction:column;
+
+    height:calc(100vh - 300px);
 }
 
 .table-title{
@@ -240,12 +247,13 @@ body{
 .table-scroll{
     flex:1;
     overflow-y:auto;
+    overflow-x:auto;
 }
 
 .history-table thead th{
     position:sticky;
     top:0;
-    z-index:10;
+    z-index:5;
     background:#04264a;
 }
 
@@ -354,6 +362,7 @@ body{
      .table-header{
         flex-direction:column;
         align-items:flex-start;
+        flex-shrink:0;
     }
 
     /* Month Navigation */
