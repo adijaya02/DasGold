@@ -37,9 +37,9 @@
 	}
 
 	.sidebar.hide{
-		width:0;
-		padding:0;
-	}
+        width:0;
+        padding:0;
+    }
 
 	.logo{
 		font-size:28px;
@@ -521,32 +521,22 @@
 	    </div>
 	
 	    <ul class="menu">
-	
-	        <li>
-	            <a href="dashboard.html">
-	                Dashboard
-	            </a>
-	        </li>
-	
-	        <li>
-	            <a href="harga-emas.html">
-	                Harga Emas
-	            </a>
-	        </li>
-	
-	        <li class="active">
-	            <a href="data-emas.html">
-	                Data Emas
-	            </a>
-	        </li>
-	
-	        <li>
-	            <a href="investasi.html">
-	                Investasi
-	            </a>
-	        </li>
-	
-	    </ul>
+            <li>
+                <a href="dashboard.html">Dashboard</a>
+            </li>
+
+            <li class="active">
+                <a href="harga-emas.html">Harga Emas</a>
+            </li>
+
+            <li>
+                <a href="data-emas.html">Data Emas</a>
+            </li>
+
+            <li>
+                <a href="investasi.html">Investasi</a>
+            </li>            
+        </ul>
 	
 	</aside>
 	
@@ -674,27 +664,23 @@
 
     });
 
-    // Tutup sidebar jika klik di luar sidebar dan tombol hamburger
-    document.addEventListener("click", (e) => {
+    const main = document.querySelector(".main");
 
-        // Abaikan klik pada tombol hamburger
-        if (toggleBtn.contains(e.target)) return;
+        main.addEventListener("click", (e) => {
 
-        // Abaikan klik di dalam sidebar
-        if (sidebar.contains(e.target)) return;
+            // Jangan tutup jika klik di dalam sidebar
+            if (sidebar.contains(e.target)) return;
 
-        if (window.innerWidth > 768) {
+            if (window.innerWidth > 768) {
 
-            // Desktop
-            sidebar.classList.add("hide");
+                sidebar.classList.add("hide");
 
-        } else {
+            } else {
 
-            // Mobile
-            sidebar.classList.remove("show");
-            overlay.classList.remove("show");
+                sidebar.classList.remove("show");
+                overlay.classList.remove("show");
 
-        }
+            }
 
     });
 	
