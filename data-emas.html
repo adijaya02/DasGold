@@ -77,6 +77,7 @@
 	.main{
 		flex:1;
 		transition:all .3s ease;
+        transition:.3s;
 	}
 
 	/* TOPBAR */
@@ -403,9 +404,6 @@
     visibility:visible;
 	}
 
-	.main{
-    transition:.3s;
-	}
 	.profit{
 	color:#1b8a3f;
 	font-weight:600;
@@ -641,27 +639,78 @@
 
 	});
 	
-	const toggleBtn = document.getElementById('toggleSidebar');
-	const sidebar = document.getElementById('sidebar');
-	const overlay = document.getElementById('overlay');
+    const toggleBtn = document.getElementById("toggleSidebar");
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
 
-	toggleBtn.addEventListener('click', () => {
+    // Default: desktop sidebar disembunyikan
+    if (window.innerWidth > 768) {
+        sidebar.classList.add("hide");
+    }
 
-		if(window.innerWidth <= 768){
-			sidebar.classList.toggle('show');
-			overlay.classList.toggle('show');
-		} else {
-			sidebar.classList.toggle('hide');
-		}
+    toggleBtn.addEventListener("click", (e) => {
 
-	});
+        e.stopPropagation();
 
-	overlay.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
 
-		sidebar.classList.remove('show');
-		overlay.classList.remove('show');
+            sidebar.classList.remove("hide");
+            sidebar.classList.toggle("show");
+            overlay.classList.toggle("show");
 
-	});
+        } else {
+
+            sidebar.classList.toggle("hide");
+
+        }
+
+    });
+
+    window.addEventListener("resize", () => {
+
+        if (window.innerWidth > 768) {
+
+            sidebar.classList.remove("show");
+            overlay.classList.remove("show");
+
+            // Desktop selalu default tersembunyi
+            sidebar.classList.add("hide");
+
+        } else {
+
+            // Mobile tidak menggunakan class hide
+            sidebar.classList.remove("hide");
+
+        }
+
+    });
+
+    overlay.addEventListener("click", () => {
+
+        sidebar.classList.remove("show");
+        overlay.classList.remove("show");
+
+    });
+
+    const main = document.querySelector(".main");
+
+        main.addEventListener("click", (e) => {
+
+            // Jangan tutup jika klik di dalam sidebar
+            if (sidebar.contains(e.target)) return;
+
+            if (window.innerWidth > 768) {
+
+                sidebar.classList.add("hide");
+
+            } else {
+
+                sidebar.classList.remove("show");
+                overlay.classList.remove("show");
+
+            }
+
+    });
 	
 	function logout(){
 		// kalau pakai login sederhana, langsung redirect
