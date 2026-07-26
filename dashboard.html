@@ -723,6 +723,25 @@ body{
 
         });
 
+        const main = document.querySelector(".main");
+
+            main.addEventListener("click", () => {
+
+                if (window.innerWidth > 768) {
+
+                    // Desktop
+                    sidebar.classList.add("hide");
+
+                } else {
+
+                    // Mobile
+                    sidebar.classList.remove("show");
+                    overlay.classList.remove("show");
+
+                }
+
+            });
+
         function logout(){
             // kalau pakai login sederhana, langsung redirect
             window.location.href = "login.html";
