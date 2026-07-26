@@ -681,7 +681,9 @@ body{
             sidebar.classList.add("hide");
         }
 
-        toggleBtn.addEventListener("click", () => {
+        toggleBtn.addEventListener("click", (e) => {
+
+            e.stopPropagation();
 
             if (window.innerWidth <= 768) {
 
@@ -725,16 +727,17 @@ body{
 
         const main = document.querySelector(".main");
 
-            main.addEventListener("click", () => {
+            main.addEventListener("click", (e) => {
+
+                // Jangan tutup jika klik di dalam sidebar
+                if (sidebar.contains(e.target)) return;
 
                 if (window.innerWidth > 768) {
 
-                    // Desktop
                     sidebar.classList.add("hide");
 
                 } else {
 
-                    // Mobile
                     sidebar.classList.remove("show");
                     overlay.classList.remove("show");
 
