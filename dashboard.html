@@ -41,7 +41,6 @@ body{
 .sidebar.hide{
     width:0;
     padding:0;
-    overflow:hidden;
 }
 
 .logo{
@@ -79,7 +78,7 @@ body{
 
 .main{
     flex:1;
-    width:100%;
+    transition:all .3s ease;
     transition:.3s;
 }
 
@@ -481,10 +480,6 @@ body{
     opacity:1;
     visibility:visible;
 }
-
-.main{
-    transition:.3s;
-}
 	
 </style>
 </head>
@@ -495,7 +490,7 @@ body{
 
 <div class="dashboard">
 
-    <aside class="sidebar hide" id="sidebar">
+    <aside class="sidebar" id="sidebar">
 
         <div class="logo">
             GoldDash
@@ -685,6 +680,9 @@ body{
 
                 if (window.innerWidth <= 768) {
 
+                    // Hapus hide saat mode mobile
+                    sidebar.classList.remove("hide");
+
                     sidebar.classList.toggle("show");
                     overlay.classList.toggle("show");
 
@@ -698,8 +696,18 @@ body{
             window.addEventListener("resize", () => {
 
                 if (window.innerWidth > 768) {
+
                     sidebar.classList.remove("show");
                     overlay.classList.remove("show");
+
+                    // Kembali ke kondisi default desktop (tersembunyi)
+                    sidebar.classList.add("hide");
+
+                } else {
+
+                    // Di mobile jangan gunakan class hide
+                    sidebar.classList.remove("hide");
+
                 }
 
             });
