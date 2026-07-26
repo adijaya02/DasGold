@@ -41,6 +41,7 @@ body{
 .sidebar.hide{
     width:0;
     padding:0;
+    overflow:hidden;
 }
 
 .logo{
@@ -78,7 +79,8 @@ body{
 
 .main{
     flex:1;
-    transition:all .3s ease;
+    width:100%;
+    transition:.3s;
 }
 
 /* TOPBAR */
@@ -493,7 +495,7 @@ body{
 
 <div class="dashboard">
 
-    <aside class="sidebar" id="sidebar">
+    <aside class="sidebar hide" id="sidebar">
 
         <div class="logo">
             GoldDash
@@ -679,13 +681,25 @@ body{
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
 
-            toggleBtn.addEventListener('click', () => {
+            toggleBtn.addEventListener("click", () => {
 
-                if(window.innerWidth <= 768){
-                    sidebar.classList.toggle('show');
-                    overlay.classList.toggle('show');
+                if (window.innerWidth <= 768) {
+
+                    sidebar.classList.toggle("show");
+                    overlay.classList.toggle("show");
+
                 } else {
-                    sidebar.classList.toggle('hide');
+
+                    sidebar.classList.toggle("hide");
+
+                }
+
+            });
+            window.addEventListener("resize", () => {
+
+                if (window.innerWidth > 768) {
+                    sidebar.classList.remove("show");
+                    overlay.classList.remove("show");
                 }
 
             });
