@@ -17,14 +17,14 @@ export default async function handler(req, res) {
         console.log("DATA:", data);
 
         const insert = await fetch(
-            "https://zasjkgrmcvigblpyqsff.supabase.co/rest/v1/harga_emas",
+            "https://zasjkgrmcvigblpyqsff.supabase.co/rest/v1/harga_emas?on_conflict=tanggal",
             {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     apikey: process.env.SUPABASE_KEY,
                     Authorization: `Bearer ${process.env.SUPABASE_KEY}`,
-                    Prefer: "return=representation"
+                    Prefer: "resolution=merge-duplicates,return=representation"
                 },
                 body: JSON.stringify({
                     tanggal: data.data.tglBerlaku,
@@ -37,6 +37,15 @@ export default async function handler(req, res) {
         console.log("SUPABASE STATUS:", insert.status);
 
         const result = await insert.text();
+
+        if (insert.ok) {
+            const generate = await fetch(
+                `${process.env.APP_URL}/api/generate-data-aset`
+            );
+
+            console.log("GENERATE STATUS:", generate.status);
+            console.log(await generate.text());
+        }
 
         console.log("SUPABASE RESPONSE:", result);
         console.log("DONE");
