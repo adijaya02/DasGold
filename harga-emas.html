@@ -29,6 +29,7 @@ body{
 .dashboard{
     display:flex;
     min-height:100vh;
+    overflow-x:hidden;
 }
 
 /* SIDEBAR */
@@ -83,6 +84,7 @@ body{
 .main{
     flex:1;
     transition:all .3s ease;
+    overflow-x:hidden;
 }
 
 /* TOPBAR */
@@ -128,6 +130,7 @@ body{
 
 .content{
     padding:25px;
+    overflow-x:hidden;
 }
 
 /* CARDS */
@@ -194,10 +197,7 @@ body{
     padding:20px;
     box-shadow:0 4px 15px rgba(0,0,0,.05);
 
-    width:100%;
-    max-width:100%;
-
-    overflow:hidden;      /* Tidak bisa scroll */
+    overflow:hidden;
 }
 
 .table-title{
@@ -210,14 +210,19 @@ body{
 .history-table{
     width:100%;
     border-collapse:collapse;
-    table-layout:fixed;
 }
 
-.history-table th,
+.history-table th{
+    background:#04264a;
+    color:#fff;
+    padding:14px;
+    text-align:left;
+    font-size:14px;
+}
+
 .history-table td{
-    overflow:hidden;
-    text-overflow:ellipsis;
-    word-break:break-word;
+    padding:14px;
+    border-bottom:1px solid #e5e5e5;
 }
 
 .history-table tr:hover{
