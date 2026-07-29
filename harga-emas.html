@@ -188,8 +188,12 @@ body{
 }
 	
 .table-container{
-    width:100%;
-    overflow-x:hidden;
+    margin-top:25px;
+    background:#fff;
+    border-radius:14px;
+    padding:20px;
+    box-shadow:0 4px 15px rgba(0,0,0,.05);
+    overflow-x:auto;
 }
 
 .table-title{
@@ -201,13 +205,21 @@ body{
 
 .history-table{
     width:100%;
-    table-layout:fixed;
+    border-collapse:collapse;
 }
 
-.history-table th,
+.history-table th{
+    background:#04264a;
+    color:#fff;
+    padding:14px;
+    text-align:left;
+    font-size:14px;
+}
+
 .history-table td{
-    word-wrap:break-word;
-    overflow-wrap:break-word;
+    padding:14px;
+    border-bottom:1px solid #e5e5e5;
+    font-size:14px;
 }
 
 .history-table tr:hover{
@@ -335,8 +347,8 @@ body{
     /* Table */
     .history-table th,
     .history-table td{
-        padding:8px;
-        font-size:12px;
+        padding:10px;
+        font-size:13px;
     }
 
     /* Navigasi Bulan */
