@@ -220,6 +220,21 @@ body{
     background:#f7f9fc;
 }
 
+.sortable{
+    cursor:pointer;
+    user-select:none;
+    white-space:nowrap;
+}
+
+.sortable:hover{
+    background:#0b4f96;
+}
+
+.sortable span{
+    margin-left:6px;
+    font-size:12px;
+}
+
 .mobile-text{
     display:none;
     font-size:20px;
@@ -551,13 +566,25 @@ body{
 			<table class="history-table">
 
 				<thead>
-					<tr>
-						<th>No</th>
-						<th>Hari / Tanggal</th>
-						<th>Harga Beli</th>
-						<th>Harga Jual</th>
-					</tr>
-				</thead>
+                    <tr>
+                        <th>No</th>
+
+                        <th class="sortable" onclick="sortTable('tanggal')">
+                            Hari / Tanggal
+                            <span id="icon-tanggal">↕</span>
+                        </th>
+
+                        <th class="sortable" onclick="sortTable('harga_beli')">
+                            Harga Beli
+                            <span id="icon-harga_beli">↕</span>
+                        </th>
+
+                        <th class="sortable" onclick="sortTable('harga_jual')">
+                            Harga Jual
+                            <span id="icon-harga_jual">↕</span>
+                        </th>
+                    </tr>
+                </thead>
 
 				<tbody id="historyBody">
 				</tbody>
@@ -593,22 +620,58 @@ body{
 
 	let allHistory = [];
 	let currentOffset = 0;
+
+    let sortColumn = "tanggal";
+    let sortDirection = "desc";
 	
-	async function loadHistory() {
-	
+	async function loadHistory() {	
 	    try {
 	
-	        const res = await fetch('/api/history');
-	
+	        const res = await fetch('/api/history');	
 	        allHistory = await res.json();
-	
+            updateSortIcons();	
 	        renderHistory();
-	
+            
 	    } catch (err) {
 	        console.error(err);
 	    }
-	
 	}
+
+    function sortTable(column){
+
+        if(sortColumn === column){
+
+            sortDirection =
+                sortDirection === "asc"
+                ? "desc"
+                : "asc";
+
+        }else{
+
+            sortColumn = column;
+            sortDirection = "asc";
+
+        }
+
+        updateSortIcons();
+        renderHistory();
+
+    }
+
+    function updateSortIcons(){
+
+        document.getElementById("icon-tanggal").textContent = "↕";
+        document.getElementById("icon-harga_beli").textContent = "↕";
+        document.getElementById("icon-harga_jual").textContent = "↕";
+
+        document.getElementById(
+            "icon-" + sortColumn
+        ).textContent =
+            sortDirection === "asc"
+            ? "▲"
+            : "▼";
+
+    }
 	
 	function renderHistory() {
 	
@@ -657,12 +720,32 @@ body{
 	
 	        })
 	
-	        .sort(
-	            (a,b)=>
-	            new Date(b.tanggal)
-	            -
-	            new Date(a.tanggal)
-	        );
+	        .sort((a,b)=>{
+
+                let valueA;
+                let valueB;
+
+                if(sortColumn === "tanggal"){
+
+                    valueA = new Date(a.tanggal);
+                    valueB = new Date(b.tanggal);
+
+                }else{
+
+                    valueA = Number(a[sortColumn]);
+                    valueB = Number(b[sortColumn]);
+
+                }
+
+                if(valueA < valueB)
+                    return sortDirection === "asc" ? -1 : 1;
+
+                if(valueA > valueB)
+                    return sortDirection === "asc" ? 1 : -1;
+
+                return 0;
+
+            });
 	
 	    filtered.forEach((item,index)=>{
 	
