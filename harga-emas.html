@@ -193,7 +193,11 @@ body{
     border-radius:14px;
     padding:20px;
     box-shadow:0 4px 15px rgba(0,0,0,.05);
-    overflow-x:auto;
+
+    width:100%;
+    max-width:100%;
+
+    overflow:hidden;      /* Tidak bisa scroll */
 }
 
 .table-title{
@@ -206,20 +210,14 @@ body{
 .history-table{
     width:100%;
     border-collapse:collapse;
+    table-layout:fixed;
 }
 
-.history-table th{
-    background:#04264a;
-    color:#fff;
-    padding:14px;
-    text-align:left;
-    font-size:14px;
-}
-
+.history-table th,
 .history-table td{
-    padding:14px;
-    border-bottom:1px solid #e5e5e5;
-    font-size:14px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    word-break:break-word;
 }
 
 .history-table tr:hover{
@@ -347,8 +345,8 @@ body{
     /* Table */
     .history-table th,
     .history-table td{
-        padding:10px;
-        font-size:13px;
+        padding:8px;
+        font-size:12px;
     }
 
     /* Navigasi Bulan */
