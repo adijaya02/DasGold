@@ -1,7 +1,12 @@
+import { generateDataAset } from "./lib/generateDataAset.js";
+
 export default async function handler(req, res) {
+
     console.log("CRON START:", new Date().toISOString());
 
     try {
+
+        // Ambil data harga dari Pegadaian
         const response = await fetch(
             "https://pegadaian.co.id/gold/prices/savings"
         );
@@ -16,6 +21,7 @@ export default async function handler(req, res) {
 
         console.log("DATA:", data);
 
+        // Simpan ke Supabase (Upsert)
         const insert = await fetch(
             "https://zasjkgrmcvigblpyqsff.supabase.co/rest/v1/harga_emas?on_conflict=tanggal",
             {
@@ -34,32 +40,50 @@ export default async function handler(req, res) {
             }
         );
 
+        const result = await insert.json();
+
         console.log("SUPABASE STATUS:", insert.status);
 
-        const result = await insert.text();
-
-        if (insert.ok) {
-            const generate = await fetch(
-                `${process.env.APP_URL}/api/generate-data-aset`
-            );
-
-            console.log("GENERATE STATUS:", generate.status);
-            console.log(await generate.text());
+        if (!insert.ok) {
+            throw new Error(JSON.stringify(result));
         }
 
-        console.log("SUPABASE RESPONSE:", result);
-        console.log("DONE");
+        console.log("HARGA BERHASIL DISIMPAN");
+
+        // ==============================
+        // Generate data aset otomatis
+        // ==============================
+
+        console.log("GENERATE DATA ASET...");
+
+        const aset = await generateDataAset();
+
+        console.log("GENERATE SELESAI");
 
         return res.status(200).json({
-            status: insert.status,
-            result
+
+            success: true,
+
+            harga: result,
+
+            data_aset: aset
+
         });
 
-    } catch (err) {
-        console.error("ERROR:", err);
+    }
+
+    catch (err) {
+
+        console.error(err);
 
         return res.status(500).json({
+
+            success: false,
+
             error: err.message
+
         });
+
     }
+
 }
