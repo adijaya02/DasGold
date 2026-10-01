@@ -713,26 +713,19 @@
 </div>
 
 <script>
-	const profitLossCells = document.querySelectorAll('.profit-loss');
+	/* =========================
+       SIDEBAR
+    ========================= */
 
-		profitLossCells.forEach(cell => {const text = cell.textContent.trim();
-
-			if(text.includes('-')){
-				cell.classList.add('loss');
-			} else {
-				cell.classList.add('profit');
-			}
-
-	});
-	
     const toggleBtn = document.getElementById("toggleSidebar");
     const sidebar = document.getElementById("sidebar");
     const overlay = document.getElementById("overlay");
 
-    // Default: desktop sidebar disembunyikan
+    // Desktop: sidebar tersembunyi secara default
     if (window.innerWidth > 768) {
         sidebar.classList.add("hide");
     }
+
 
     toggleBtn.addEventListener("click", (e) => {
 
@@ -751,6 +744,7 @@
         }
 
     });
+
 
     window.addEventListener("resize", () => {
 
@@ -771,6 +765,7 @@
 
     });
 
+
     overlay.addEventListener("click", () => {
 
         sidebar.classList.remove("show");
@@ -778,183 +773,116 @@
 
     });
 
+
     const main = document.querySelector(".main");
 
-        main.addEventListener("click", (e) => {
+    main.addEventListener("click", (e) => {
 
-            // Jangan tutup jika klik di dalam sidebar
-            if (sidebar.contains(e.target)) return;
+        // Jangan tutup jika klik di dalam sidebar
+        if (sidebar.contains(e.target)) return;
 
-            if (window.innerWidth > 768) {
+        if (window.innerWidth > 768) {
 
-                sidebar.classList.add("hide");
+            sidebar.classList.add("hide");
 
-            } else {
+        } else {
 
-                sidebar.classList.remove("show");
-                overlay.classList.remove("show");
+            sidebar.classList.remove("show");
+            overlay.classList.remove("show");
 
-            }
+        }
 
     });
-	
-	function logout(){
-		// kalau pakai login sederhana, langsung redirect
-		window.location.href = "login.html";
-	}
 
-	const tbody =document.getElementById("tableBody");
-	
-	const data = []; tbody.innerHTML = data.length ? data.map((item,index)=>{
-        const className =item.untung_rugi >= 0? "profit": "loss";
-	    return `
-        <tr>
-	        <td>
-	            ${index+1}
-	        </td>
 
-	        <td>
-	            ${item.tanggal}
-	        </td>
+    /* =========================
+       LOGOUT
+    ========================= */
 
-	        <td>
-	            Rp ${Number(item.harga_beli).toLocaleString("id-ID")}
-	        </td>
+    function logout() {
 
-	        <td>
-	            Rp ${Number(item.biaya_pembelian).toLocaleString("id-ID")}
-	        </td>
+        window.location.href = "login.html";
 
-	        <td>
-                Rp ${Number(item.total_modal).toLocaleString("id-ID")}
-	        </td>
+    }
 
-	        <td>
-                ${item.aset}
-            </td>
 
-	        <td>
-	            ${item.total_aset}
-	        </td>
-
-	        <td>
-	            Rp ${Number(item.harga_jual).toLocaleString("id-ID")}
-	        </td>
-
-	        <td>
-	            Rp ${Number(item.jumlah_uang_aplikasi).toLocaleString("id-ID")}
-	        </td>
-
-	        <td class="${className}">
-                Rp ${Number(item.untung_rugi).toLocaleString("id-ID")}
-	        </td>
-	    </tr>`;
-	}).join(""):`
-	<tr>
-	    <td colspan="10">
-	        Belum ada data
-	    </td>
-	</tr>`;
+    /* =========================
+       DATA
+    ========================= */
 
     let allData = [];
     let filteredData = [];
 
-    /* =========================
-    FILTER BULAN
-    ========================= */
-
+    // 0 = bulan berjalan
+    // 1 = bulan sebelumnya
+    // 2 = dua bulan sebelumnya
     let currentOffset = 0;
 
-    function filterDataByMonth(){
 
-        const today = new Date();
+    /* =========================
+       ELEMENT NAVIGASI BULAN
+    ========================= */
 
-        const start = new Date(
-            today.getFullYear(),
-            today.getMonth() - currentOffset,
-            1
-        );
+    const prevMonthBtn =
+        document.getElementById("prevMonth");
 
-        const end = new Date(
-            today.getFullYear(),
-            today.getMonth() - currentOffset + 1,
-            0,
-            23,
-            59,
-            59
-        );
+    const nextMonthBtn =
+        document.getElementById("nextMonth");
+
+    const monthLabel =
+        document.getElementById("monthLabel");
 
 
-        const label = start.toLocaleDateString(
-            'id-ID',
+    /* =========================
+       FORMAT RUPIAH
+    ========================= */
+
+    function formatRupiah(value) {
+
+        return Number(
+            Math.round(value || 0)
+        ).toLocaleString("id-ID");
+
+    }
+
+
+    /* =========================
+       FORMAT GRAM
+    ========================= */
+
+    function formatGram(value) {
+
+        return Number(value || 0)
+            .toFixed(4)
+            .replace(".", ",");
+
+    }
+
+
+    /* =========================
+       FORMAT TANGGAL
+    ========================= */
+
+    function formatTanggal(value) {
+
+        return new Date(value).toLocaleDateString(
+            "id-ID",
             {
-                month:'long',
-                year:'numeric'
+                weekday: "long",
+                day: "2-digit",
+                month: "long",
+                year: "numeric"
             }
         );
 
-
-        document.getElementById(
-            "monthLabel"
-        ).textContent = `Data ${label}`;
-
-
-        filteredData = allData
-            .filter(item => {
-
-                const tanggal =
-                    new Date(item.tanggal_aset);
-
-                return (
-                    tanggal >= start &&
-                    tanggal <= end
-                );
-
-            })
-            .sort((a,b) =>
-                new Date(b.tanggal_aset) -
-                new Date(a.tanggal_aset)
-            );
-
-
-        renderTable();
-
     }
 
 
     /* =========================
-    FORMAT
+       MENDAPATKAN RANGE BULAN
     ========================= */
 
-    function formatRupiah(v){
-        return Number(Math.round(v || 0)).toLocaleString("id-ID");
-    }
-
-
-    function formatGram(v){
-        return Number(v || 0)
-            .toFixed(4)
-            .replace(".", ",");
-    }
-
-
-    function formatTanggal(v){
-
-        return new Date(v).toLocaleDateString("id-ID",{
-            weekday:"long",
-            day:"2-digit",
-            month:"long",
-            year:"numeric"
-        });
-
-    }
-
-
-    /* =========================
-    FILTER DATA BERDASARKAN BULAN
-    ========================= */
-
-    function getMonthRange(){
+    function getMonthRange() {
 
         const today = new Date();
 
@@ -983,10 +911,10 @@
 
 
     /* =========================
-    UPDATE LABEL BULAN
+       UPDATE LABEL BULAN
     ========================= */
 
-    function updateMonthLabel(){
+    function updateMonthLabel() {
 
         const today = new Date();
 
@@ -996,48 +924,54 @@
             1
         );
 
+        const label =
+            selectedMonth.toLocaleDateString(
+                "id-ID",
+                {
+                    month: "long",
+                    year: "numeric"
+                }
+            );
+
         monthLabel.textContent =
-            selectedMonth.toLocaleDateString("id-ID",{
-                month:"long",
-                year:"numeric"
-            });
-
-        /*
-        Tidak boleh maju melewati bulan berjalan
-        */
-
-        nextMonthBtn.disabled = currentOffset === 0;
+            `Data ${label}`;
 
     }
 
 
     /* =========================
-    FILTER DATA
+       FILTER DATA BERDASARKAN BULAN
     ========================= */
 
-    function filterDataByMonth(){
+    function filterDataByMonth() {
 
-    const {
+        const {
             start,
             end
         } = getMonthRange();
 
-        filteredData = allData.filter(item => {
 
-            const tanggal = new Date(item.tanggal_aset);
+        filteredData = allData
+            .filter(item => {
 
-            return tanggal >= start && tanggal <= end;
+                const tanggal =
+                    new Date(item.tanggal_aset);
 
-        });
+                return (
+                    tanggal >= start &&
+                    tanggal <= end
+                );
 
-        /*
-        Data terbaru ditampilkan lebih dahulu
-        */
-        filteredData.sort(
-            (a,b) =>
-            new Date(b.tanggal_aset) -
-            new Date(a.tanggal_aset)
-        );
+            })
+            .sort((a, b) => {
+
+                return (
+                    new Date(b.tanggal_aset) -
+                    new Date(a.tanggal_aset)
+                );
+
+            });
+
 
         renderTable();
 
@@ -1045,197 +979,281 @@
 
 
     /* =========================
-    RENDER TABLE
+       RENDER TABLE
     ========================= */
 
-    function renderTable(){
+    function renderTable() {
 
         const tbody =
             document.getElementById("tableBody");
 
-        if(filteredData.length === 0){
+
+        /* Tidak ada data */
+        if (filteredData.length === 0) {
 
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="10">
-                        Belum ada data pada bulan ini
+
+                    <td
+                        colspan="10"
+                        style="
+                            text-align:center;
+                            padding:30px;
+                            color:#777;
+                        "
+                    >
+                        Tidak ada data pada bulan ini
                     </td>
+
                 </tr>
             `;
 
             return;
+
         }
 
-        tbody.innerHTML = filteredData.map((item,index) => `
 
-            <tr>
+        /* Tampilkan seluruh data bulan */
+        tbody.innerHTML =
+            filteredData
+                .map((item, index) => {
 
-                <td>
-                    ${index + 1}
-                </td>
+                    const profitLoss =
+                        Number(
+                            item.untung_rugi || 0
+                        );
 
-                <td>
-                    ${formatTanggal(item.tanggal_aset)}
-                </td>
 
-                <td>
-                    Rp ${formatRupiah(item.harga_beli)}
-                </td>
+                    const className =
+                        profitLoss >= 0
+                            ? "profit"
+                            : "loss";
 
-                <td>
-                    Rp ${formatRupiah(item.biaya_pembelian)}
-                </td>
 
-                <td>
-                    Rp ${formatRupiah(item.total_modal)}
-                </td>
+                    return `
+                        <tr>
 
-                <td>
-                    ${formatGram(item.aset)}
-                </td>
+                            <td>
+                                ${index + 1}
+                            </td>
 
-                <td>
-                    ${formatGram(item.total_aset)}
-                </td>
 
-                <td>
-                    Rp ${formatRupiah(item.harga_jual)}
-                </td>
+                            <td>
+                                ${formatTanggal(
+                                    item.tanggal_aset
+                                )}
+                            </td>
 
-                <td>
-                    Rp ${formatRupiah(item.jumlah_uang_aplikasi)}
-                </td>
 
-                <td class="${
-                    Number(item.untung_rugi) >= 0
-                        ? "profit"
-                        : "loss"
-                }">
+                            <td>
+                                Rp ${formatRupiah(
+                                    item.harga_beli
+                                )}
+                            </td>
 
-                    Rp ${formatRupiah(item.untung_rugi)}
 
-                </td>
+                            <td>
+                                Rp ${formatRupiah(
+                                    item.biaya_pembelian
+                                )}
+                            </td>
 
-            </tr>
 
-        `).join("");
+                            <td>
+                                Rp ${formatRupiah(
+                                    item.total_modal
+                                )}
+                            </td>
+
+
+                            <td>
+                                ${formatGram(
+                                    item.aset
+                                )}
+                            </td>
+
+
+                            <td>
+                                ${formatGram(
+                                    item.total_aset
+                                )}
+                            </td>
+
+
+                            <td>
+                                Rp ${formatRupiah(
+                                    item.harga_jual
+                                )}
+                            </td>
+
+
+                            <td>
+                                Rp ${formatRupiah(
+                                    item.jumlah_uang_aplikasi
+                                )}
+                            </td>
+
+
+                            <td class="${className}">
+                                Rp ${formatRupiah(
+                                    item.untung_rugi
+                                )}
+                            </td>
+
+                        </tr>
+                    `;
+
+                })
+                .join("");
 
     }
 
-    /* =========================
-    BULAN SEBELUMNYA
-    ========================= */
-
-    prevMonthBtn.addEventListener("click", () => {
-
-        currentOffset++;
-
-        updateMonthLabel();
-
-        filterDataByMonth();
-
-    });
-
 
     /* =========================
-    BULAN BERIKUTNYA
+       TOMBOL BULAN SEBELUMNYA
     ========================= */
 
-    nextMonthBtn.addEventListener("click", () => {
+    prevMonthBtn.addEventListener(
+        "click",
+        () => {
 
-        /*
-        Jangan bisa melewati bulan berjalan
-        */
+            currentOffset++;
 
-        if(currentOffset === 0){
-            return;
+            updateMonthLabel();
+
+            filterDataByMonth();
+
         }
-
-        currentOffset--;
-
-        updateMonthLabel();
-
-        filterDataByMonth();
-
-    });
+    );
 
 
     /* =========================
-    LOAD DATA
+       TOMBOL BULAN BERIKUTNYA
     ========================= */
 
-    async function loadData(){
+    nextMonthBtn.addEventListener(
+        "click",
+        () => {
 
-        try{
+            // Tidak boleh melewati bulan berjalan
+            if (currentOffset <= 0) {
 
-            const res =
+                return;
+
+            }
+
+
+            currentOffset--;
+
+            updateMonthLabel();
+
+            filterDataByMonth();
+
+        }
+    );
+
+
+    /* =========================
+       LOAD DATA DARI API
+    ========================= */
+
+    async function loadData() {
+
+        try {
+
+            const response =
                 await fetch("/api/data-aset");
 
-            if(!res.ok){
+
+            /* Cek response */
+            if (!response.ok) {
+
                 throw new Error(
-                    "Gagal mengambil data aset"
+                    `HTTP Error ${response.status}`
                 );
+
             }
 
-            allData = await res.json();
+
+            /* Ambil JSON */
+            const result =
+                await response.json();
 
 
-            /*
-            Pastikan data berupa array
-            */
+            /* Pastikan hasil berupa array */
+            if (Array.isArray(result)) {
 
-            if(!Array.isArray(allData)){
+                allData = result;
+
+            } else {
+
                 allData = [];
+
             }
 
 
-            /*
-            Urutkan dari tanggal terbaru
-            */
+            /* =========================
+               URUTKAN DATA TERBARU
+            ========================= */
 
             allData.sort(
-                (a,b) =>
-                new Date(b.tanggal_aset) -
-                new Date(a.tanggal_aset)
+                (a, b) => {
+
+                    return (
+                        new Date(b.tanggal_aset) -
+                        new Date(a.tanggal_aset)
+                    );
+
+                }
             );
 
 
-            /*
-            Tampilkan bulan berjalan
-            */
+            /* =========================
+               TAMPILKAN BULAN BERJALAN
+            ========================= */
 
             updateMonthLabel();
 
             filterDataByMonth();
 
 
-        }catch(error){
+        } catch (error) {
 
             console.error(
-                "Gagal load data:",
+                "Gagal load data aset:",
                 error
             );
+
 
             document.getElementById(
                 "tableBody"
             ).innerHTML = `
-
                 <tr>
 
-                    <td colspan="10">
-                        Gagal mengambil data
+                    <td
+                        colspan="10"
+                        style="
+                            text-align:center;
+                            padding:30px;
+                            color:#d32f2f;
+                        "
+                    >
+                        Gagal mengambil data aset
                     </td>
 
                 </tr>
-
             `;
 
         }
 
     }
 
-    loadData();
 
+    /* =========================
+       JALANKAN LOAD DATA
+    ========================= */
+
+    loadData();
 </script>
 </body>
 </html>
