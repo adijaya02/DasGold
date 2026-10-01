@@ -523,27 +523,6 @@
 	white-space:nowrap;
 	}
 
-    /* pagination */
-	.pagination{
-	display:flex;
-	justify-content:center;
-	gap:10px;
-	padding:15px;
-	}
-
-	.pagination button{
-	padding:8px 14px;
-	border:none;
-	border-radius:8px;
-	cursor:pointer;
-	}
-
-
-    .pagination button.active{
-    background:#04264a;
-    color:white;
-    }
-
 </style>
 </head>
 
@@ -643,8 +622,6 @@
                     <tbody id="tableBody"></tbody>
                 </table>
             </div>
-
-            <div class="pagination" id="pagination"></div>
 
         </div>
 	
@@ -799,9 +776,6 @@
     let allData = [];
     let filteredData = [];
 
-    let currentPage = 1;
-    const rowsPerPage = 10;
-
     /* =========================
     FILTER BULAN
     ========================= */
@@ -908,7 +882,7 @@
 
     function filterDataByMonth(){
 
-        const {
+    const {
             start,
             end
         } = getMonthRange();
@@ -924,14 +898,11 @@
         /*
         Data terbaru ditampilkan lebih dahulu
         */
-
         filteredData.sort(
             (a,b) =>
             new Date(b.tanggal_aset) -
             new Date(a.tanggal_aset)
         );
-
-        currentPage = 1;
 
         renderTable();
 
@@ -944,20 +915,10 @@
 
     function renderTable(){
 
-        const start =
-            (currentPage - 1) * rowsPerPage;
-
-        const end =
-            start + rowsPerPage;
-
-        const rows =
-            filteredData.slice(start,end);
-
         const tbody =
             document.getElementById("tableBody");
 
-
-        if(rows.length === 0){
+        if(filteredData.length === 0){
 
             tbody.innerHTML = `
                 <tr>
@@ -967,18 +928,15 @@
                 </tr>
             `;
 
-            renderPagination();
-
             return;
         }
 
-
-        tbody.innerHTML = rows.map((item,index) => `
+        tbody.innerHTML = filteredData.map((item,index) => `
 
             <tr>
 
                 <td>
-                    ${start + index + 1}
+                    ${index + 1}
                 </td>
 
                 <td>
@@ -1027,66 +985,7 @@
 
         `).join("");
 
-
-        renderPagination();
-
     }
-
-
-    /* =========================
-    PAGINATION
-    ========================= */
-
-    function renderPagination(){
-
-        const total =
-            Math.ceil(
-                filteredData.length /
-                rowsPerPage
-            );
-
-        const div =
-            document.getElementById("pagination");
-
-        div.innerHTML = "";
-
-
-        if(total <= 1){
-            return;
-        }
-
-
-        for(let i = 1; i <= total; i++){
-
-            div.innerHTML += `
-
-                <button
-                    class="${
-                        i === currentPage
-                        ? "active"
-                        : ""
-                    }"
-                    onclick="changePage(${i})">
-
-                    ${i}
-
-                </button>
-
-            `;
-
-        }
-
-    }
-
-
-    function changePage(page){
-
-        currentPage = page;
-
-        renderTable();
-
-    }
-
 
     /* =========================
     BULAN SEBELUMNYA
