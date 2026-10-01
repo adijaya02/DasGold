@@ -352,13 +352,32 @@
         text-overflow:ellipsis;
     }
 
-
     .desktop-text{
         display:none;
     }
 
     .mobile-text{
         display:inline;
+    }
+
+    .calendar-popup{
+        position:fixed;
+        top:125px;
+        left:50%;
+        right:auto;
+        transform:translateX(-50%);
+        width:calc(100vw - 30px);
+        max-width:360px;
+        padding:14px;
+    }
+
+    .calendar-day{
+        height:40px;
+        font-size:13px;
+    }
+
+    .calendar-title{
+        font-size:15px;
     }
 
     /* Table */
@@ -535,6 +554,202 @@
         display:none;
     }
 
+    /* =========================
+        MONTH PICKER
+    ========================= */
+
+    .month-label-wrapper{
+        position:relative;
+    }
+
+    #monthLabel{
+        cursor:pointer;
+        user-select:none;
+        transition:.2s;
+    }
+
+    #monthLabel:hover{
+        background:#e8eef5 !important;
+    }
+
+
+    /* =========================
+    CALENDAR
+    ========================= */
+
+    .calendar-popup{
+        position:absolute;
+        top:calc(100% + 8px);
+        right:0;
+        width:330px;
+        background:#ffffff;
+        border-radius:14px;
+        box-shadow:0 8px 30px rgba(0,0,0,.18);
+        border:1px solid #e1e6eb;
+        padding:15px;
+        z-index:1000;
+        display:none;
+    }
+
+    .calendar-popup.show{
+        display:block;
+    }
+
+
+    /* HEADER CALENDAR */
+
+    .calendar-header{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        margin-bottom:12px;
+    }
+
+    .calendar-title{
+        font-size:16px;
+        font-weight:700;
+        color:#04264a;
+        text-transform:capitalize;
+    }
+
+    .calendar-nav-btn{
+        width:32px;
+        height:32px;
+        border:none;
+        border-radius:8px;
+        background:#f1f4f8;
+        color:#04264a;
+        font-size:18px;
+        cursor:pointer;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        transition:.2s;
+    }
+
+    .calendar-nav-btn:hover{
+        background:#1f86ff;
+        color:#fff;
+    }
+
+
+    /* HARI */
+
+    .calendar-weekdays,
+    .calendar-days{
+        display:grid;
+        grid-template-columns:repeat(7,1fr);
+    }
+
+    .calendar-weekdays{
+        margin-bottom:5px;
+    }
+
+    .calendar-weekdays div{
+        text-align:center;
+        font-size:12px;
+        font-weight:600;
+        color:#6b7280;
+        padding:6px 0;
+    }
+
+
+    /* TANGGAL */
+
+    .calendar-day{
+        position:relative;
+        height:38px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        border-radius:8px;
+        font-size:13px;
+        color:#1f2937;
+        cursor:pointer;
+        transition:.2s;
+    }
+
+    .calendar-day:hover{
+        background:#eaf3ff;
+    }
+
+    .calendar-day.empty{
+        cursor:default;
+    }
+
+    .calendar-day.other-month{
+        color:#b8bec7;
+    }
+
+
+    /* TANGGAL YANG MEMILIKI DATA */
+
+    .calendar-day.has-data{
+        font-weight:700;
+        color:#04264a;
+    }
+
+    .calendar-day.has-data::after{
+        content:"";
+        position:absolute;
+        bottom:4px;
+        width:5px;
+        height:5px;
+        border-radius:50%;
+        background:#1f86ff;
+    }
+
+
+    /* TANGGAL YANG DIPILIH */
+
+    .calendar-day.selected{
+        background:#1f86ff;
+        color:#ffffff;
+    }
+
+    .calendar-day.selected::after{
+        background:#ffffff;
+    }
+
+
+    /* TANGGAL HARI INI */
+
+    .calendar-day.today{
+        border:1px solid #1f86ff;
+    }
+
+
+    /* FOOTER */
+
+    .calendar-footer{
+        margin-top:12px;
+        padding-top:10px;
+        border-top:1px solid #e5e7eb;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:8px;
+    }
+
+    .calendar-info{
+        font-size:11px;
+        color:#777;
+    }
+
+    .calendar-all-btn{
+        border:none;
+        background:#04264a;
+        color:#fff;
+        border-radius:7px;
+        padding:7px 10px;
+        font-size:11px;
+        cursor:pointer;
+    }
+
+    .calendar-all-btn:hover{
+        background:#0b4f96;
+    }
+
 
     /* isi tabel */
     .history-table tbody td{
@@ -650,7 +865,6 @@
                         class="month-btn"
                         type="button"
                     >
-
                         <span class="desktop-text">
                             ← Bulan Sebelumnya
                         </span>
@@ -658,22 +872,100 @@
                         <span class="mobile-text">
                             ←
                         </span>
-
                     </button>
 
 
-                    <div
-                        id="monthLabel"
-                        style="
-                            background:#f3f6fa;
-                            padding:10px 18px;
-                            border-radius:10px;
-                            font-weight:600;
-                            color:#04264a;
-                            min-width:180px;
-                            text-align:center;
-                        "
-                    >
+                    <div class="month-label-wrapper">
+
+                        <div
+                            id="monthLabel"
+                            style="
+                                background:#f3f6fa;
+                                padding:10px 18px;
+                                border-radius:10px;
+                                font-weight:600;
+                                color:#04264a;
+                                min-width:180px;
+                                text-align:center;
+                            "
+                        ></div>
+
+
+                        <!-- CALENDAR -->
+
+                        <div
+                            id="calendarPopup"
+                            class="calendar-popup"
+                        >
+
+                            <div class="calendar-header">
+
+                                <button
+                                    type="button"
+                                    id="calendarPrev"
+                                    class="calendar-nav-btn"
+                                >
+                                    ←
+                                </button>
+
+
+                                <div
+                                    id="calendarTitle"
+                                    class="calendar-title"
+                                ></div>
+
+
+                                <button
+                                    type="button"
+                                    id="calendarNext"
+                                    class="calendar-nav-btn"
+                                >
+                                    →
+                                </button>
+
+                            </div>
+
+
+                            <div class="calendar-weekdays">
+
+                                <div>M</div>
+                                <div>S</div>
+                                <div>S</div>
+                                <div>R</div>
+                                <div>K</div>
+                                <div>J</div>
+                                <div>S</div>
+
+                            </div>
+
+
+                            <div
+                                id="calendarDays"
+                                class="calendar-days"
+                            ></div>
+
+
+                            <div class="calendar-footer">
+
+                                <div
+                                    id="calendarInfo"
+                                    class="calendar-info"
+                                >
+                                    ● Memiliki data
+                                </div>
+
+                                <button
+                                    type="button"
+                                    id="showAllMonth"
+                                    class="calendar-all-btn"
+                                >
+                                    Semua tanggal
+                                </button>
+
+                            </div>
+
+                        </div>
+
                     </div>
 
 
@@ -682,7 +974,6 @@
                         class="month-btn"
                         type="button"
                     >
-
                         <span class="desktop-text">
                             Bulan Berikutnya →
                         </span>
@@ -690,7 +981,6 @@
                         <span class="mobile-text">
                             →
                         </span>
-
                     </button>
 
                 </div>
@@ -724,17 +1014,24 @@
 </div>
 
 <script>
-	/* =========================
+	/* =====================================================
        SIDEBAR
-    ========================= */
+    ===================================================== */
 
-    const toggleBtn = document.getElementById("toggleSidebar");
-    const sidebar = document.getElementById("sidebar");
-    const overlay = document.getElementById("overlay");
+    const toggleBtn =
+        document.getElementById("toggleSidebar");
 
-    // Desktop: sidebar tersembunyi secara default
+    const sidebar =
+        document.getElementById("sidebar");
+
+    const overlay =
+        document.getElementById("overlay");
+
+
     if (window.innerWidth > 768) {
+
         sidebar.classList.add("hide");
+
     }
 
 
@@ -745,7 +1042,9 @@
         if (window.innerWidth <= 768) {
 
             sidebar.classList.remove("hide");
+
             sidebar.classList.toggle("show");
+
             overlay.classList.toggle("show");
 
         } else {
@@ -762,14 +1061,13 @@
         if (window.innerWidth > 768) {
 
             sidebar.classList.remove("show");
+
             overlay.classList.remove("show");
 
-            // Desktop selalu default tersembunyi
             sidebar.classList.add("hide");
 
         } else {
 
-            // Mobile tidak menggunakan class hide
             sidebar.classList.remove("hide");
 
         }
@@ -780,16 +1078,18 @@
     overlay.addEventListener("click", () => {
 
         sidebar.classList.remove("show");
+
         overlay.classList.remove("show");
 
     });
 
 
-    const main = document.querySelector(".main");
+    const main =
+        document.querySelector(".main");
+
 
     main.addEventListener("click", (e) => {
 
-        // Jangan tutup jika klik di dalam sidebar
         if (sidebar.contains(e.target)) return;
 
         if (window.innerWidth > 768) {
@@ -799,6 +1099,7 @@
         } else {
 
             sidebar.classList.remove("show");
+
             overlay.classList.remove("show");
 
         }
@@ -806,9 +1107,9 @@
     });
 
 
-    /* =========================
+    /* =====================================================
        LOGOUT
-    ========================= */
+    ===================================================== */
 
     function logout() {
 
@@ -817,22 +1118,27 @@
     }
 
 
-    /* =========================
+    /* =====================================================
        DATA
-    ========================= */
+    ===================================================== */
 
     let allData = [];
+
     let filteredData = [];
 
-    // 0 = bulan berjalan
-    // 1 = bulan sebelumnya
-    // 2 = dua bulan sebelumnya
     let currentOffset = 0;
 
+    /*
+        null = semua tanggal dalam bulan
+        "YYYY-MM-DD" = tanggal tertentu
+    */
 
-    /* =========================
-       ELEMENT NAVIGASI BULAN
-    ========================= */
+    let selectedDateKey = null;
+
+
+    /* =====================================================
+       ELEMENT
+    ===================================================== */
 
     const prevMonthBtn =
         document.getElementById("prevMonth");
@@ -843,10 +1149,28 @@
     const monthLabel =
         document.getElementById("monthLabel");
 
+    const calendarPopup =
+        document.getElementById("calendarPopup");
 
-    /* =========================
+    const calendarTitle =
+        document.getElementById("calendarTitle");
+
+    const calendarDays =
+        document.getElementById("calendarDays");
+
+    const calendarPrev =
+        document.getElementById("calendarPrev");
+
+    const calendarNext =
+        document.getElementById("calendarNext");
+
+    const showAllMonth =
+        document.getElementById("showAllMonth");
+
+
+    /* =====================================================
        FORMAT RUPIAH
-    ========================= */
+    ===================================================== */
 
     function formatRupiah(value) {
 
@@ -857,9 +1181,9 @@
     }
 
 
-    /* =========================
+    /* =====================================================
        FORMAT GRAM
-    ========================= */
+    ===================================================== */
 
     function formatGram(value) {
 
@@ -870,9 +1194,9 @@
     }
 
 
-    /* =========================
+    /* =====================================================
        FORMAT TANGGAL
-    ========================= */
+    ===================================================== */
 
     function formatTanggal(value) {
 
@@ -889,29 +1213,60 @@
     }
 
 
-    /* =========================
-       MENDAPATKAN RANGE BULAN
-    ========================= */
+    /* =====================================================
+       FORMAT DATE KEY
+       Contoh: 2026-09-15
+    ===================================================== */
+
+    function getDateKey(date) {
+
+        const year =
+            date.getFullYear();
+
+        const month =
+            String(
+                date.getMonth() + 1
+            ).padStart(2, "0");
+
+        const day =
+            String(
+                date.getDate()
+            ).padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
+
+    }
+
+
+    /* =====================================================
+       RANGE BULAN
+    ===================================================== */
 
     function getMonthRange() {
 
-        const today = new Date();
+        const today =
+            new Date();
 
-        const start = new Date(
-            today.getFullYear(),
-            today.getMonth() - currentOffset,
-            1
-        );
 
-        const end = new Date(
-            today.getFullYear(),
-            today.getMonth() - currentOffset + 1,
-            0,
-            23,
-            59,
-            59,
-            999
-        );
+        const start =
+            new Date(
+                today.getFullYear(),
+                today.getMonth() - currentOffset,
+                1
+            );
+
+
+        const end =
+            new Date(
+                today.getFullYear(),
+                today.getMonth() - currentOffset + 1,
+                0,
+                23,
+                59,
+                59,
+                999
+            );
+
 
         return {
             start,
@@ -921,19 +1276,34 @@
     }
 
 
-    /* =========================
-       UPDATE LABEL BULAN
-    ========================= */
+    /* =====================================================
+       TANGGAL BULAN YANG SEDANG DIPILIH
+    ===================================================== */
 
-    function updateMonthLabel() {
+    function getSelectedMonthDate() {
 
-        const today = new Date();
+        const today =
+            new Date();
 
-        const selectedMonth = new Date(
+
+        return new Date(
             today.getFullYear(),
             today.getMonth() - currentOffset,
             1
         );
+
+    }
+
+
+    /* =====================================================
+       UPDATE LABEL BULAN
+    ===================================================== */
+
+    function updateMonthLabel() {
+
+        const selectedMonth =
+            getSelectedMonthDate();
+
 
         const label =
             selectedMonth.toLocaleDateString(
@@ -944,44 +1314,108 @@
                 }
             );
 
-        monthLabel.textContent =
-            `Data ${label}`;
+
+        if (selectedDateKey) {
+
+            const [
+                year,
+                month,
+                day
+            ] =
+                selectedDateKey
+                    .split("-")
+                    .map(Number);
+
+
+            const selectedDate =
+                new Date(
+                    year,
+                    month - 1,
+                    day
+                );
+
+
+            monthLabel.textContent =
+                selectedDate.toLocaleDateString(
+                    "id-ID",
+                    {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric"
+                    }
+                );
+
+        } else {
+
+            monthLabel.textContent =
+                `Data ${label}`;
+
+        }
 
     }
 
 
-    /* =========================
-       FILTER DATA BERDASARKAN BULAN
-    ========================= */
+    /* =====================================================
+       FILTER DATA
+    ===================================================== */
 
     function filterDataByMonth() {
 
         const {
             start,
             end
-        } = getMonthRange();
+        } =
+            getMonthRange();
 
 
-        filteredData = allData
-            .filter(item => {
+        filteredData =
+            allData.filter(item => {
 
                 const tanggal =
-                    new Date(item.tanggal_aset);
+                    new Date(
+                        item.tanggal_aset
+                    );
 
-                return (
-                    tanggal >= start &&
-                    tanggal <= end
-                );
 
-            })
-            .sort((a, b) => {
+                if (
+                    tanggal < start ||
+                    tanggal > end
+                ) {
 
-                return (
-                    new Date(b.tanggal_aset) -
-                    new Date(a.tanggal_aset)
-                );
+                    return false;
+
+                }
+
+
+                /*
+                    Jika tanggal tertentu dipilih,
+                    tampilkan hanya tanggal tersebut.
+                */
+
+                if (selectedDateKey) {
+
+                    return (
+                        getDateKey(tanggal) ===
+                        selectedDateKey
+                    );
+
+                }
+
+
+                return true;
 
             });
+
+
+        /*
+            Terbaru terlebih dahulu
+        */
+
+        filteredData.sort(
+            (a, b) =>
+                new Date(b.tanggal_aset) -
+                new Date(a.tanggal_aset)
+        );
 
 
         renderTable();
@@ -989,20 +1423,24 @@
     }
 
 
-    /* =========================
+    /* =====================================================
        RENDER TABLE
-    ========================= */
+    ===================================================== */
 
     function renderTable() {
 
         const tbody =
-            document.getElementById("tableBody");
+            document.getElementById(
+                "tableBody"
+            );
 
 
-        /* Tidak ada data */
-        if (filteredData.length === 0) {
+        if (
+            filteredData.length === 0
+        ) {
 
             tbody.innerHTML = `
+
                 <tr>
 
                     <td
@@ -1013,10 +1451,11 @@
                             color:#777;
                         "
                     >
-                        Tidak ada data pada bulan ini
+                        Tidak ada data
                     </td>
 
                 </tr>
+
             `;
 
             return;
@@ -1024,105 +1463,109 @@
         }
 
 
-        /* Tampilkan seluruh data bulan */
         tbody.innerHTML =
             filteredData
-                .map((item, index) => {
+                .map(
+                    (item, index) => {
 
-                    const profitLoss =
-                        Number(
-                            item.untung_rugi || 0
-                        );
-
-
-                    const className =
-                        profitLoss >= 0
-                            ? "profit"
-                            : "loss";
+                        const profitLoss =
+                            Number(
+                                item.untung_rugi ||
+                                0
+                            );
 
 
-                    return `
-                        <tr>
-
-                            <td>
-                                ${index + 1}
-                            </td>
+                        const className =
+                            profitLoss >= 0
+                                ? "profit"
+                                : "loss";
 
 
-                            <td>
-                                ${formatTanggal(
-                                    item.tanggal_aset
-                                )}
-                            </td>
+                        return `
+
+                            <tr>
+
+                                <td>
+                                    ${index + 1}
+                                </td>
 
 
-                            <td>
-                                Rp ${formatRupiah(
-                                    item.harga_beli
-                                )}
-                            </td>
+                                <td>
+                                    ${formatTanggal(
+                                        item.tanggal_aset
+                                    )}
+                                </td>
 
 
-                            <td>
-                                Rp ${formatRupiah(
-                                    item.biaya_pembelian
-                                )}
-                            </td>
+                                <td>
+                                    Rp ${formatRupiah(
+                                        item.harga_beli
+                                    )}
+                                </td>
 
 
-                            <td>
-                                Rp ${formatRupiah(
-                                    item.total_modal
-                                )}
-                            </td>
+                                <td>
+                                    Rp ${formatRupiah(
+                                        item.biaya_pembelian
+                                    )}
+                                </td>
 
 
-                            <td>
-                                ${formatGram(
-                                    item.aset
-                                )}
-                            </td>
+                                <td>
+                                    Rp ${formatRupiah(
+                                        item.total_modal
+                                    )}
+                                </td>
 
 
-                            <td>
-                                ${formatGram(
-                                    item.total_aset
-                                )}
-                            </td>
+                                <td>
+                                    ${formatGram(
+                                        item.aset
+                                    )}
+                                </td>
 
 
-                            <td>
-                                Rp ${formatRupiah(
-                                    item.harga_jual
-                                )}
-                            </td>
+                                <td>
+                                    ${formatGram(
+                                        item.total_aset
+                                    )}
+                                </td>
 
 
-                            <td>
-                                Rp ${formatRupiah(
-                                    item.jumlah_uang_aplikasi
-                                )}
-                            </td>
+                                <td>
+                                    Rp ${formatRupiah(
+                                        item.harga_jual
+                                    )}
+                                </td>
 
 
-                            <td class="${className}">
-                                Rp ${formatRupiah(
-                                    item.untung_rugi
-                                )}
-                            </td>
+                                <td>
+                                    Rp ${formatRupiah(
+                                        item.jumlah_uang_aplikasi
+                                    )}
+                                </td>
 
-                        </tr>
-                    `;
 
-                })
+                                <td class="${className}">
+                                    Rp ${formatRupiah(
+                                        item.untung_rugi
+                                    )}
+                                </td>
+
+                            </tr>
+
+                        `;
+
+                    }
+                )
                 .join("");
 
     }
 
 
-    /* =========================
-       TOMBOL BULAN SEBELUMNYA
-    ========================= */
+    /* =====================================================
+       BULAN SEBELUMNYA
+    ===================================================== */
 
     prevMonthBtn.addEventListener(
         "click",
@@ -1130,24 +1573,33 @@
 
             currentOffset++;
 
+            selectedDateKey = null;
+
             updateMonthLabel();
 
             filterDataByMonth();
+
+            renderCalendar();
 
         }
     );
 
 
-    /* =========================
-       TOMBOL BULAN BERIKUTNYA
-    ========================= */
+    /* =====================================================
+       BULAN BERIKUTNYA
+    ===================================================== */
 
     nextMonthBtn.addEventListener(
         "click",
         () => {
 
-            // Tidak boleh melewati bulan berjalan
-            if (currentOffset <= 0) {
+            /*
+                Tidak boleh masuk bulan masa depan
+            */
+
+            if (
+                currentOffset <= 0
+            ) {
 
                 return;
 
@@ -1156,27 +1608,435 @@
 
             currentOffset--;
 
+            selectedDateKey = null;
+
             updateMonthLabel();
 
             filterDataByMonth();
+
+            renderCalendar();
 
         }
     );
 
 
-    /* =========================
+    /* =====================================================
+       BUKA / TUTUP KALENDER
+    ===================================================== */
+
+    monthLabel.addEventListener(
+        "click",
+        (e) => {
+
+            e.stopPropagation();
+
+            calendarPopup.classList.toggle(
+                "show"
+            );
+
+            renderCalendar();
+
+        }
+    );
+
+
+    /*
+        Jangan tutup kalender jika klik
+        di dalam kalender.
+    */
+
+    calendarPopup.addEventListener(
+        "click",
+        (e) => {
+
+            e.stopPropagation();
+
+        }
+    );
+
+
+    /*
+        Klik di luar kalender
+        = tutup kalender
+    */
+
+    document.addEventListener(
+        "click",
+        () => {
+
+            calendarPopup.classList.remove(
+                "show"
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       RENDER CALENDAR
+    ===================================================== */
+
+    function renderCalendar() {
+
+        const selectedMonth =
+            getSelectedMonthDate();
+
+
+        const year =
+            selectedMonth.getFullYear();
+
+
+        const month =
+            selectedMonth.getMonth();
+
+
+        /*
+            Nama bulan
+        */
+
+        calendarTitle.textContent =
+            selectedMonth.toLocaleDateString(
+                "id-ID",
+                {
+                    month: "long",
+                    year: "numeric"
+                }
+            );
+
+
+        /*
+            Hari pertama bulan
+        */
+
+        const firstDay =
+            new Date(
+                year,
+                month,
+                1
+            );
+
+
+        /*
+            Jumlah hari
+        */
+
+        const daysInMonth =
+            new Date(
+                year,
+                month + 1,
+                0
+            ).getDate();
+
+
+        /*
+            Senin = 0
+            Selasa = 1
+            ...
+            Minggu = 6
+        */
+
+        let startDay =
+            firstDay.getDay() - 1;
+
+
+        if (startDay < 0) {
+
+            startDay = 6;
+
+        }
+
+
+        /*
+            Buat daftar tanggal
+            yang memiliki data
+        */
+
+        const datesWithData =
+            new Set();
+
+
+        allData.forEach(item => {
+
+            const date =
+                new Date(
+                    item.tanggal_aset
+                );
+
+
+            if (
+                date.getFullYear() === year &&
+                date.getMonth() === month
+            ) {
+
+                datesWithData.add(
+                    getDateKey(date)
+                );
+
+            }
+
+        });
+
+
+        /*
+            Hari ini
+        */
+
+        const today =
+            new Date();
+
+
+        const todayKey =
+            getDateKey(today);
+
+
+        /*
+            Mulai isi kalender
+        */
+
+        let html = "";
+
+
+        /*
+            Kotak kosong sebelum tanggal 1
+        */
+
+        for (
+            let i = 0;
+            i < startDay;
+            i++
+        ) {
+
+            html += `
+                <div
+                    class="calendar-day empty"
+                ></div>
+            `;
+
+        }
+
+
+        /*
+            Tanggal 1 sampai akhir bulan
+        */
+
+        for (
+            let day = 1;
+            day <= daysInMonth;
+            day++
+        ) {
+
+            const date =
+                new Date(
+                    year,
+                    month,
+                    day
+                );
+
+
+            const dateKey =
+                getDateKey(date);
+
+
+            const hasData =
+                datesWithData.has(
+                    dateKey
+                );
+
+
+            const isToday =
+                dateKey === todayKey;
+
+
+            const isSelected =
+                dateKey === selectedDateKey;
+
+
+            let classes =
+                "calendar-day";
+
+
+            if (hasData) {
+
+                classes +=
+                    " has-data";
+
+            }
+
+
+            if (isToday) {
+
+                classes +=
+                    " today";
+
+            }
+
+
+            if (isSelected) {
+
+                classes +=
+                    " selected";
+
+            }
+
+
+            html += `
+
+                <div
+                    class="${classes}"
+                    data-date="${dateKey}"
+                >
+                    ${day}
+                </div>
+
+            `;
+
+        }
+
+
+        calendarDays.innerHTML =
+            html;
+
+
+        /*
+            Event klik tanggal
+        */
+
+        const dayElements =
+            calendarDays.querySelectorAll(
+                ".calendar-day[data-date]"
+            );
+
+
+        dayElements.forEach(
+            dayElement => {
+
+                dayElement.addEventListener(
+                    "click",
+                    () => {
+
+                        const dateKey =
+                            dayElement.dataset.date;
+
+
+                        /*
+                            Pastikan tanggal
+                            berada di bulan yang dipilih
+                        */
+
+                        selectedDateKey =
+                            dateKey;
+
+
+                        updateMonthLabel();
+
+                        filterDataByMonth();
+
+                        renderCalendar();
+
+                        /*
+                            Tutup kalender
+                        */
+
+                        calendarPopup.classList.remove(
+                            "show"
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       BULAN SEBELUMNYA DI KALENDER
+    ===================================================== */
+
+    calendarPrev.addEventListener(
+        "click",
+        () => {
+
+            currentOffset++;
+
+            selectedDateKey = null;
+
+            updateMonthLabel();
+
+            filterDataByMonth();
+
+            renderCalendar();
+
+        }
+    );
+
+
+    /* =====================================================
+       BULAN BERIKUTNYA DI KALENDER
+    ===================================================== */
+
+    calendarNext.addEventListener(
+        "click",
+        () => {
+
+            if (
+                currentOffset <= 0
+            ) {
+
+                return;
+
+            }
+
+
+            currentOffset--;
+
+            selectedDateKey = null;
+
+            updateMonthLabel();
+
+            filterDataByMonth();
+
+            renderCalendar();
+
+        }
+    );
+
+
+    /* =====================================================
+       TAMPILKAN SEMUA DATA BULAN
+    ===================================================== */
+
+    showAllMonth.addEventListener(
+        "click",
+        () => {
+
+            selectedDateKey = null;
+
+            updateMonthLabel();
+
+            filterDataByMonth();
+
+            renderCalendar();
+
+        }
+    );
+
+
+    /* =====================================================
        LOAD DATA DARI API
-    ========================= */
+    ===================================================== */
 
     async function loadData() {
 
         try {
 
             const response =
-                await fetch("/api/data-aset");
+                await fetch(
+                    "/api/data-aset"
+                );
 
 
-            /* Cek response */
             if (!response.ok) {
 
                 throw new Error(
@@ -1186,13 +2046,13 @@
             }
 
 
-            /* Ambil JSON */
             const result =
                 await response.json();
 
 
-            /* Pastikan hasil berupa array */
-            if (Array.isArray(result)) {
+            if (
+                Array.isArray(result)
+            ) {
 
                 allData = result;
 
@@ -1203,30 +2063,30 @@
             }
 
 
-            /* =========================
-               URUTKAN DATA TERBARU
-            ========================= */
+            /*
+                Urutkan terbaru
+            */
 
             allData.sort(
-                (a, b) => {
-
-                    return (
-                        new Date(b.tanggal_aset) -
-                        new Date(a.tanggal_aset)
-                    );
-
-                }
+                (a, b) =>
+                    new Date(
+                        b.tanggal_aset
+                    ) -
+                    new Date(
+                        a.tanggal_aset
+                    )
             );
 
 
-            /* =========================
-               TAMPILKAN BULAN BERJALAN
-            ========================= */
+            /*
+                Tampilkan bulan berjalan
+            */
 
             updateMonthLabel();
 
             filterDataByMonth();
 
+            renderCalendar();
 
         } catch (error) {
 
@@ -1239,6 +2099,7 @@
             document.getElementById(
                 "tableBody"
             ).innerHTML = `
+
                 <tr>
 
                     <td
@@ -1253,6 +2114,7 @@
                     </td>
 
                 </tr>
+
             `;
 
         }
@@ -1260,9 +2122,9 @@
     }
 
 
-    /* =========================
-       JALANKAN LOAD DATA
-    ========================= */
+    /* =====================================================
+       MULAI
+    ===================================================== */
 
     loadData();
 </script>
