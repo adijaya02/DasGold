@@ -320,14 +320,26 @@
 
     .month-btn{
         flex:0 0 auto;
+        width:60px;
         min-width:60px;
         height:44px;
-        padding:0 16px;
+        padding:0;
         border-radius:12px;
         font-size:18px;
         display:flex;
         align-items:center;
         justify-content:center;
+    }
+
+    .month-btn .desktop-text{
+        display:none !important;
+    }
+
+    .month-btn .mobile-text{
+        display:inline !important;
+        font-size:20px;
+        font-weight:700;
+        line-height:1;
     }
 
     #monthLabel{
@@ -339,6 +351,7 @@
         overflow:hidden;
         text-overflow:ellipsis;
     }
+
 
     .desktop-text{
         display:none;
@@ -491,7 +504,8 @@
     border-bottom:1px solid #0b4f96;
     }
 
-    /*  NAVIGASI BULAN */
+    /*NAVIGASI BULAN*/
+
     .month-btn{
         background:#1f86ff;
         color:#fff;
@@ -519,9 +533,6 @@
 
     .mobile-text{
         display:none;
-        font-size:20px;
-        font-weight:700;
-        line-height:1;
     }
 
 
