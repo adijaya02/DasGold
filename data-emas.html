@@ -454,6 +454,43 @@
     border-bottom:1px solid #0b4f96;
     }
 
+    .month-filter{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:15px;
+    margin-bottom:20px;
+    }
+
+    .month-filter button{
+        width:38px;
+        height:38px;
+        border:none;
+        border-radius:8px;
+        background:#04264a;
+        color:#fff;
+        font-size:22px;
+        cursor:pointer;
+        transition:.2s;
+    }
+
+    .month-filter button:hover{
+        background:#0b4f96;
+    }
+
+    .month-filter button:disabled{
+        background:#cbd5e1;
+        cursor:not-allowed;
+    }
+
+    #monthLabel{
+        min-width:180px;
+        text-align:center;
+        font-size:17px;
+        font-weight:600;
+        color:#04264a;
+    }
+
     /* isi tabel */
     .history-table tbody td{
     padding:14px;
@@ -570,6 +607,21 @@
 
             <div class="table-title">
                 History Aset Emas
+            </div>
+             <div class="month-filter">
+
+                <button id="prevMonth" type="button">
+                    ‹
+                </button>
+
+                <div id="monthLabel">
+                    -
+                </div>
+
+                <button id="nextMonth" type="button">
+                    ›
+                </button>
+
             </div>
 
             <div class="table-wrapper">
@@ -744,92 +796,411 @@
 	    </td>
 	</tr>`;
 
-    let allData=[];
-    let currentPage=1;
-    const rowsPerPage=10;
+    let allData = [];
+    let filteredData = [];
 
-    function formatRupiah(v){return Number(Math.round(v||0)).toLocaleString("id-ID");}
-    function formatGram(v){return Number(v||0).toFixed(4).replace(".",",");}
-    function formatTanggal(v){return new Date(v).toLocaleDateString("id-ID",{
-        weekday:"long",
-        day:"2-digit",
-        month:"long",
-        year:"numeric"
-    });}
+    let currentPage = 1;
+    const rowsPerPage = 10;
 
-    function renderTable(){const start=(currentPage-1)*rowsPerPage;
-        const end=start+rowsPerPage;
-        const rows=allData.slice(start,end);
+    /* =========================
+    FILTER BULAN
+    ========================= */
 
-        document.getElementById("tableBody").innerHTML=rows.map((item,index)=>`
+    let currentOffset = 0;
+
+    const prevMonthBtn = document.getElementById("prevMonth");
+    const nextMonthBtn = document.getElementById("nextMonth");
+    const monthLabel = document.getElementById("monthLabel");
+
+
+    /* =========================
+    FORMAT
+    ========================= */
+
+    function formatRupiah(v){
+        return Number(Math.round(v || 0)).toLocaleString("id-ID");
+    }
+
+
+    function formatGram(v){
+        return Number(v || 0)
+            .toFixed(4)
+            .replace(".", ",");
+    }
+
+
+    function formatTanggal(v){
+
+        return new Date(v).toLocaleDateString("id-ID",{
+            weekday:"long",
+            day:"2-digit",
+            month:"long",
+            year:"numeric"
+        });
+
+    }
+
+
+    /* =========================
+    FILTER DATA BERDASARKAN BULAN
+    ========================= */
+
+    function getMonthRange(){
+
+        const today = new Date();
+
+        const start = new Date(
+            today.getFullYear(),
+            today.getMonth() - currentOffset,
+            1
+        );
+
+        const end = new Date(
+            today.getFullYear(),
+            today.getMonth() - currentOffset + 1,
+            0,
+            23,
+            59,
+            59,
+            999
+        );
+
+        return {
+            start,
+            end
+        };
+
+    }
+
+
+    /* =========================
+    UPDATE LABEL BULAN
+    ========================= */
+
+    function updateMonthLabel(){
+
+        const today = new Date();
+
+        const selectedMonth = new Date(
+            today.getFullYear(),
+            today.getMonth() - currentOffset,
+            1
+        );
+
+        monthLabel.textContent =
+            selectedMonth.toLocaleDateString("id-ID",{
+                month:"long",
+                year:"numeric"
+            });
+
+        /*
+        Tidak boleh maju melewati bulan berjalan
+        */
+
+        nextMonthBtn.disabled = currentOffset === 0;
+
+    }
+
+
+    /* =========================
+    FILTER DATA
+    ========================= */
+
+    function filterDataByMonth(){
+
+        const {
+            start,
+            end
+        } = getMonthRange();
+
+        filteredData = allData.filter(item => {
+
+            const tanggal = new Date(item.tanggal_aset);
+
+            return tanggal >= start && tanggal <= end;
+
+        });
+
+        /*
+        Data terbaru ditampilkan lebih dahulu
+        */
+
+        filteredData.sort(
+            (a,b) =>
+            new Date(b.tanggal_aset) -
+            new Date(a.tanggal_aset)
+        );
+
+        currentPage = 1;
+
+        renderTable();
+
+    }
+
+
+    /* =========================
+    RENDER TABLE
+    ========================= */
+
+    function renderTable(){
+
+        const start =
+            (currentPage - 1) * rowsPerPage;
+
+        const end =
+            start + rowsPerPage;
+
+        const rows =
+            filteredData.slice(start,end);
+
+        const tbody =
+            document.getElementById("tableBody");
+
+
+        if(rows.length === 0){
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="10">
+                        Belum ada data pada bulan ini
+                    </td>
+                </tr>
+            `;
+
+            renderPagination();
+
+            return;
+        }
+
+
+        tbody.innerHTML = rows.map((item,index) => `
+
             <tr>
+
                 <td>
-                ${start+index+1}
+                    ${start + index + 1}
                 </td>
 
                 <td>
-                ${formatTanggal(item.tanggal_aset)}
+                    ${formatTanggal(item.tanggal_aset)}
                 </td>
 
                 <td>
-                Rp ${formatRupiah(item.harga_beli)}
+                    Rp ${formatRupiah(item.harga_beli)}
                 </td>
 
                 <td>
-                Rp ${formatRupiah(item.biaya_pembelian)}
+                    Rp ${formatRupiah(item.biaya_pembelian)}
                 </td>
 
                 <td>
-                Rp ${formatRupiah(item.total_modal)}
+                    Rp ${formatRupiah(item.total_modal)}
                 </td>
 
                 <td>
-                ${formatGram(item.aset)}
+                    ${formatGram(item.aset)}
                 </td>
 
                 <td>
-                ${formatGram(item.total_aset)}
+                    ${formatGram(item.total_aset)}
                 </td>
 
                 <td>
-                Rp ${formatRupiah(item.harga_jual)}
+                    Rp ${formatRupiah(item.harga_jual)}
                 </td>
 
                 <td>
-                Rp ${formatRupiah(item.jumlah_uang_aplikasi)}
+                    Rp ${formatRupiah(item.jumlah_uang_aplikasi)}
                 </td>
 
-                <td class="${item.untung_rugi>=0?"profit":"loss"}">
+                <td class="${
+                    Number(item.untung_rugi) >= 0
+                        ? "profit"
+                        : "loss"
+                }">
+
                     Rp ${formatRupiah(item.untung_rugi)}
+
                 </td>
 
-            </tr>`
-        ).join("");
+            </tr>
+
+        `).join("");
+
+
         renderPagination();
+
     }
 
-    function renderPagination(){const total=Math.ceil(allData.length/rowsPerPage);
-        const div=document.getElementById("pagination");div.innerHTML="";
 
-        for(let i=1;i<=total;i++){div.innerHTML+=`<button class="${i===currentPage?"active":""}"
-            onclick="changePage(${i})">${i}
-        </button>`;}
+    /* =========================
+    PAGINATION
+    ========================= */
+
+    function renderPagination(){
+
+        const total =
+            Math.ceil(
+                filteredData.length /
+                rowsPerPage
+            );
+
+        const div =
+            document.getElementById("pagination");
+
+        div.innerHTML = "";
+
+
+        if(total <= 1){
+            return;
+        }
+
+
+        for(let i = 1; i <= total; i++){
+
+            div.innerHTML += `
+
+                <button
+                    class="${
+                        i === currentPage
+                        ? "active"
+                        : ""
+                    }"
+                    onclick="changePage(${i})">
+
+                    ${i}
+
+                </button>
+
+            `;
+
+        }
+
     }
 
-    function changePage(page){currentPage=page;renderTable();}
-	
-	    async function loadData() {
-	
-	    const res = await fetch("/api/data-aset");
-	    allData = await res.json();
-	
-	    // terbaru di halaman pertama
-	    allData.sort((a,b)=>new Date(b.tanggal_aset)-new Date(a.tanggal_aset));
-	
-	    renderTable();
-	}
-	
-	loadData();
+
+    function changePage(page){
+
+        currentPage = page;
+
+        renderTable();
+
+    }
+
+
+    /* =========================
+    BULAN SEBELUMNYA
+    ========================= */
+
+    prevMonthBtn.addEventListener("click", () => {
+
+        currentOffset++;
+
+        updateMonthLabel();
+
+        filterDataByMonth();
+
+    });
+
+
+    /* =========================
+    BULAN BERIKUTNYA
+    ========================= */
+
+    nextMonthBtn.addEventListener("click", () => {
+
+        /*
+        Jangan bisa melewati bulan berjalan
+        */
+
+        if(currentOffset === 0){
+            return;
+        }
+
+        currentOffset--;
+
+        updateMonthLabel();
+
+        filterDataByMonth();
+
+    });
+
+
+    /* =========================
+    LOAD DATA
+    ========================= */
+
+    async function loadData(){
+
+        try{
+
+            const res =
+                await fetch("/api/data-aset");
+
+            if(!res.ok){
+                throw new Error(
+                    "Gagal mengambil data aset"
+                );
+            }
+
+            allData = await res.json();
+
+
+            /*
+            Pastikan data berupa array
+            */
+
+            if(!Array.isArray(allData)){
+                allData = [];
+            }
+
+
+            /*
+            Urutkan dari tanggal terbaru
+            */
+
+            allData.sort(
+                (a,b) =>
+                new Date(b.tanggal_aset) -
+                new Date(a.tanggal_aset)
+            );
+
+
+            /*
+            Tampilkan bulan berjalan
+            */
+
+            updateMonthLabel();
+
+            filterDataByMonth();
+
+
+        }catch(error){
+
+            console.error(
+                "Gagal load data:",
+                error
+            );
+
+            document.getElementById(
+                "tableBody"
+            ).innerHTML = `
+
+                <tr>
+
+                    <td colspan="10">
+                        Gagal mengambil data
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+
+    }
+
+    loadData();
 
 </script>
 </body>
