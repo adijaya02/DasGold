@@ -311,6 +311,43 @@
         font-size:14px;
     }
 
+    .month-nav{
+        width:100%;
+        display:flex;
+        align-items:center;
+        gap:10px;
+    }
+
+    .month-btn{
+        flex:0 0 auto;
+        min-width:60px;
+        height:44px;
+        padding:0 16px;
+        border-radius:12px;
+        font-size:18px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+    }
+
+    #monthLabel{
+        flex:1;
+        min-width:0;
+        padding:10px 14px !important;
+        font-size:14px !important;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+    }
+
+    .desktop-text{
+        display:none;
+    }
+
+    .mobile-text{
+        display:inline;
+    }
+
     /* Table */
     .history-table th,
     .history-table td{
@@ -454,42 +491,39 @@
     border-bottom:1px solid #0b4f96;
     }
 
-    .month-filter{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:15px;
-    margin-bottom:20px;
-    }
-
-    .month-filter button{
-        width:38px;
-        height:38px;
-        border:none;
-        border-radius:8px;
-        background:#04264a;
+    /*  NAVIGASI BULAN */
+    .month-btn{
+        background:#1f86ff;
         color:#fff;
-        font-size:22px;
+        border:none;
+        padding:10px 16px;
+        border-radius:10px;
         cursor:pointer;
-        transition:.2s;
+        font-weight:600;
+        transition:.3s;
     }
 
-    .month-filter button:hover{
+    .month-btn:hover{
         background:#0b4f96;
     }
 
-    .month-filter button:disabled{
-        background:#cbd5e1;
-        cursor:not-allowed;
+    .month-nav{
+        display:flex;
+        align-items:center;
+        gap:10px;
     }
 
-    #monthLabel{
-        min-width:180px;
-        text-align:center;
-        font-size:17px;
-        font-weight:600;
-        color:#04264a;
+    .desktop-text{
+        display:inline;
     }
+
+    .mobile-text{
+        display:none;
+        font-size:20px;
+        font-weight:700;
+        line-height:1;
+    }
+
 
     /* isi tabel */
     .history-table tbody td{
@@ -587,19 +621,72 @@
             <div class="table-title">
                 History Aset Emas
             </div>
-             <div class="month-filter">
+             <div
+                style="
+                    display:flex;
+                    justify-content:space-between;
+                    align-items:center;
+                    margin-bottom:15px;
+                    flex-wrap:wrap;
+                    gap:10px;
+                "
+            >
 
-                <button id="prevMonth" type="button">
-                    ‹
-                </button>
-
-                <div id="monthLabel">
-                    -
+                <div class="table-title">
+                    History Aset Emas
                 </div>
 
-                <button id="nextMonth" type="button">
-                    ›
-                </button>
+                <div class="month-nav">
+
+                    <button
+                        id="prevMonth"
+                        class="month-btn"
+                        type="button"
+                    >
+
+                        <span class="desktop-text">
+                            ← Bulan Sebelumnya
+                        </span>
+
+                        <span class="mobile-text">
+                            ←
+                        </span>
+
+                    </button>
+
+
+                    <div
+                        id="monthLabel"
+                        style="
+                            background:#f3f6fa;
+                            padding:10px 18px;
+                            border-radius:10px;
+                            font-weight:600;
+                            color:#04264a;
+                            min-width:180px;
+                            text-align:center;
+                        "
+                    >
+                    </div>
+
+
+                    <button
+                        id="nextMonth"
+                        class="month-btn"
+                        type="button"
+                    >
+
+                        <span class="desktop-text">
+                            Bulan Berikutnya →
+                        </span>
+
+                        <span class="mobile-text">
+                            →
+                        </span>
+
+                    </button>
+
+                </div>
 
             </div>
 
@@ -782,9 +869,61 @@
 
     let currentOffset = 0;
 
-    const prevMonthBtn = document.getElementById("prevMonth");
-    const nextMonthBtn = document.getElementById("nextMonth");
-    const monthLabel = document.getElementById("monthLabel");
+    function filterDataByMonth(){
+
+        const today = new Date();
+
+        const start = new Date(
+            today.getFullYear(),
+            today.getMonth() - currentOffset,
+            1
+        );
+
+        const end = new Date(
+            today.getFullYear(),
+            today.getMonth() - currentOffset + 1,
+            0,
+            23,
+            59,
+            59
+        );
+
+
+        const label = start.toLocaleDateString(
+            'id-ID',
+            {
+                month:'long',
+                year:'numeric'
+            }
+        );
+
+
+        document.getElementById(
+            "monthLabel"
+        ).textContent = `Data ${label}`;
+
+
+        filteredData = allData
+            .filter(item => {
+
+                const tanggal =
+                    new Date(item.tanggal_aset);
+
+                return (
+                    tanggal >= start &&
+                    tanggal <= end
+                );
+
+            })
+            .sort((a,b) =>
+                new Date(b.tanggal_aset) -
+                new Date(a.tanggal_aset)
+            );
+
+
+        renderTable();
+
+    }
 
 
     /* =========================
