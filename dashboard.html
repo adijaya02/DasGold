@@ -6,11 +6,9 @@
 <title>Dashboard Emas</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-
 *{
     margin:0;
     padding:0;
@@ -28,7 +26,6 @@ body{
 }
 
 /* SIDEBAR */
-
 .sidebar{
     width:260px;
     background:#04264a;
@@ -36,6 +33,7 @@ body{
     padding:25px 0;
     transition:all .3s ease;
     overflow:hidden;
+    flex-shrink:0;
 }
 
 .sidebar.hide{
@@ -72,18 +70,17 @@ body{
     padding:16px 30px;
     color:#fff;
     text-decoration:none;
+    white-space:nowrap;
 }
 
 /* MAIN */
-
 .main{
     flex:1;
+    min-width:0;
     transition:all .3s ease;
-    transition:.3s;
 }
 
 /* TOPBAR */
-
 .topbar{
     height:75px;
     background:#fff;
@@ -98,6 +95,9 @@ body{
     font-size:26px;
     cursor:pointer;
     user-select:none;
+    background:none;
+    border:none;
+    color:#1b1b1b;
 }
 
 .right-top{
@@ -122,13 +122,11 @@ body{
 }
 
 /* CONTENT */
-
 .content{
     padding:25px;
 }
 
 /* CARDS */
-
 .stats{
     display:grid;
     grid-template-columns:repeat(4,1fr);
@@ -162,6 +160,10 @@ body{
     flex-wrap:wrap;
 }
 
+.price-row .card-value{
+    margin-top:0;
+}
+
 .price-unit{
     font-size:13px;
     color:#666;
@@ -175,14 +177,7 @@ body{
     font-size:14px;
 }
 
-.price-cards{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:20px;
-}
-	
 /* PANEL */
-
 .panel{
     margin-top:25px;
     background:#fff;
@@ -231,9 +226,9 @@ body{
     background:#dfe8f5;
 }
 
-.filter button.active {
-    background: #1f86ff;
-    color: white;
+.filter button.active{
+    background:#1f86ff;
+    color:#fff;
 }
 
 .chart-area{
@@ -243,12 +238,15 @@ body{
 }
 
 .chart-box{
+    position:relative;
     height:380px;
+    min-width:0;
     background:#fff;
     padding:15px;
 }
 
 .ranking{
+    min-width:0;
     background:#f7f9fc;
     border-radius:10px;
     padding:20px;
@@ -286,27 +284,23 @@ body{
    TABLET
 ========================= */
 @media (max-width: 1200px){
-
     .stats{
-        grid-template-columns: repeat(2,1fr);
+        grid-template-columns:repeat(2,1fr);
     }
 
     .chart-area{
-        grid-template-columns: 1fr;
+        grid-template-columns:1fr;
     }
-
 }
 
 /* =========================
    MOBILE
 ========================= */
 @media (max-width:768px){
-
     .dashboard{
         flex-direction:column;
     }
 
-    /* Sidebar */
     .sidebar{
         position:fixed;
         top:0;
@@ -350,7 +344,6 @@ body{
         padding:12px;
     }
 
-    /* CARD */
     .stats{
         grid-template-columns:1fr;
         gap:12px;
@@ -368,7 +361,6 @@ body{
         font-size:13px;
     }
 
-    /* PANEL */
     .panel{
         padding:15px;
     }
@@ -399,14 +391,14 @@ body{
     }
 
     .chart-box{
-        height:220px;
+        height:240px;
     }
 
     .ranking{
         padding:15px;
     }
 
-     .ranking-header{
+    .ranking-header{
         flex-direction:column;
         align-items:flex-start;
         gap:4px;
@@ -420,15 +412,12 @@ body{
     .rank-item{
         font-size:14px;
     }
-
 }
 
-	
 /* =========================
    EXTRA SMALL DEVICE
 ========================= */
 @media (max-width: 480px){
-
     .logo{
         font-size:22px;
     }
@@ -456,7 +445,6 @@ body{
     .panel{
         padding:15px;
     }
-
 }
 
 #overlay{
@@ -476,7 +464,6 @@ body{
     opacity:1;
     visibility:visible;
 }
-	
 </style>
 </head>
 
@@ -487,428 +474,356 @@ body{
 <div class="dashboard">
 
     <aside class="sidebar" id="sidebar">
-
-        <div class="logo">
-            GoldDash
-        </div>
+        <div class="logo">GoldDash</div>
 
         <ul class="menu">
             <li class="active">
                 <a href="dashboard.html">Dashboard</a>
             </li>
-
             <li>
                 <a href="harga-emas.html">Harga Emas</a>
             </li>
-
             <li>
                 <a href="data-emas.html">Data Emas</a>
             </li>
-
             <li>
                 <a href="investasi.html">Investasi</a>
             </li>            
         </ul>
-
     </aside>
 
     <main class="main">
 
         <div class="topbar">
-
-            <div class="left-top" id="toggleSidebar">
+            <button type="button" class="left-top" id="toggleSidebar" aria-label="Toggle Menu">
                 ☰
+            </button>
+            
+            <div class="right-top">
+                <button type="button" class="logout-btn" onclick="logout()">
+                    Logout
+                </button>
             </div>
-			
-			<div class="right-top">
-				<button class="logout-btn" onclick="logout()">
-					Logout
-				</button>
-			</div>
-
         </div>
 
         <div class="content">
 
             <div class="stats">
-
-               <div class="card">
-				    <div class="card-title">Harga Beli</div>
-				
-				    <div class="price-row">
-				        <div class="card-value" id="hargaBeli">Loading...</div>
-				        <span class="price-unit">/ 0,01 gr</span>
-				    </div>
-				
-				    <div class="card-sub" id="tanggalHarga">
-				        Loading...
-				    </div>
-			   </div>
-					
-				<div class="card">
-				    <div class="card-title">Harga Jual</div>
-				
-				    <div class="price-row">
-				        <div class="card-value" id="hargaJual">Loading...</div>
-				        <span class="price-unit">/ 0,01 gr</span>
-				    </div>
-				
-				    <div class="card-sub" id="tanggalHarga2">
-				        Loading...
-				    </div>
-				</div>
-
-               <div class="card">
-				    <div class="card-title">Berat</div>
-				    <div class="card-value" id="berat">0 gr</div>
-				    <div class="card-sub">Total Aset</div>
-				</div>
-				
-				<div class="card">
-				    <div class="card-title">Saldo</div>
-				    <div class="card-value" id="saldo">Rp 0</div>
-				    <div class="card-sub" id="tanggalSaldo">
-                        Loading...
+                <div class="card">
+                    <div class="card-title">Harga Beli</div>
+                    <div class="price-row">
+                        <div class="card-value" id="hargaBeli">Loading...</div>
+                        <span class="price-unit">/ 0,01 gr</span>
                     </div>
-				</div>
+                    <div class="card-sub" id="tanggalHarga">Loading...</div>
+                </div>
+                    
+                <div class="card">
+                    <div class="card-title">Harga Jual</div>
+                    <div class="price-row">
+                        <div class="card-value" id="hargaJual">Loading...</div>
+                        <span class="price-unit">/ 0,01 gr</span>
+                    </div>
+                    <div class="card-sub" id="tanggalHarga2">Loading...</div>
+                </div>
 
+                <div class="card">
+                    <div class="card-title">Berat</div>
+                    <div class="card-value" id="berat">0,0000 gr</div>
+                    <div class="card-sub">Total Aset</div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">Saldo</div>
+                    <div class="card-value" id="saldo">Rp 0</div>
+                    <div class="card-sub" id="tanggalSaldo">Loading...</div>
+                </div>
             </div>
 
             <div class="panel">
-
                 <div class="panel-header">
-
                     <div class="tabs">
                         <div class="tab active">Profit</div>
                     </div>
 
                     <div class="filter">
-                        <button data-filter="7">7 Hari</button>
-                        <button class="active" data-filter="30">30 Hari</button>
-                        <button data-filter="365">1 Tahun</button>
-                        <button data-filter="all">Semua Data</button>
+                        <button type="button" data-filter="7">7 Hari</button>
+                        <button type="button" class="active" data-filter="30">30 Hari</button>
+                        <button type="button" data-filter="365">1 Tahun</button>
+                        <button type="button" data-filter="all">Semua Data</button>
                     </div>
-
                 </div>
 
                 <div class="chart-area">
-
                     <div class="chart-box">
-						<canvas id="goldChart"></canvas>
-					</div>
+                        <canvas id="goldChart"></canvas>
+                    </div>
 
-                   <div class="ranking">
-					   
-						<div class="ranking-header">
+                    <div class="ranking">
+                        <div class="ranking-header">
                             <h3>Ringkasan</h3>
                             <span id="tanggalRingkasan">-</span>
                         </div>
                             
-						<div class="rank-item">
-							<span>Profit</span>
-							<strong id="profit">
-							Rp 0
-							</strong>
-						</div>
-						
-						<div class="rank-item">
-							<span>Modal</span>
-							<strong id="modal">
-							Rp 0
-							</strong>
-						</div>
-						
-						<div class="rank-item">
-							<span>Uang di Aplikasi</span>
-							<strong id="uangApp">
-							Rp 0
-							</strong>
-						</div>
-					</div>
+                        <div class="rank-item">
+                            <span>Profit</span>
+                            <strong id="profit">Rp 0</strong>
+                        </div>
+                        
+                        <div class="rank-item">
+                            <span>Modal</span>
+                            <strong id="modal">Rp 0</strong>
+                        </div>
+                        
+                        <div class="rank-item">
+                            <span>Uang di Aplikasi</span>
+                            <strong id="uangApp">Rp 0</strong>
+                        </div>
+                    </div>
                 </div>
             </div>
+
         </div>
     </main>
 </div>
 
-    <script>
+<script>
+    // Helper Formatters
+    function formatRupiah(n, round = true) {
+        const num = Number(n) || 0;
+        const val = round ? Math.round(num) : num;
+        return "Rp " + val.toLocaleString("id-ID");
+    }
 
-        async function loadHarga() {
+    function formatGram(n) {
+        return (Number(n) || 0).toFixed(4).replace(".", ",");
+    }
 
-            try {
-        
-                const res = await fetch('/api/harga');
-                const data = await res.json();
-        
-                if (!data || !data.harga_beli) return;
-        
-                document.getElementById('hargaBeli').innerText =
-                    'Rp ' + Number(data.harga_beli).toLocaleString('id-ID');
-        
-                document.getElementById('hargaJual').innerText =
-                    'Rp ' + Number(data.harga_jual).toLocaleString('id-ID');
-        
-                const tanggal = new Date(data.tanggal)
-                    .toLocaleDateString('id-ID',{
-                        weekday:'long',
-                        day:'numeric',
-                        month:'long',
-                        year:'numeric'
-                    });
-        
-                document.getElementById('tanggalHarga').innerText = tanggal;
-                document.getElementById('tanggalHarga2').innerText = tanggal;
-        
-            } catch (err) {
-        
-                console.error(err);
-        
-            }
-        
+    // Sidebar & Navigasi
+    const toggleBtn = document.getElementById("toggleSidebar");
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+    const main = document.querySelector(".main");
+    let lastWindowWidth = window.innerWidth;
+
+    if (window.innerWidth > 768) {
+        sidebar.classList.add("hide");
+    }
+
+    toggleBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (window.innerWidth <= 768) {
+            sidebar.classList.remove("hide");
+            sidebar.classList.toggle("show");
+            overlay.classList.toggle("show");
+        } else {
+            sidebar.classList.toggle("hide");
         }
-        loadHarga();
+    });
 
-        const toggleBtn = document.getElementById("toggleSidebar");
-        const sidebar = document.getElementById("sidebar");
-        const overlay = document.getElementById("overlay");
+    window.addEventListener("resize", () => {
+        if (window.innerWidth === lastWindowWidth) return;
+        lastWindowWidth = window.innerWidth;
 
-        // Default: desktop sidebar disembunyikan
         if (window.innerWidth > 768) {
-            sidebar.classList.add("hide");
-        }
-
-        toggleBtn.addEventListener("click", (e) => {
-
-            e.stopPropagation();
-
-            if (window.innerWidth <= 768) {
-
-                sidebar.classList.remove("hide");
-                sidebar.classList.toggle("show");
-                overlay.classList.toggle("show");
-
-            } else {
-
-                sidebar.classList.toggle("hide");
-
-            }
-
-        });
-
-        window.addEventListener("resize", () => {
-
-            if (window.innerWidth > 768) {
-
-                sidebar.classList.remove("show");
-                overlay.classList.remove("show");
-
-                // Desktop selalu default tersembunyi
-                sidebar.classList.add("hide");
-
-            } else {
-
-                // Mobile tidak menggunakan class hide
-                sidebar.classList.remove("hide");
-
-            }
-
-        });
-
-        overlay.addEventListener("click", () => {
-
             sidebar.classList.remove("show");
             overlay.classList.remove("show");
+            sidebar.classList.add("hide");
+        } else {
+            sidebar.classList.remove("hide");
+        }
+    });
 
-        });
+    overlay.addEventListener("click", () => {
+        sidebar.classList.remove("show");
+        overlay.classList.remove("show");
+    });
 
-        const main = document.querySelector(".main");
+    main.addEventListener("click", (e) => {
+        if (sidebar.contains(e.target)) return;
 
-            main.addEventListener("click", (e) => {
+        if (window.innerWidth > 768) {
+            sidebar.classList.add("hide");
+        } else {
+            sidebar.classList.remove("show");
+            overlay.classList.remove("show");
+        }
+    });
 
-                // Jangan tutup jika klik di dalam sidebar
-                if (sidebar.contains(e.target)) return;
+    function logout() {
+        window.location.href = "login.html";
+    }
 
-                if (window.innerWidth > 768) {
+    // Load Harga Emas
+    async function loadHarga() {
+        try {
+            const res = await fetch("/api/harga");
+            if (!res.ok) throw new Error("Gagal memuat harga");
+            const data = await res.json();
 
-                    sidebar.classList.add("hide");
+            if (!data || !data.harga_beli) {
+                throw new Error("Data harga kosong");
+            }
 
-                } else {
+            document.getElementById("hargaBeli").innerText = formatRupiah(data.harga_beli, false);
+            document.getElementById("hargaJual").innerText = formatRupiah(data.harga_jual, false);
 
-                    sidebar.classList.remove("show");
-                    overlay.classList.remove("show");
-
-                }
-
+            const tanggal = new Date(data.tanggal).toLocaleDateString("id-ID", {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+                year: "numeric"
             });
 
-        function logout(){
-            // kalau pakai login sederhana, langsung redirect
-            window.location.href = "login.html";
+            document.getElementById("tanggalHarga").innerText = tanggal;
+            document.getElementById("tanggalHarga2").innerText = tanggal;
+        } catch (err) {
+            console.error(err);
+            document.getElementById("hargaBeli").innerText = "Rp 0";
+            document.getElementById("hargaJual").innerText = "Rp 0";
+            document.getElementById("tanggalHarga").innerText = "-";
+            document.getElementById("tanggalHarga2").innerText = "-";
         }
-        
-        // Variabel global
-        let chartData = [];
-        const canvas = document.getElementById("goldChart");
+    }
 
-        async function loadChart(filter = "7") {
+    // State Global Aset & Chart
+    let asetData = [];
+    let goldChartInstance = null;
+    const canvas = document.getElementById("goldChart");
 
-            try {
+    function renderChart(filter = "30") {
+        if (!asetData.length) return;
 
-                // Ambil data hanya sekali
-                if (chartData.length === 0) {
+        let filteredData = [];
 
-                    const res = await fetch("/api/data-aset");
-                    chartData = await res.json();
+        if (filter === "all") {
+            filteredData = [...asetData];
+        } else {
+            const latestDate = new Date(asetData[asetData.length - 1].tanggal_aset);
+            latestDate.setHours(23, 59, 59, 999);
 
-                    if (!chartData.length) return;
+            const startDate = new Date(latestDate);
+            startDate.setDate(startDate.getDate() - (Number(filter) - 1));
+            startDate.setHours(0, 0, 0, 0);
 
-                    // Urutkan sekali saja
-                    chartData.sort((a, b) =>
-                        new Date(a.tanggal_aset) - new Date(b.tanggal_aset)
-                    );
-                }
+            filteredData = asetData.filter(item => {
+                const tgl = new Date(item.tanggal_aset);
+                return tgl >= startDate && tgl <= latestDate;
+            });
+        }
 
-                let filteredData = [];
+        const labels = filteredData.map(item =>
+            new Date(item.tanggal_aset).toLocaleDateString("id-ID", {
+                day: "2-digit",
+                month: "short"
+            })
+        );
 
-                if (filter === "all") {
+        const profitData = filteredData.map(item => Number(item.untung_rugi || 0));
+        const lastProfit = profitData.length ? profitData[profitData.length - 1] : 0;
+        const lineColor = lastProfit >= 0 ? "#16a34a" : "#e53935";
+        const fillColor = lastProfit >= 0 ? "rgba(22,163,74,.15)" : "rgba(229,57,53,.15)";
 
-                    filteredData = [...chartData];
+        if (goldChartInstance) {
+            goldChartInstance.destroy();
+        }
 
-                } else {
-
-                    const latestDate = new Date(chartData[chartData.length - 1].tanggal_aset);
-
-                    const startDate = new Date(latestDate);
-                    startDate.setDate(startDate.getDate() - (Number(filter) - 1));
-
-                    filteredData = chartData.filter(item => {
-                        const tgl = new Date(item.tanggal_aset);
-                        return tgl >= startDate && tgl <= latestDate;
-                    });
-
-                }
-
-                const labels = filteredData.map(item =>
-                    new Date(item.tanggal_aset).toLocaleDateString("id-ID", {
-                        day: "2-digit",
-                        month: "short"
-                    })
-                );
-
-                const profitData = filteredData.map(item =>
-                    Number(item.untung_rugi || 0)
-                );
-
-                // Hapus chart lama
-                if (window.goldChart && typeof window.goldChart.destroy === "function") {
-                    window.goldChart.destroy();
-                }
-
-                // Buat chart baru
-                window.goldChart = new Chart(canvas, {
-                    type: "line",
-                    data: {
-                        labels,
-                        datasets: [{
-                            label: "Profit",
-                            data: profitData,
-                            borderColor: "#16a34a",
-                            backgroundColor: "rgba(22,163,74,.15)",
-                            fill: true,
-                            tension: 0.4
-                        }]
+        goldChartInstance = new Chart(canvas, {
+            type: "line",
+            data: {
+                labels,
+                datasets: [{
+                    label: "Profit",
+                    data: profitData,
+                    borderColor: lineColor,
+                    backgroundColor: fillColor,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-
-                        plugins: {
-                            legend: {
-                                display: false
-                            }
-                        },
-
-                        scales: {
-                            y: {
-                                ticks: {
-                                    callback: value =>
-                                        "Rp " + Number(value).toLocaleString("id-ID")
-                                }
-                            }
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => "Profit: " + formatRupiah(context.parsed.y)
                         }
                     }
-                });
-
-            } catch (err) {
-                console.error(err);
+                },
+                scales: {
+                    y: {
+                        ticks: {
+                            callback: value => formatRupiah(value)
+                        }
+                    }
+                }
             }
-        }
+        });
+    }
 
-        // Event tombol filter
-        const filterButtons = document.querySelectorAll(".filter button");
+    // Load Data Aset Sekali untuk Card, Ringkasan, dan Chart
+    async function initAsetDashboard() {
+        try {
+            const res = await fetch("/api/data-aset");
+            if (!res.ok) throw new Error("Gagal memuat data aset");
+            const data = await res.json();
 
-        filterButtons.forEach(button => {
+            if (!Array.isArray(data) || !data.length) {
+                document.getElementById("tanggalSaldo").innerText = "-";
+                return;
+            }
 
-            button.addEventListener("click", () => {
+            // Urutkan ascending berdasarkan tanggal_aset
+            asetData = data.sort((a, b) => new Date(a.tanggal_aset) - new Date(b.tanggal_aset));
 
-                // Pindahkan active
-                filterButtons.forEach(btn =>
-                    btn.classList.remove("active")
-                );
-
-                button.classList.add("active");
-
-                // Tampilkan chart sesuai filter
-                loadChart(button.dataset.filter);
-
+            // Ambil data terbaru (elemen terakhir)
+            const latest = asetData[asetData.length - 1];
+            const tanggal = new Date(latest.tanggal_aset).toLocaleDateString("id-ID", {
+                day: "numeric",
+                month: "long",
+                year: "numeric"
             });
 
-        });
+            // Update Card
+            document.getElementById("berat").innerText = formatGram(latest.total_aset) + " gr";
+            document.getElementById("saldo").innerText = formatRupiah(latest.jumlah_uang_aplikasi);
+            document.getElementById("tanggalSaldo").innerText = tanggal;
 
-        loadChart("30"); // Load chart default untuk 30 hari
+            // Update Ringkasan
+            document.getElementById("tanggalRingkasan").innerText = tanggal;
+            document.getElementById("profit").innerText = formatRupiah(latest.untung_rugi);
+            document.getElementById("modal").innerText = formatRupiah(latest.total_modal);
+            document.getElementById("uangApp").innerText = formatRupiah(latest.jumlah_uang_aplikasi);
 
-        function rupiah(n){return "Rp " + Number(Math.round(n || 0)).toLocaleString("id-ID");}
-        function gram(n){return Number(n || 0).toFixed(4).replace(".",",");}
+            const profitEl = document.getElementById("profit");
+            profitEl.style.color = Number(latest.untung_rugi || 0) >= 0 ? "#16a34a" : "#e53935";
 
-        async function loadDashboardData(){
-
-            try{
-
-                const res=await fetch("/api/data-aset");
-                const data=await res.json();
-
-                if(!data.length){return;}
-
-                /*ambil data terbaru*/
-                const latest=data.sort((a,b)=>new Date(b.tanggal_aset)-new Date(a.tanggal_aset))[0];
-
-                const tanggal = new Date(latest.tanggal_aset)
-                .toLocaleDateString("id-ID", {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric"
-                });
-
-                /* CARD */
-                document.getElementById("berat").innerText=gram(latest.total_aset)+" gr";
-                document.getElementById("saldo").innerText=rupiah(latest.jumlah_uang_aplikasi);
-                document.getElementById("tanggalSaldo").innerText=tanggal;
-
-                /* RINGKASAN */
-                document.getElementById("tanggalRingkasan").innerText = tanggal;
-                document.getElementById("profit").innerText=rupiah(latest.untung_rugi);
-                document.getElementById("modal").innerText=rupiah(latest.total_modal);
-                document.getElementById("uangApp").innerText=rupiah(latest.jumlah_uang_aplikasi);
-
-                /* warna profit */
-                const profit=
-                document.getElementById("profit");
-                profit.style.color=latest.untung_rugi>=0?"#16a34a":"#e53935";
-            }
-            catch(err){console.log(err);}
+            // Render chart sesuai tombol filter yang aktif
+            const activeBtn = document.querySelector(".filter button.active");
+            renderChart(activeBtn ? activeBtn.dataset.filter : "30");
+        } catch (err) {
+            console.error(err);
+            document.getElementById("tanggalSaldo").innerText = "-";
         }
-        loadDashboardData();
+    }
 
-    </script>
+    // Event Tombol Filter Chart
+    const filterButtons = document.querySelectorAll(".filter button");
+    filterButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            filterButtons.forEach(btn => btn.classList.remove("active"));
+            button.classList.add("active");
+            renderChart(button.dataset.filter);
+        });
+    });
+
+    // Jalankan inisialisasi saat halaman siap
+    loadHarga();
+    initAsetDashboard();
+</script>
 </body>
 </html>
