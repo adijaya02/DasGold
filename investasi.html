@@ -710,11 +710,19 @@ body{
         }) + " gram";
     }
 
+    function getLocalDateString(date = new Date()) {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, "0");
+        const d = String(date.getDate()).padStart(2, "0");
+        return `${y}-${m}-${d}`;
+    }
+
     /* =====================================================
-       HARGA EMAS & MODE MANUAL
+       HARGA EMAS, RIWAYAT TANGGAL & MODE MANUAL
     ===================================================== */
     let hargaPerGram = 0;
     let hargaDatabase = 0;
+    let historyPrices = {};
     let manualMode = false;
 
     const hargaBeliEl = document.getElementById("hargaBeli");
@@ -724,35 +732,84 @@ body{
     const saveBtnHarga = document.getElementById("saveHargaBtn");
     const resetBtnHarga = document.getElementById("resetHargaBtn");
 
-    function updateDisplayedPrices(harga001) {
+    // Elemen keterangan sumber harga di bawah Harga 0,01 Gram
+    const hargaStatusEl = document.createElement("div");
+    hargaStatusEl.style.fontSize = "12px";
+    hargaStatusEl.style.marginTop = "6px";
+    hargaStatusEl.style.color = "#64748b";
+    hargaBeliEl.insertAdjacentElement("afterend", hargaStatusEl);
+
+    function updateDisplayedPrices(harga001, statusText = "", statusColor = "#64748b") {
         hargaPerGram = harga001 * 100;
         hargaBeliEl.innerText = formatRupiah(harga001);
         harga1GramEl.innerText = formatRupiah(hargaPerGram);
+        hargaStatusEl.textContent = statusText;
+        hargaStatusEl.style.color = statusColor;
         recalculateTotal();
     }
 
-    async function loadHarga() {
-        try {
-            const res = await fetch("/api/harga");
-            if (!res.ok) throw new Error("Gagal memuat harga");
-            const data = await res.json();
+    function applyPriceByDate(dateStr) {
+        if (manualMode) return;
 
-            if (!data || !data.harga_beli) {
-                throw new Error("Data harga kosong");
-            }
+        const todayStr = getLocalDateString();
 
-            hargaDatabase = Number(data.harga_beli);
+        if (historyPrices[dateStr]) {
+            updateDisplayedPrices(
+                historyPrices[dateStr],
+                dateStr === todayStr ? "Harga hari ini" : "Menggunakan harga riwayat tanggal dipilih",
+                "#16a34a"
+            );
+        } else if (hargaDatabase > 0) {
+            const info = dateStr === todayStr
+                ? "Harga terbaru"
+                : "Riwayat tanggal ini belum ada, memakai harga terbaru";
+            const color = dateStr === todayStr ? "#64748b" : "#d97706";
+            updateDisplayedPrices(hargaDatabase, info, color);
+        } else {
+            hargaBeliEl.innerText = "Rp 0";
+            harga1GramEl.innerText = "Rp 0";
+            hargaStatusEl.textContent = "Data harga belum tersedia";
+        }
+    }
 
-            if (!manualMode) {
-                updateDisplayedPrices(hargaDatabase);
-            }
-        } catch (err) {
-            console.error(err);
-            if (!manualMode) {
-                hargaBeliEl.innerText = "Rp 0";
-                harga1GramEl.innerText = "Rp 0";
+    async function loadHargaDanHistory() {
+        const [hargaRes, historyRes] = await Promise.allSettled([
+            fetch("/api/harga"),
+            fetch("/api/history")
+        ]);
+
+        if (hargaRes.status === "fulfilled" && hargaRes.value.ok) {
+            try {
+                const data = await hargaRes.value.json();
+                if (data && data.harga_beli) {
+                    hargaDatabase = Number(data.harga_beli);
+                    if (data.tanggal) {
+                        const key = getLocalDateString(new Date(data.tanggal));
+                        historyPrices[key] = hargaDatabase;
+                    }
+                }
+            } catch (err) {
+                console.error("Error parsing /api/harga:", err);
             }
         }
+
+        if (historyRes.status === "fulfilled" && historyRes.value.ok) {
+            try {
+                const list = await historyRes.value.json();
+                if (Array.isArray(list)) {
+                    list.forEach(item => {
+                        if (item.tanggal && item.harga_beli) {
+                            const key = getLocalDateString(new Date(item.tanggal));
+                            historyPrices[key] = Number(item.harga_beli);
+                        }
+                    });
+                }
+            } catch (err) {
+                console.error("Error parsing /api/history:", err);
+            }
+        }
+
+        applyPriceByDate(tanggalInput.value);
     }
 
     editBtn.addEventListener("click", () => {
@@ -775,7 +832,7 @@ body{
         }
 
         manualMode = true;
-        updateDisplayedPrices(manual);
+        updateDisplayedPrices(manual, "Mode harga manual aktif", "#1f86ff");
     });
 
     resetBtnHarga.addEventListener("click", () => {
@@ -786,11 +843,7 @@ body{
         resetBtnHarga.style.display = "none";
         editBtn.style.display = "inline-block";
 
-        if (hargaDatabase > 0) {
-            updateDisplayedPrices(hargaDatabase);
-        } else {
-            loadHarga();
-        }
+        applyPriceByDate(tanggalInput.value);
     });
 
     /* =====================================================
@@ -857,13 +910,6 @@ body{
     const tanggalInput = document.getElementById("tanggalPembelian");
     const tanggalText = document.getElementById("tanggalText");
 
-    function getLocalDateString(date = new Date()) {
-        const y = date.getFullYear();
-        const m = String(date.getMonth() + 1).padStart(2, "0");
-        const d = String(date.getDate()).padStart(2, "0");
-        return `${y}-${m}-${d}`;
-    }
-
     function formatTanggal(value) {
         if (!value) return "-";
         const [y, m, d] = value.split("-").map(Number);
@@ -881,6 +927,7 @@ body{
 
     tanggalInput.addEventListener("change", () => {
         formatTanggal(tanggalInput.value);
+        applyPriceByDate(tanggalInput.value);
     });
 
     document.querySelector(".tanggal-display").addEventListener("click", () => {
@@ -1025,7 +1072,7 @@ body{
     }
 
     // Inisialisasi
-    loadHarga();
+    loadHargaDanHistory();
 </script>
 
 </body>
