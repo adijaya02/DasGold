@@ -3,12 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard Emas</title>
+<title>Investasi Emas - GoldDash</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-
 *{
     margin:0;
     padding:0;
@@ -26,7 +25,6 @@ body{
 }
 
 /* SIDEBAR */
-
 .sidebar{
     width:260px;
     background:#04264a;
@@ -34,6 +32,7 @@ body{
     padding:25px 0;
     transition:all .3s ease;
     overflow:hidden;
+    flex-shrink:0;
 }
 
 .sidebar.hide{
@@ -70,17 +69,17 @@ body{
     padding:16px 30px;
     color:#fff;
     text-decoration:none;
+    white-space:nowrap;
 }
 
 /* MAIN */
-
 .main{
     flex:1;
+    min-width:0;
     transition:all .3s ease;
 }
 
 /* TOPBAR */
-
 .topbar{
     height:75px;
     background:#fff;
@@ -95,6 +94,9 @@ body{
     font-size:26px;
     cursor:pointer;
     user-select:none;
+    background:none;
+    border:none;
+    color:#1b1b1b;
 }
 
 .right-top{
@@ -119,9 +121,8 @@ body{
 }
 
 /* CONTENT */
-
 .content{
-	padding:30px;
+    padding:30px;
 }
 
 .purchase-card{
@@ -138,16 +139,32 @@ body{
     justify-content:space-between;
     align-items:center;
     margin-bottom:30px;
+    gap:15px;
+}
+
+.header-form h1{
+    color:#04264a;
+    font-size:32px;
 }
 
 .tanggal-display{
-    display:flex;
+    position:relative;
+    display:inline-flex;
     align-items:center;
     gap:10px;
+    background:#f3f6fa;
+    padding:10px 16px;
+    border-radius:12px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.tanggal-display:hover{
+    background:#e6eef8;
 }
 
 #tanggalText{
-    font-size:24px;
+    font-size:20px;
     font-weight:600;
     color:#04264a;
 }
@@ -157,17 +174,19 @@ body{
     background:none;
     cursor:pointer;
     font-size:22px;
+    line-height:1;
 }
 
-.header-form h1{
-    color:#04264a;
-    font-size:32px;
+#tanggalPembelian{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    opacity:0;
+    cursor:pointer;
 }
 
-.header-form input{
-    width:220px;
-}
-
+/* PRICE BOXES */
 .price-boxes{
     display:grid;
     grid-template-columns:repeat(2,1fr);
@@ -181,6 +200,18 @@ body{
     padding:20px;
 }
 
+.price-card h3{
+    margin-bottom:10px;
+    color:#04264a;
+}
+
+.card-value{
+    font-size:34px;
+    font-weight:700;
+    margin-top:6px;
+    color:#1f86ff;
+}
+
 .manual-price{
     margin-top:15px;
     display:flex;
@@ -191,9 +222,10 @@ body{
 .manual-price input{
     flex:1;
     min-width:180px;
-    padding:10px;
+    padding:10px 12px;
     border:1px solid #d9e1ec;
     border-radius:10px;
+    font-size:14px;
 }
 
 .manual-price button{
@@ -202,35 +234,37 @@ body{
     border-radius:10px;
     cursor:pointer;
     font-weight:600;
+    transition:.2s;
 }
 
 #editHargaBtn{
     background:#1f86ff;
-    color:white;
+    color:#fff;
+}
+
+#editHargaBtn:hover{
+    background:#0b4f96;
 }
 
 #saveHargaBtn{
     background:#14b85a;
-    color:white;
+    color:#fff;
+}
+
+#saveHargaBtn:hover{
+    background:#0f9648;
 }
 
 #resetHargaBtn{
     background:#e2e8f0;
+    color:#1b1b1b;
 }
 
-.price-card h3{
-    margin-bottom:15px;
-    color:#04264a;
+#resetHargaBtn:hover{
+    background:#cbd5e1;
 }
 
-.card-value{
-    font-size:34px;
-    font-weight:700;
-    margin-top:10px;
-    color:#1f86ff;
-}
-
-
+/* CALCULATOR BOX */
 .calculator-box{
     border:2px solid #d9e1ec;
     border-radius:15px;
@@ -247,9 +281,11 @@ body{
     padding:18px;
     border:none;
     background:#eef2f7;
+    color:#475569;
     cursor:pointer;
     font-size:16px;
     font-weight:600;
+    transition:.2s;
 }
 
 .tab-btn.active{
@@ -269,39 +305,52 @@ body{
     font-size:16px;
 }
 
+.tab-content input:focus{
+    outline:none;
+    border-color:#1f86ff;
+}
+
 .quick-buttons{
     display:flex;
-	flex-wrap:wrap;
+    flex-wrap:wrap;
     gap:12px;
-    padding:7px;
-    border-top:1px solid #d9e1ec;
+    margin-top:15px;
+    padding-top:15px;
+    border-top:1px solid #e2e8f0;
 }
 
 .quick-buttons button{
-	min-width:70px;
-    height:70px;
-    border-radius:50%;
+    min-width:85px;
+    height:50px;
     border:none;
     background:#1f86ff;
-    color:white;
-    padding:12px 25px;
+    color:#fff;
+    padding:12px 24px;
     border-radius:30px;
     cursor:pointer;
     font-weight:600;
+    font-size:14px;
+    transition:.2s;
 }
 
+.quick-buttons button:hover{
+    background:#0b4f96;
+}
 
+/* TOTAL BOX */
 .total-box{
     border:2px solid #d9e1ec;
     border-radius:14px;
     text-align:center;
     padding:25px;
+    background:#f8fafc;
 }
 
 .total-title{
-    font-size:20px;
+    font-size:18px;
     font-weight:600;
-    margin-bottom:10px;
+    color:#64748b;
+    margin-bottom:8px;
 }
 
 .total-value{
@@ -310,20 +359,23 @@ body{
     color:#04264a;
 }
 
+/* ACTION BUTTONS */
 .action-buttons{
     display:flex;
     justify-content:flex-end;
-    gap:20px;
+    gap:15px;
     margin-top:30px;
 }
 
 .save-btn,
 .reset-btn{
     border:none;
-    padding:15px 40px;
+    padding:15px 36px;
     border-radius:12px;
     cursor:pointer;
     font-weight:600;
+    font-size:15px;
+    transition:.2s;
 }
 
 .save-btn{
@@ -331,32 +383,50 @@ body{
     color:#fff;
 }
 
-.reset-btn{
-    background:#e2e8f0;
+.save-btn:hover:not(:disabled){
+    background:#0b4f96;
 }
 
-/* =========================
-   TABLET
-========================= */
-@media (max-width: 1200px){
+.save-btn:disabled{
+    background:#93c5fd;
+    cursor:not-allowed;
+}
 
-    .stats{
-        grid-template-columns: repeat(2,1fr);
-    }
+.reset-btn{
+    background:#e2e8f0;
+    color:#1b1b1b;
+}
 
+.reset-btn:hover{
+    background:#cbd5e1;
+}
+
+#overlay{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.45);
+    z-index:1000;
+    opacity:0;
+    visibility:hidden;
+    transition:.3s;
+}
+
+#overlay.show{
+    opacity:1;
+    visibility:visible;
 }
 
 /* =========================
    MOBILE
 ========================= */
 @media (max-width:768px){
-
-    /* Dashboard */
     .dashboard{
         flex-direction:column;
     }
 
-    /* Sidebar */
     .sidebar{
         position:fixed;
         top:0;
@@ -388,132 +458,97 @@ body{
         font-size:15px;
     }
 
-    /* Main */
     .main{
         width:100%;
     }
 
     .topbar{
+        height:65px;
         padding:0 15px;
-    }
-
-    .content{
-        padding:12px;
-    }
-
-    /* Purchase Card */
-    .purchase-card{
-        padding:20px;
-    }
-
-    /* Header */
-    .header-form{
-        flex-direction:column;
-        align-items:flex-start;
-        gap:15px;
-    }
-
-    .header-form h1{
-        font-size:26px;
-    }
-
-    #tanggalText{
-        font-size:20px;
-    }
-
-    /* Price Boxes */
-    .price-boxes{
-        grid-template-columns:1fr;
-    }
-
-    .card-value{
-        font-size:24px;
-    }
-
-    /* Quick Buttons */
-    .quick-buttons{
-        display:grid;
-        grid-template-columns:repeat(3,1fr);
-        gap:12px;
-    }
-
-    .quick-buttons button{
-        width:100%;
-        height:65px;
-        border-radius:15px;
-        min-width:0;
-    }
-
-    /* Total */
-    .total-value{
-        font-size:30px;
-    }
-
-    /* Action Buttons */
-    .action-buttons{
-        justify-content:center;
-        flex-wrap:wrap;
-    }
-
-    /* Hapus jika memang ada table */
-    .table-header,
-    .table-row{
-        grid-template-columns:1fr;
-    }
-}
-
-/* =========================
-   EXTRA SMALL DEVICE
-========================= */
-@media (max-width: 480px){
-
-    .logo{
-        font-size:22px;
-    }
-
-    .topbar{
-        height:65px;
     }
 
     .left-top{
         font-size:24px;
     }
 
-    .card-title{
-        font-size:13px;
+    .content{
+        padding:12px;
+    }
+
+    .purchase-card{
+        padding:20px;
+        border-radius:16px;
+    }
+
+    .header-form{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:12px;
+        margin-bottom:20px;
+    }
+
+    .header-form h1{
+        font-size:24px;
+    }
+
+    #tanggalText{
+        font-size:16px;
+    }
+
+    .price-boxes{
+        grid-template-columns:1fr;
+        gap:15px;
+        margin-bottom:20px;
+    }
+
+    .card-value{
+        font-size:26px;
+    }
+
+    .tab-content{
+        padding:18px;
+    }
+
+    .quick-buttons{
+        display:grid;
+        grid-template-columns:repeat(2,1fr);
+        gap:10px;
+    }
+
+    .quick-buttons button{
+        width:100%;
+        height:48px;
+        border-radius:12px;
+        min-width:0;
+    }
+
+    .total-value{
+        font-size:28px;
+    }
+
+    .action-buttons{
+        justify-content:stretch;
+    }
+
+    .save-btn,
+    .reset-btn{
+        flex:1;
+        padding:14px 20px;
+    }
+}
+
+/* =========================
+   EXTRA SMALL DEVICE
+========================= */
+@media (max-width:480px){
+    .logo{
+        font-size:22px;
     }
 
     .card-value{
         font-size:24px;
     }
-
-    .card-sub{
-        font-size:12px;
-    }
 }
-
-#overlay{
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,.45);
-    z-index:1000;
-    opacity:0;
-    visibility:hidden;
-    transition:.3s;
-}
-
-#overlay.show{
-    opacity:1;
-    visibility:visible;
-}
-
-.main{
-    transition:.3s;
-}
-
 </style>
 </head>
 
@@ -524,579 +559,457 @@ body{
 <div class="dashboard">
 
     <aside class="sidebar" id="sidebar">
-
-        <div class="logo">
-            GoldDash
-        </div>
+        <div class="logo">GoldDash</div>
 
         <ul class="menu">
             <li>
                 <a href="dashboard.html">Dashboard</a>
             </li>
-
             <li>
                 <a href="harga-emas.html">Harga Emas</a>
             </li>
-
             <li>
                 <a href="data-emas.html">Data Emas</a>
             </li>
-
             <li class="active">
                 <a href="investasi.html">Investasi</a>
             </li>           
         </ul>
-
     </aside>
 
     <main class="main">
 
         <div class="topbar">
-
-            <div class="left-top" id="toggleSidebar">
+            <button type="button" class="left-top" id="toggleSidebar" aria-label="Toggle Menu">
                 ☰
+            </button>
+
+            <div class="right-top">
+                <button type="button" class="logout-btn" onclick="logout()">
+                    Logout
+                </button>
             </div>
-
-		<div class="right-top">
-			<button class="logout-btn" onclick="logout()">
-				Logout
-			</button>
-		</div>
-
         </div>
-	
-		 <div class="content">
+    
+        <div class="content">
+            <div class="purchase-card">
 
-			<div class="purchase-card">
+                <div class="header-form">
+                    <h1>Form Pembelian Emas</h1>
 
-				<div class="header-form">
-					<h1>Form Pembelian Emas</h1>
-					<div class="tanggal-display">
-						<span id="tanggalText"></span>
-						<button id="calendarBtn">
-							📅
-						</button>
-						<input
-							type="date"
-							id="tanggalPembelian"
-							hidden>
-					</div>
-				</div>
+                    <div class="tanggal-display" title="Klik untuk ubah tanggal">
+                        <span id="tanggalText"></span>
+                        <button type="button" id="calendarBtn" aria-label="Pilih Tanggal">📅</button>
+                        <input type="date" id="tanggalPembelian">
+                    </div>
+                </div>
 
-				<div class="price-boxes">
+                <div class="price-boxes">
+                    <div class="price-card">
+                        <h3>Harga 0,01 Gram</h3>
+                        <div class="card-value" id="hargaBeli">Loading...</div>
+                        <div class="manual-price">
+                            <input
+                                type="number"
+                                id="manualHarga"
+                                min="0"
+                                step="any"
+                                placeholder="Masukkan harga 0,01 gr"
+                                style="display:none;">
+                            <button type="button" id="editHargaBtn">Edit Manual</button>
+                            <button type="button" id="saveHargaBtn" style="display:none;">Simpan</button>
+                            <button type="button" id="resetHargaBtn" style="display:none;">Auto</button>
+                        </div>
+                    </div>
 
-					<div class="price-card">
-					    <h3>Harga 0.01 Gram</h3>
-					    <div class="card-value" id="hargaBeli">
-					        Loading...
-					    </div>
-					    <div class="manual-price">
-					        <input
-					            type="number"
-					            id="manualHarga"
-					            placeholder="Masukkan harga manual"
-					            style="display:none;">
-					        <button id="editHargaBtn">
-					            Edit Manual
-					        </button>
-					        <button
-					            id="saveHargaBtn"
-					            style="display:none;">
-					            Simpan
-							</button>
-					        <button
-					            id="resetHargaBtn"
-					            style="display:none;">
-					            Auto
-					        </button>
-						</div>
-					</div>
+                    <div class="price-card">
+                        <h3>Harga 1 Gram</h3>
+                        <div class="card-value" id="harga1Gram">Loading...</div>
+                    </div>
+                </div>
 
-					<div class="price-card">
-					    <h3>Harga 1 Gram</h3>
-					    <div class="card-value" id="harga1Gram">Loading...</div>
-					</div>
-				</div>
+                <div class="calculator-box">
+                    <div class="tab-menu">
+                        <button type="button" class="tab-btn active" id="tabGram">Gram</button>
+                        <button type="button" class="tab-btn" id="tabHarga">Harga</button>
+                    </div>
 
-        <div class="calculator-box">
+                    <div class="tab-content">
+                        <div id="gramSection">
+                            <input
+                                type="number"
+                                id="gramInput"
+                                min="0"
+                                step="any"
+                                placeholder="Masukkan berat emas (gram)">
 
-    <div class="tab-menu">
+                            <div class="quick-buttons">
+                                <button type="button" onclick="setGram(1)">1 gr</button>
+                                <button type="button" onclick="setGram(3)">3 gr</button>
+                                <button type="button" onclick="setGram(5)">5 gr</button>
+                                <button type="button" onclick="setGram(10)">10 gr</button>
+                            </div>
+                        </div>
 
-        <button class="tab-btn active" id="tabGram">
-            Gram
-        </button>
+                        <div id="hargaSection" style="display:none;">
+                            <input
+                                type="number"
+                                id="hargaInput"
+                                min="0"
+                                step="any"
+                                placeholder="Masukkan nominal (Rp)">
 
-        <button class="tab-btn" id="tabHarga">
-            Harga
-        </button>
+                            <div class="quick-buttons">
+                                <button type="button" onclick="setHarga(100000)">100rb</button>
+                                <button type="button" onclick="setHarga(500000)">500rb</button>
+                                <button type="button" onclick="setHarga(1000000)">1jt</button>
+                                <button type="button" onclick="setHarga(10000000)">10jt</button>              
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-    </div>
+                <div class="total-box">
+                    <div class="total-title" id="totalTitle">Total Biaya Pembelian</div>
+                    <div class="total-value" id="totalText">Rp 0</div>
+                </div>
 
-    <div class="tab-content">
-
-        <div id="gramSection">
-
-            <input
-                type="number"
-                id="gramInput"
-                placeholder="Masukkan gram">
-
-            <div class="quick-buttons">
-
-                <button onclick="setGram(1)">
-                    1 gr
-                </button>
-
-                <button onclick="setGram(3)">
-                    3 gr
-                </button>
-
-                <button onclick="setGram(5)">
-                    5 gr
-                </button>
-				
-				<button onclick="setGram(10)">
-                    10 gr
-                </button>
+                <div class="action-buttons">
+                    <button type="button" class="save-btn" id="saveBtn">Simpan Data</button>
+                    <button type="button" class="reset-btn" id="resetBtn">Reset</button>
+                </div>
 
             </div>
-
         </div>
 
-        <div id="hargaSection" style="display:none;">
-
-            <input
-                type="number"
-                id="hargaInput"
-                placeholder="Masukkan nominal">
-
-            <div class="quick-buttons">
-
-                <button onclick="setHarga(100000)">
-                    100rb
-                </button>
-
-                <button onclick="setHarga(500000)">
-                    500rb
-                </button>
-
-                <button onclick="setHarga(1000000)">
-                    1jt
-                </button>
-				
-				<button onclick="setHarga(10000000)">
-                    10jt
-                </button>              
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-        <div class="total-box">
-
-            <div class="total-title">
-                Total
-            </div>
-
-            <div class="total-value" id="totalText">
-                Rp 0
-            </div>
-
-        </div>
-
-        <div class="action-buttons">
-
-            <button class="save-btn" id="saveBtn">
-			    Simpan Data
-			</button>
-			
-			<button class="reset-btn" id="resetBtn">
-			    Reset
-			</button>
-        </div>
-
-    </div>
-
-</div>
-	</main>
+    </main>
 </div>
 
 <script>
-	let hargaPerGram = 0;
-	let hargaDatabase = 0;
-	let manualMode = false;
+    /* =====================================================
+       HELPER FORMATTER
+    ===================================================== */
+    function formatRupiah(n) {
+        return "Rp " + Math.round(Number(n) || 0).toLocaleString("id-ID");
+    }
 
-	async function loadHarga() {
+    function formatGramDisplay(n) {
+        return Number((Number(n) || 0).toFixed(4)).toLocaleString("id-ID", {
+            maximumFractionDigits: 4
+        }) + " gram";
+    }
 
-	    try {
-	
-	        const res = await fetch('/api/harga');
-	        const data = await res.json();
-	
-	        if (!data || !data.harga_beli) return;
-	
-	        hargaDatabase = Number(data.harga_beli);
-	
-	        if (!manualMode) {
-	
-	            hargaPerGram = hargaDatabase * 100;
-	
-	            document.getElementById('hargaBeli').innerText =
-	                'Rp ' +
-	                hargaDatabase.toLocaleString('id-ID');
-	
-	            document.getElementById('harga1Gram').innerText =
-	                'Rp ' +
-	                hargaPerGram.toLocaleString('id-ID');
-	        }
-	
-	    } catch(err){
-	
-	        console.error(err);
-	
-	    }
-	
-	}
-	
-	loadHarga();
+    /* =====================================================
+       HARGA EMAS & MODE MANUAL
+    ===================================================== */
+    let hargaPerGram = 0;
+    let hargaDatabase = 0;
+    let manualMode = false;
 
-	const manualInput =
-	document.getElementById("manualHarga");
-	
-	const editBtn =
-	document.getElementById("editHargaBtn");
-	
-	const saveBtnHarga =
-	document.getElementById("saveHargaBtn");
-	
-	const resetBtnHarga =
-	document.getElementById("resetHargaBtn");
-	
-	
-	editBtn.addEventListener("click",()=>{
+    const hargaBeliEl = document.getElementById("hargaBeli");
+    const harga1GramEl = document.getElementById("harga1Gram");
+    const manualInput = document.getElementById("manualHarga");
+    const editBtn = document.getElementById("editHargaBtn");
+    const saveBtnHarga = document.getElementById("saveHargaBtn");
+    const resetBtnHarga = document.getElementById("resetHargaBtn");
 
-	    manualInput.style.display = "block";
-	
-	    editBtn.style.display = "none";
-	
-	    saveBtnHarga.style.display = "inline-block";
-	
-	    resetBtnHarga.style.display = "inline-block";
-	
-	});
-	
-	
-	saveBtnHarga.addEventListener("click",()=>{
-	
-	    const manual =
-	        Number(manualInput.value);
-	
-	    if(manual <= 0){
-	
-	        alert("Masukkan harga valid");
-	        return;
-	
-	    }
-	
-	    manualMode = true;
-	
-	    document.getElementById(
-	        "hargaBeli"
-	    ).innerText =
-	        "Rp " +
-	        manual.toLocaleString("id-ID");
-	
-	    hargaPerGram =
-	        manual * 100;
-	
-	    document.getElementById(
-	        "harga1Gram"
-	    ).innerText =
-	        "Rp " +
-	        hargaPerGram.toLocaleString("id-ID");
-	
-	});
+    function updateDisplayedPrices(harga001) {
+        hargaPerGram = harga001 * 100;
+        hargaBeliEl.innerText = formatRupiah(harga001);
+        harga1GramEl.innerText = formatRupiah(hargaPerGram);
+        recalculateTotal();
+    }
 
+    async function loadHarga() {
+        try {
+            const res = await fetch("/api/harga");
+            if (!res.ok) throw new Error("Gagal memuat harga");
+            const data = await res.json();
 
-	resetBtnHarga.addEventListener("click",()=>{
+            if (!data || !data.harga_beli) {
+                throw new Error("Data harga kosong");
+            }
 
-	    manualMode = false;
-	
-	    manualInput.value = "";
-	
-	    manualInput.style.display = "none";
-	
-	    saveBtnHarga.style.display = "none";
-	
-	    resetBtnHarga.style.display = "none";
-	
-	    editBtn.style.display = "inline-block";
-	
-	    loadHarga();
-	
-	});
-	
-	const toggleBtn = document.getElementById("toggleSidebar");
+            hargaDatabase = Number(data.harga_beli);
+
+            if (!manualMode) {
+                updateDisplayedPrices(hargaDatabase);
+            }
+        } catch (err) {
+            console.error(err);
+            if (!manualMode) {
+                hargaBeliEl.innerText = "Rp 0";
+                harga1GramEl.innerText = "Rp 0";
+            }
+        }
+    }
+
+    editBtn.addEventListener("click", () => {
+        if (hargaPerGram > 0) {
+            manualInput.value = hargaPerGram / 100;
+        }
+        manualInput.style.display = "block";
+        editBtn.style.display = "none";
+        saveBtnHarga.style.display = "inline-block";
+        resetBtnHarga.style.display = "inline-block";
+        manualInput.focus();
+    });
+
+    saveBtnHarga.addEventListener("click", () => {
+        const manual = Number(manualInput.value);
+
+        if (manual <= 0) {
+            alert("Masukkan harga yang valid");
+            return;
+        }
+
+        manualMode = true;
+        updateDisplayedPrices(manual);
+    });
+
+    resetBtnHarga.addEventListener("click", () => {
+        manualMode = false;
+        manualInput.value = "";
+        manualInput.style.display = "none";
+        saveBtnHarga.style.display = "none";
+        resetBtnHarga.style.display = "none";
+        editBtn.style.display = "inline-block";
+
+        if (hargaDatabase > 0) {
+            updateDisplayedPrices(hargaDatabase);
+        } else {
+            loadHarga();
+        }
+    });
+
+    /* =====================================================
+       SIDEBAR & LOGOUT
+    ===================================================== */
+    const toggleBtn = document.getElementById("toggleSidebar");
     const sidebar = document.getElementById("sidebar");
     const overlay = document.getElementById("overlay");
+    const main = document.querySelector(".main");
+    let lastWindowWidth = window.innerWidth;
 
-    // Default: desktop sidebar disembunyikan
     if (window.innerWidth > 768) {
         sidebar.classList.add("hide");
     }
 
     toggleBtn.addEventListener("click", (e) => {
-
         e.stopPropagation();
 
         if (window.innerWidth <= 768) {
-
             sidebar.classList.remove("hide");
             sidebar.classList.toggle("show");
             overlay.classList.toggle("show");
-
         } else {
-
             sidebar.classList.toggle("hide");
-
         }
-
     });
 
     window.addEventListener("resize", () => {
+        if (window.innerWidth === lastWindowWidth) return;
+        lastWindowWidth = window.innerWidth;
 
         if (window.innerWidth > 768) {
-
             sidebar.classList.remove("show");
             overlay.classList.remove("show");
-
-            // Desktop selalu default tersembunyi
             sidebar.classList.add("hide");
-
         } else {
-
-            // Mobile tidak menggunakan class hide
             sidebar.classList.remove("hide");
-
         }
-
     });
 
     overlay.addEventListener("click", () => {
-
         sidebar.classList.remove("show");
         overlay.classList.remove("show");
-
     });
 
-    const main = document.querySelector(".main");
+    main.addEventListener("click", (e) => {
+        if (sidebar.contains(e.target)) return;
 
-        main.addEventListener("click", (e) => {
+        if (window.innerWidth > 768) {
+            sidebar.classList.add("hide");
+        } else {
+            sidebar.classList.remove("show");
+            overlay.classList.remove("show");
+        }
+    });
 
-            // Jangan tutup jika klik di dalam sidebar
-            if (sidebar.contains(e.target)) return;
+    function logout() {
+        window.location.href = "login.html";
+    }
 
-            if (window.innerWidth > 768) {
+    /* =====================================================
+       TANGGAL PEMBELIAN (WAKTU LOKAL)
+    ===================================================== */
+    const tanggalInput = document.getElementById("tanggalPembelian");
+    const tanggalText = document.getElementById("tanggalText");
 
-                sidebar.classList.add("hide");
+    function getLocalDateString(date = new Date()) {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, "0");
+        const d = String(date.getDate()).padStart(2, "0");
+        return `${y}-${m}-${d}`;
+    }
 
-            } else {
+    function formatTanggal(value) {
+        if (!value) return "-";
+        const [y, m, d] = value.split("-").map(Number);
+        const date = new Date(y, m - 1, d);
 
-                sidebar.classList.remove("show");
-                overlay.classList.remove("show");
-
-            }
-
+        tanggalText.textContent = date.toLocaleDateString("id-ID", {
+            day: "numeric",
+            month: "long",
+            year: "numeric"
         });
+    }
 
-	
-	const tanggalInput =
-	document.getElementById('tanggalPembelian');
+    tanggalInput.value = getLocalDateString();
+    formatTanggal(tanggalInput.value);
 
-	const tanggalText =
-	document.getElementById('tanggalText');
+    tanggalInput.addEventListener("change", () => {
+        formatTanggal(tanggalInput.value);
+    });
 
-	function formatTanggal(value){
+    /* =====================================================
+       KALKULATOR TAB GRAM / HARGA
+    ===================================================== */
+    const tabGram = document.getElementById("tabGram");
+    const tabHarga = document.getElementById("tabHarga");
+    const gramSection = document.getElementById("gramSection");
+    const hargaSection = document.getElementById("hargaSection");
+    const gramInput = document.getElementById("gramInput");
+    const hargaInput = document.getElementById("hargaInput");
+    const totalTitle = document.getElementById("totalTitle");
+    const totalText = document.getElementById("totalText");
 
-		const date = new Date(value);
+    function isGramMode() {
+        return tabGram.classList.contains("active");
+    }
 
-		tanggalText.textContent =
-		date.toLocaleDateString('id-ID',{
-			day:'numeric',
-			month:'long',
-			year:'numeric'
-		});
-	}
+    function recalculateTotal() {
+        if (isGramMode()) {
+            totalTitle.textContent = "Total Biaya Pembelian";
+            const gram = parseFloat(gramInput.value) || 0;
+            const total = gram * hargaPerGram;
+            totalText.textContent = formatRupiah(total);
+        } else {
+            totalTitle.textContent = "Estimasi Berat Emas";
+            const harga = parseFloat(hargaInput.value) || 0;
+            const gram = hargaPerGram > 0 ? harga / hargaPerGram : 0;
+            totalText.textContent = formatGramDisplay(gram);
+        }
+    }
 
-	const today = new Date();
+    tabGram.addEventListener("click", () => {
+        tabGram.classList.add("active");
+        tabHarga.classList.remove("active");
+        gramSection.style.display = "block";
+        hargaSection.style.display = "none";
+        recalculateTotal();
+    });
 
-	tanggalInput.value =
-	today.toISOString().split('T')[0];
+    tabHarga.addEventListener("click", () => {
+        tabHarga.classList.add("active");
+        tabGram.classList.remove("active");
+        gramSection.style.display = "none";
+        hargaSection.style.display = "block";
+        recalculateTotal();
+    });
 
-	formatTanggal(tanggalInput.value);
+    gramInput.addEventListener("input", recalculateTotal);
+    hargaInput.addEventListener("input", recalculateTotal);
 
-	tanggalInput.addEventListener('change',()=>{
-		formatTanggal(tanggalInput.value);
-	});
+    function setGram(value) {
+        gramInput.value = value;
+        recalculateTotal();
+    }
 
-	document.getElementById('calendarBtn')
-	.addEventListener('click',()=>{
-		tanggalInput.showPicker();
-	});
+    function setHarga(value) {
+        hargaInput.value = value;
+        recalculateTotal();
+    }
 
-	const tabGram = document.getElementById("tabGram");
-	const tabHarga = document.getElementById("tabHarga");
+    /* =====================================================
+       SIMPAN & RESET FORM
+    ===================================================== */
+    const saveBtn = document.getElementById("saveBtn");
+    const resetBtn = document.getElementById("resetBtn");
 
-	const gramSection = document.getElementById("gramSection");
-	const hargaSection = document.getElementById("hargaSection");
+    saveBtn.addEventListener("click", simpanData);
+    resetBtn.addEventListener("click", resetForm);
 
-	tabGram.addEventListener("click",()=>{
+    async function simpanData() {
+        if (hargaPerGram <= 0) {
+            alert("Harga emas belum tersedia. Muat ulang halaman atau gunakan Edit Manual.");
+            return;
+        }
 
-		tabGram.classList.add("active");
-		tabHarga.classList.remove("active");
+        let biayaPembelian = 0;
+        let aset = 0;
 
-		gramSection.style.display="block";
-		hargaSection.style.display="none";
+        if (isGramMode()) {
+            aset = parseFloat(gramInput.value) || 0;
+            biayaPembelian = Math.round(aset * hargaPerGram);
+        } else {
+            biayaPembelian = Math.round(parseFloat(hargaInput.value) || 0);
+            aset = Number((biayaPembelian / hargaPerGram).toFixed(4));
+        }
 
-	});
+        if (biayaPembelian <= 0 || aset <= 0) {
+            alert("Masukkan jumlah pembelian yang valid");
+            return;
+        }
 
-	tabHarga.addEventListener("click",()=>{
+        if (!tanggalInput.value) {
+            alert("Pilih tanggal pembelian terlebih dahulu");
+            return;
+        }
 
-		tabHarga.classList.add("active");
-		tabGram.classList.remove("active");
+        saveBtn.disabled = true;
+        saveBtn.textContent = "Menyimpan...";
 
-		gramSection.style.display="none";
-		hargaSection.style.display="block";
+        try {
+            const response = await fetch("/api/simpan-investasi", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    biaya_pembelian: biayaPembelian,
+                    aset: aset,
+                    tanggal_beli: tanggalInput.value
+                })
+            });
 
-	});
+            const result = await response.json();
 
-	
-	function hitungTotal() {
-	    const gram = parseFloat(gramInput.value) || 0;
-	
-	    const total = gram * hargaPerGram;
-	
-	    document.getElementById("totalText").innerHTML =
-	        "Rp " + total.toLocaleString("id-ID");
-	}
-		
-	const gramInput = document.getElementById("gramInput");
-	const hargaInput = document.getElementById("hargaInput");
+            if (response.ok) {
+                alert("Data berhasil disimpan");
+                resetForm();
+            } else {
+                console.error(result);
+                alert(result.message || "Gagal menyimpan data");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Server error");
+        } finally {
+            saveBtn.disabled = false;
+            saveBtn.textContent = "Simpan Data";
+        }
+    }
 
-	hargaInput.addEventListener("input",()=>{
+    function resetForm() {
+        gramInput.value = "";
+        hargaInput.value = "";
+        recalculateTotal();
+    }
 
-		const harga = parseFloat(hargaInput.value) || 0;
-
-		const gram = harga / hargaPerGram;
-
-		document.getElementById("totalText").innerHTML =
-   		 parseFloat(gram.toFixed(4))
-        .toLocaleString("id-ID") + " gram";
-
-	});
-	
-	gramInput.addEventListener('input', hitungTotal);
-
-	function setGram(value){
-
-		gramInput.value = value;
-
-		gramInput.dispatchEvent(
-			new Event('input')
-		);
-	}
-	
-	function setHarga(value){
-
-		hargaInput.value = value;
-
-		hargaInput.dispatchEvent(
-			new Event('input')
-		);
-	}
-
-	function logout(){
-		// kalau pakai login sederhana, langsung redirect
-		window.location.href = "login.html";
-	}
-
-	document.addEventListener("DOMContentLoaded", () => {
-
-	    const saveBtn = document.getElementById("saveBtn");
-	    const resetBtn = document.getElementById("resetBtn");
-	
-	    saveBtn.addEventListener("click", simpanData);
-	
-	    resetBtn.addEventListener("click", resetForm);
-	
-	});
-	
-	async function simpanData() {
-
-	    let biayaPembelian = 0;
-	    let aset = 0;
-	
-	    const isGramMode =
-	        document.getElementById("gramSection").style.display !== "none";
-	
-	    if (isGramMode) {
-	
-	        aset = parseFloat(gramInput.value) || 0;
-	        biayaPembelian = aset * hargaPerGram;
-	
-	    } else {
-	
-	        biayaPembelian = parseFloat(hargaInput.value) || 0;
-	        aset = biayaPembelian / hargaPerGram;
-	    }
-	
-	    if (biayaPembelian <= 0 || aset <= 0) {
-	        alert("Input tidak valid");
-	        return;
-	    }
-	
-	    try {
-	
-	        const response = await fetch("/api/simpan-investasi", {
-	            method: "POST",
-	            headers: {
-	                "Content-Type": "application/json"
-	            },
-	           body: JSON.stringify({
-				    biaya_pembelian: biayaPembelian,
-				    aset: aset,
-				    tanggal_beli: tanggalInput.value
-				})
-	        });
-	
-	        const result = await response.json();
-	
-	        if (response.ok) {
-	            alert("Data berhasil disimpan");
-	            resetForm();
-	        } else {
-	            console.error(result);
-	            alert("Gagal menyimpan data");
-	        }
-	
-	    } catch (err) {
-	        console.error(err);
-	        alert("Server error");
-	    }
-	}
-	
-	function resetForm() {
-
-	    gramInput.value = "";
-	    hargaInput.value = "";
-	    document.getElementById("totalText").innerHTML = "Rp 0";
-	
-	}
+    // Inisialisasi
+    loadHarga();
 </script>
-
 
 </body>
 </html>
