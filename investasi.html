@@ -223,6 +223,14 @@ body{
     color:#1f86ff;
 }
 
+.harga-status{
+    font-size:12px;
+    margin-top:6px;
+    font-weight:500;
+    color:#64748b;
+    min-height:18px;
+}
+
 .manual-price{
     margin-top:15px;
     display:flex;
@@ -619,6 +627,7 @@ body{
                     <div class="price-card">
                         <h3>Harga 0,01 Gram</h3>
                         <div class="card-value" id="hargaBeli">Loading...</div>
+                        <div class="harga-status" id="hargaStatus">Memuat data harga...</div>
                         <div class="manual-price">
                             <input
                                 type="number"
@@ -698,7 +707,7 @@ body{
 
 <script>
     /* =====================================================
-       HELPER FORMATTER
+       HELPER FORMATTER & TANGGAL
     ===================================================== */
     function formatRupiah(n) {
         return "Rp " + Math.round(Number(n) || 0).toLocaleString("id-ID");
@@ -717,6 +726,27 @@ body{
         return `${y}-${m}-${d}`;
     }
 
+    function normalizeDateKey(raw) {
+        if (!raw) return "";
+        const str = String(raw).trim();
+
+        const dmy = str.match(/^(\d{2})[-/](\d{2})[-/](\d{4})/);
+        if (dmy) {
+            return `${dmy[3]}-${dmy[2]}-${dmy[1]}`;
+        }
+
+        if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
+            return str;
+        }
+
+        const parsed = new Date(str);
+        if (!isNaN(parsed.getTime())) {
+            return getLocalDateString(parsed);
+        }
+
+        return "";
+    }
+
     /* =====================================================
        HARGA EMAS, RIWAYAT TANGGAL & MODE MANUAL
     ===================================================== */
@@ -727,17 +757,11 @@ body{
 
     const hargaBeliEl = document.getElementById("hargaBeli");
     const harga1GramEl = document.getElementById("harga1Gram");
+    const hargaStatusEl = document.getElementById("hargaStatus");
     const manualInput = document.getElementById("manualHarga");
     const editBtn = document.getElementById("editHargaBtn");
     const saveBtnHarga = document.getElementById("saveHargaBtn");
     const resetBtnHarga = document.getElementById("resetHargaBtn");
-
-    // Elemen keterangan sumber harga di bawah Harga 0,01 Gram
-    const hargaStatusEl = document.createElement("div");
-    hargaStatusEl.style.fontSize = "12px";
-    hargaStatusEl.style.marginTop = "6px";
-    hargaStatusEl.style.color = "#64748b";
-    hargaBeliEl.insertAdjacentElement("afterend", hargaStatusEl);
 
     function updateDisplayedPrices(harga001, statusText = "", statusColor = "#64748b") {
         hargaPerGram = harga001 * 100;
@@ -751,61 +775,80 @@ body{
     function applyPriceByDate(dateStr) {
         if (manualMode) return;
 
+        const key = normalizeDateKey(dateStr);
         const todayStr = getLocalDateString();
 
-        if (historyPrices[dateStr]) {
+        if (key && historyPrices[key]) {
             updateDisplayedPrices(
-                historyPrices[dateStr],
-                dateStr === todayStr ? "Harga hari ini" : "Menggunakan harga riwayat tanggal dipilih",
+                historyPrices[key],
+                key === todayStr
+                    ? "Harga hari ini"
+                    : `Harga riwayat (${tanggalText.textContent})`,
                 "#16a34a"
             );
         } else if (hargaDatabase > 0) {
-            const info = dateStr === todayStr
+            const info = key === todayStr
                 ? "Harga terbaru"
-                : "Riwayat tanggal ini belum ada, memakai harga terbaru";
-            const color = dateStr === todayStr ? "#64748b" : "#d97706";
+                : `Riwayat ${tanggalText.textContent} tidak ada, memakai harga terbaru`;
+            const color = key === todayStr ? "#64748b" : "#d97706";
             updateDisplayedPrices(hargaDatabase, info, color);
         } else {
             hargaBeliEl.innerText = "Rp 0";
             harga1GramEl.innerText = "Rp 0";
             hargaStatusEl.textContent = "Data harga belum tersedia";
+            hargaStatusEl.style.color = "#e53935";
         }
     }
 
     async function loadHargaDanHistory() {
-        const [hargaRes, historyRes] = await Promise.allSettled([
+        const [hargaRes, historyRes, asetRes] = await Promise.allSettled([
             fetch("/api/harga"),
-            fetch("/api/history")
+            fetch("/api/history"),
+            fetch("/api/data-aset")
         ]);
 
-        if (hargaRes.status === "fulfilled" && hargaRes.value.ok) {
+        if (asetRes.status === "fulfilled" && asetRes.value.ok) {
             try {
-                const data = await hargaRes.value.json();
-                if (data && data.harga_beli) {
-                    hargaDatabase = Number(data.harga_beli);
-                    if (data.tanggal) {
-                        const key = getLocalDateString(new Date(data.tanggal));
-                        historyPrices[key] = hargaDatabase;
+                const asetList = await asetRes.value.json();
+                const items = Array.isArray(asetList) ? asetList : (asetList?.data || []);
+                items.forEach(item => {
+                    const key = normalizeDateKey(item.tanggal_aset);
+                    if (key && item.harga_beli) {
+                        historyPrices[key] = Number(item.harga_beli);
                     }
-                }
+                });
             } catch (err) {
-                console.error("Error parsing /api/harga:", err);
+                console.error("Error parsing /api/data-aset:", err);
             }
         }
 
         if (historyRes.status === "fulfilled" && historyRes.value.ok) {
             try {
                 const list = await historyRes.value.json();
-                if (Array.isArray(list)) {
-                    list.forEach(item => {
-                        if (item.tanggal && item.harga_beli) {
-                            const key = getLocalDateString(new Date(item.tanggal));
-                            historyPrices[key] = Number(item.harga_beli);
-                        }
-                    });
-                }
+                const items = Array.isArray(list) ? list : (list?.data || []);
+                items.forEach(item => {
+                    const key = normalizeDateKey(item.tanggal);
+                    if (key && item.harga_beli) {
+                        historyPrices[key] = Number(item.harga_beli);
+                    }
+                });
             } catch (err) {
                 console.error("Error parsing /api/history:", err);
+            }
+        }
+
+        if (hargaRes.status === "fulfilled" && hargaRes.value.ok) {
+            try {
+                const data = await hargaRes.value.json();
+                if (data && data.harga_beli) {
+                    hargaDatabase = Number(data.harga_beli);
+                    const key = normalizeDateKey(data.tanggal);
+                    if (key && !historyPrices[key]) {
+                        historyPrices[key] = hargaDatabase;
+                    }
+                }
+            } catch (err) {
+                console.error("Error parsing /api/harga:", err);
             }
         }
 
@@ -922,13 +965,16 @@ body{
         });
     }
 
+    function handleTanggalChange() {
+        formatTanggal(tanggalInput.value);
+        applyPriceByDate(tanggalInput.value);
+    }
+
     tanggalInput.value = getLocalDateString();
     formatTanggal(tanggalInput.value);
 
-    tanggalInput.addEventListener("change", () => {
-        formatTanggal(tanggalInput.value);
-        applyPriceByDate(tanggalInput.value);
-    });
+    tanggalInput.addEventListener("change", handleTanggalChange);
+    tanggalInput.addEventListener("input", handleTanggalChange);
 
     document.querySelector(".tanggal-display").addEventListener("click", () => {
         try {
