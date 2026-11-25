@@ -29,12 +29,15 @@ body{
 
 /* SIDEBAR */
 .sidebar{
+    position:sticky;
+    top:0;
+    height:100vh;
     width:260px;
     background:#04264a;
     color:#fff;
     padding:25px 0;
-    overflow:hidden;
     transition:all .3s ease;
+    overflow:hidden;
     flex-shrink:0;
 }
 
@@ -721,18 +724,14 @@ body{
 </div>
 
 <script>
-    /* =====================================================
-       SIDEBAR
+   /* =====================================================
+       SIDEBAR & NAVIGASI
     ===================================================== */
     const toggleBtn = document.getElementById("toggleSidebar");
     const sidebar = document.getElementById("sidebar");
     const overlay = document.getElementById("overlay");
     const main = document.querySelector(".main");
     let lastWindowWidth = window.innerWidth;
-
-    if (window.innerWidth > 768) {
-        sidebar.classList.add("hide");
-    }
 
     toggleBtn.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -753,7 +752,7 @@ body{
         if (window.innerWidth > 768) {
             sidebar.classList.remove("show");
             overlay.classList.remove("show");
-            sidebar.classList.add("hide");
+            sidebar.classList.remove("hide");
         } else {
             sidebar.classList.remove("hide");
         }
@@ -767,9 +766,8 @@ body{
     main.addEventListener("click", (e) => {
         if (sidebar.contains(e.target)) return;
 
-        if (window.innerWidth > 768) {
-            sidebar.classList.add("hide");
-        } else {
+        // Di HP, klik area konten bakal nutup sidebar
+        if (window.innerWidth <= 768) {
             sidebar.classList.remove("show");
             overlay.classList.remove("show");
         }
