@@ -1,4 +1,35 @@
-document.documentElement.style.visibility = "hidden";
+const SESSION_CACHE_KEY = "golddash_session_cache";
+const SESSION_CACHE_TTL = 5 * 60 * 1000;
+
+function getCachedSession() {
+    try {
+        const raw = sessionStorage.getItem(SESSION_CACHE_KEY);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        if (!parsed || !parsed.role || Date.now() - parsed.ts > SESSION_CACHE_TTL) {
+            sessionStorage.removeItem(SESSION_CACHE_KEY);
+            return null;
+        }
+        return parsed;
+    } catch {
+        return null;
+    }
+}
+
+function setCachedSession(role) {
+    try {
+        sessionStorage.setItem(
+            SESSION_CACHE_KEY,
+            JSON.stringify({ role: role || "viewer", ts: Date.now() })
+        );
+    } catch {}
+}
+
+function clearCachedSession() {
+    try {
+        sessionStorage.removeItem(SESSION_CACHE_KEY);
+    } catch {}
+}
 
 function applyRolePermissions(role) {
     if (role !== "admin") {
@@ -13,40 +44,59 @@ function applyRolePermissions(role) {
     }
 }
 
+function onDomReady(callback) {
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", callback);
+    } else {
+        callback();
+    }
+}
+
 (async function checkUserSession() {
+    const currentPath = window.location.pathname.toLowerCase();
+    const cached = getCachedSession();
+
+    if (cached) {
+        if (cached.role !== "admin" && currentPath.includes("investasi")) {
+            window.location.replace("dashboard.html");
+            return;
+        }
+        onDomReady(() => applyRolePermissions(cached.role));
+    } else {
+        document.documentElement.style.visibility = "hidden";
+    }
+
     try {
-        const res = await fetch("/api/check-auth", {
+        const res = await fetch(`/api/check-auth?t=${Date.now()}`, {
             credentials: "same-origin",
             cache: "no-store"
         });
 
         if (!res.ok) {
+            clearCachedSession();
             window.location.replace("login.html");
             return;
         }
 
         const data = await res.json();
         const role = data.role || "viewer";
-        const currentPath = window.location.pathname.toLowerCase();
+        setCachedSession(role);
 
         if (role !== "admin" && currentPath.includes("investasi")) {
             window.location.replace("dashboard.html");
             return;
         }
 
-        const revealPage = () => {
+        onDomReady(() => {
             applyRolePermissions(role);
             document.documentElement.style.visibility = "visible";
-        };
-
-        if (document.readyState === "loading") {
-            document.addEventListener("DOMContentLoaded", revealPage);
-        } else {
-            revealPage();
-        }
+        });
     } catch (err) {
         console.error("Auth check failed:", err);
-        window.location.replace("login.html");
+        if (!cached) {
+            clearCachedSession();
+            window.location.replace("login.html");
+        }
     }
 })();
 
@@ -56,6 +106,8 @@ async function handleLogout(e) {
     if (e) e.preventDefault();
     if (isLoggingOut) return;
     isLoggingOut = true;
+
+    clearCachedSession();
 
     const overlay = document.createElement("div");
     overlay.style.cssText =
