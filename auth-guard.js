@@ -2,7 +2,6 @@ document.documentElement.style.visibility = "hidden";
 
 function applyRolePermissions(role) {
     if (role !== "admin") {
-        // Hapus menu Investasi dari sidebar
         document.querySelectorAll('.menu a[href*="investasi"]').forEach((link) => {
             const listItem = link.closest("li");
             if (listItem) {
@@ -30,7 +29,6 @@ function applyRolePermissions(role) {
         const role = data.role || "viewer";
         const currentPath = window.location.pathname.toLowerCase();
 
-        // Blokir akses langsung ke halaman investasi jika bukan admin
         if (role !== "admin" && currentPath.includes("investasi")) {
             window.location.replace("dashboard.html");
             return;
@@ -52,25 +50,41 @@ function applyRolePermissions(role) {
     }
 })();
 
+let isLoggingOut = false;
+
 async function handleLogout(e) {
     if (e) e.preventDefault();
+    if (isLoggingOut) return;
+    isLoggingOut = true;
+
     try {
         await fetch("/api/logout", {
             method: "POST",
-            credentials: "same-origin"
+            credentials: "same-origin",
+            cache: "no-store"
         });
     } catch (err) {
-        console.error(err);
+        console.error("Logout error:", err);
     } finally {
-        window.location.replace("login.html");
+        window.location.replace("login.html?logout=1");
     }
 }
 
 window.logout = handleLogout;
 
 document.addEventListener("click", (e) => {
-    const btn = e.target.closest(".logout-btn");
-    if (btn) {
+    const target = e.target.closest("a, button, [data-logout], .logout-btn, .logout");
+    if (!target) return;
+
+    const href = (target.getAttribute("href") || "").toLowerCase();
+    const text = (target.textContent || "").trim().toLowerCase();
+    const isLogoutTrigger =
+        target.matches(".logout-btn, .logout, [data-logout]") ||
+        href.includes("login.html") ||
+        text === "logout" ||
+        text === "keluar";
+
+    if (isLogoutTrigger) {
         handleLogout(e);
     }
 });
