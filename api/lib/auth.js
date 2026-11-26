@@ -191,7 +191,8 @@ export function clearSessionCookie(res) {
         "Path=/",
         "HttpOnly",
         "SameSite=Lax",
-        "Max-Age=0"
+        "Max-Age=0",
+        "Expires=Thu, 01 Jan 1970 00:00:00 GMT"
     ];
 
     if (isProd) cookieParts.push("Secure");
