@@ -374,11 +374,22 @@ body::after{
     const errorText = document.getElementById("errorText");
     const loginBtn = document.getElementById("loginBtn");
 
-    fetch("/api/check-auth", { credentials: "same-origin", cache: "no-store" })
-        .then(res => {
-            if (res.ok) window.location.replace("dashboard.html");
-        })
-        .catch(() => {});
+   const isLogoutRedirect = new URLSearchParams(window.location.search).has("logout");
+
+    if (isLogoutRedirect) {
+        fetch("/api/logout", {
+            method: "POST",
+            credentials: "same-origin",
+            cache: "no-store"
+        }).catch(() => {});
+        window.history.replaceState({}, "", "login.html");
+    } else {
+        fetch("/api/check-auth", { credentials: "same-origin", cache: "no-store" })
+            .then(res => {
+                if (res.ok) window.location.replace("dashboard.html");
+            })
+            .catch(() => {});
+    }
 
     togglePasswordBtn.addEventListener("click", () => {
         const isPassword = passwordInput.type === "password";
