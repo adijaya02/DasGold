@@ -3,13 +3,36 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard Emas</title>
+<title>Dashboard - GoldDash</title>
 <script src="auth-guard.js"></script>
-    
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
+:root{
+    --navy-dark:#021830;
+    --navy-main:#04264a;
+    --navy-light:#0b3b6e;
+    --accent-blue:#1f86ff;
+    --accent-blue-hover:#0b6ce0;
+    --accent-gold:#f59e0b;
+    --bg-page:#f1f5f9;
+    --bg-card:#ffffff;
+    --text-primary:#0f172a;
+    --text-secondary:#475569;
+    --text-muted:#94a3b8;
+    --border-light:#e2e8f0;
+    --green-text:#16a34a;
+    --green-bg:#f0fdf4;
+    --green-border:#bbf7d0;
+    --red-text:#dc2626;
+    --red-bg:#fef2f2;
+    --red-border:#fecaca;
+}
+
 *{
     margin:0;
     padding:0;
@@ -18,7 +41,13 @@
 }
 
 body{
-    background:#eef2f7;
+    background:var(--bg-page);
+    color:var(--text-primary);
+    -webkit-font-smoothing:antialiased;
+}
+
+.num-tabular{
+    font-variant-numeric:tabular-nums;
 }
 
 .dashboard{
@@ -26,111 +55,255 @@ body{
     min-height:100vh;
 }
 
-/* SIDEBAR */
+/* =====================================================
+   SIDEBAR
+===================================================== */
 .sidebar{
     position:sticky;
     top:0;
     height:100vh;
     width:260px;
-    background:#04264a;
+    background:linear-gradient(180deg, var(--navy-main) 0%, var(--navy-dark) 100%);
     color:#fff;
-    padding:25px 0;
-    transition:all .3s ease;
+    padding:24px 0;
+    transition:all .3s cubic-bezier(.4, 0, .2, 1);
     overflow:hidden;
     flex-shrink:0;
+    display:flex;
+    flex-direction:column;
+    border-right:1px solid rgba(255,255,255,.06);
 }
 
 .sidebar.hide{
     width:0;
     padding:0;
+    border-right:none;
 }
 
 .logo{
-    font-size:28px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    font-size:24px;
     font-weight:700;
-    text-align:center;
-    margin-bottom:40px;
+    letter-spacing:-0.4px;
+    padding:4px 20px 26px;
+    margin-bottom:16px;
+    border-bottom:1px solid rgba(255,255,255,.08);
+    white-space:nowrap;
+}
+
+.logo-badge{
+    width:38px;
+    height:38px;
+    border-radius:11px;
+    background:linear-gradient(135deg, rgba(245,158,11,.22), rgba(31,134,255,.22));
+    border:1px solid rgba(251,191,36,.35);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+}
+
+.logo span{
+    color:#fbbf24;
+}
+
+.menu-label{
+    font-size:11px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:1.1px;
+    color:rgba(255,255,255,.4);
+    padding:0 26px;
+    margin-bottom:10px;
     white-space:nowrap;
 }
 
 .menu{
     list-style:none;
+    padding:0 14px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
 }
 
 .menu li{
-    transition:.3s;
+    border-radius:12px;
+    transition:all .25s ease;
 }
 
 .menu li:hover{
-    background:#0b4f96;
+    background:rgba(255,255,255,.08);
 }
 
 .menu li.active{
-    background:#1f86ff;
+    background:linear-gradient(135deg, #1f86ff, #0b6ce0);
+    box-shadow:0 8px 20px rgba(31,134,255,.32);
 }
 
 .menu li a{
-    display:block;
-    padding:16px 30px;
-    color:#fff;
+    display:flex;
+    align-items:center;
+    gap:13px;
+    padding:13px 16px;
+    color:rgba(255,255,255,.82);
     text-decoration:none;
+    font-size:14px;
+    font-weight:500;
+    white-space:nowrap;
+    transition:.2s;
+}
+
+.menu li:hover a,
+.menu li.active a{
+    color:#ffffff;
+}
+
+.menu li.active a{
+    font-weight:600;
+}
+
+.menu-icon{
+    width:19px;
+    height:19px;
+    flex-shrink:0;
+    opacity:.85;
+}
+
+.menu li.active .menu-icon{
+    opacity:1;
+}
+
+.sidebar-footer{
+    margin-top:auto;
+    padding:16px 20px 0;
+    border-top:1px solid rgba(255,255,255,.08);
     white-space:nowrap;
 }
 
-/* MAIN */
+.sidebar-note{
+    background:rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:12px;
+    padding:12px 14px;
+    font-size:12px;
+    color:rgba(255,255,255,.65);
+    line-height:1.45;
+}
+
+.sidebar-note strong{
+    display:block;
+    color:#fbbf24;
+    font-size:12.5px;
+    margin-bottom:2px;
+}
+
+/* =====================================================
+   MAIN & TOPBAR
+===================================================== */
 .main{
     flex:1;
     min-width:0;
     transition:all .3s ease;
+    display:flex;
+    flex-direction:column;
 }
 
-/* TOPBAR */
 .topbar{
-    height:75px;
-    background:#fff;
+    position:sticky;
+    top:0;
+    z-index:50;
+    height:74px;
+    background:rgba(255,255,255,.88);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border-light);
     display:flex;
     align-items:center;
     justify-content:space-between;
-    padding:0 30px;
-    box-shadow:0 2px 10px rgba(0,0,0,.05);
+    padding:0 28px;
+}
+
+.topbar-left{
+    display:flex;
+    align-items:center;
+    gap:16px;
 }
 
 .left-top{
-    font-size:26px;
+    width:40px;
+    height:40px;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:20px;
     cursor:pointer;
     user-select:none;
-    background:none;
-    border:none;
-    color:#1b1b1b;
+    background:#f8fafc;
+    border:1px solid var(--border-light);
+    color:var(--text-primary);
+    transition:.2s;
+}
+
+.left-top:hover{
+    background:#eef2f7;
+    border-color:#cbd5e1;
+}
+
+.page-title-wrap h1{
+    font-size:19px;
+    font-weight:700;
+    color:var(--text-primary);
+    line-height:1.2;
+}
+
+.page-title-wrap p{
+    font-size:12.5px;
+    color:var(--text-secondary);
+    margin-top:2px;
 }
 
 .right-top{
     display:flex;
     align-items:center;
-    gap:15px;
+    gap:14px;
 }
 
 .logout-btn{
-    background:#ff4d4d;
-    color:#fff;
-    border:none;
-    padding:10px 16px;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:#fff1f2;
+    color:#e11d48;
+    border:1px solid #fecdd3;
+    padding:9px 16px;
     border-radius:10px;
     cursor:pointer;
+    font-size:13.5px;
     font-weight:600;
-    transition:.3s;
+    transition:all .2s ease;
 }
 
 .logout-btn:hover{
-    background:#e60000;
+    background:#e11d48;
+    color:#ffffff;
+    border-color:#e11d48;
+    box-shadow:0 6px 16px rgba(225,29,72,.24);
 }
 
-/* CONTENT */
+/* =====================================================
+   CONTENT & STAT CARDS
+===================================================== */
 .content{
-    padding:25px;
+    padding:26px 28px 36px;
+    max-width:1480px;
+    width:100%;
+    margin:0 auto;
 }
 
-/* CARDS */
 .stats{
     display:grid;
     grid-template-columns:repeat(4,1fr);
@@ -138,29 +311,78 @@ body{
 }
 
 .card{
-    background:#fff;
-    border-radius:14px;
-    padding:20px;
-    box-shadow:0 4px 15px rgba(0,0,0,.05);
+    background:var(--bg-card);
+    border-radius:18px;
+    padding:22px;
+    border:1px solid var(--border-light);
+    box-shadow:0 4px 20px rgba(15,23,42,.035);
+    transition:transform .25s ease, box-shadow .25s ease;
+    position:relative;
+    overflow:hidden;
+}
+
+.card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 12px 28px rgba(15,23,42,.07);
+}
+
+.card-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
 }
 
 .card-title{
-    color:#777;
-    font-size:14px;
+    color:var(--text-secondary);
+    font-size:13.5px;
+    font-weight:600;
+}
+
+.card-icon{
+    width:38px;
+    height:38px;
+    border-radius:11px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+}
+
+.icon-blue{
+    background:#eff6ff;
+    color:#2563eb;
+}
+
+.icon-emerald{
+    background:#ecfdf5;
+    color:#059669;
+}
+
+.icon-gold{
+    background:#fffbeb;
+    color:#d97706;
+}
+
+.icon-navy{
+    background:#f1f5f9;
+    color:#04264a;
 }
 
 .card-value{
-    font-size:34px;
+    font-size:clamp(22px, 1.8vw, 27px);
     font-weight:700;
-    margin-top:10px;
-    color:#1b1b1b;
+    margin-top:14px;
+    color:var(--text-primary);
+    letter-spacing:-0.4px;
+    line-height:1.25;
 }
 
 .price-row{
     display:flex;
-    align-items:flex-end;
-    gap:8px;
-    margin-top:10px;
+    align-items:baseline;
+    gap:6px;
+    margin-top:14px;
     flex-wrap:wrap;
 }
 
@@ -169,124 +391,259 @@ body{
 }
 
 .price-unit{
-    font-size:13px;
-    color:#666;
+    font-size:12.5px;
+    color:var(--text-muted);
     font-weight:500;
-    margin-bottom:6px;
 }
 
 .card-sub{
     margin-top:12px;
-    color:#666;
-    font-size:14px;
+    padding-top:10px;
+    border-top:1px dashed #e2e8f0;
+    color:var(--text-secondary);
+    font-size:12.5px;
+    display:flex;
+    align-items:center;
+    gap:6px;
 }
 
-/* PANEL */
+/* Shimmer Skeleton */
+.skeleton{
+    display:inline-block;
+    height:26px;
+    width:140px;
+    border-radius:8px;
+    background:linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+    background-size:200% 100%;
+    animation:shimmer 1.4s infinite;
+    vertical-align:middle;
+}
+
+@keyframes shimmer{
+    0%{ background-position:200% 0; }
+    100%{ background-position:-200% 0; }
+}
+
+/* =====================================================
+   CHART & SUMMARY PANEL
+===================================================== */
 .panel{
-    margin-top:25px;
-    background:#fff;
-    border-radius:14px;
-    padding:25px;
-    box-shadow:0 4px 15px rgba(0,0,0,.05);
+    margin-top:24px;
+    background:var(--bg-card);
+    border-radius:20px;
+    padding:26px;
+    border:1px solid var(--border-light);
+    box-shadow:0 4px 20px rgba(15,23,42,.035);
 }
 
 .panel-header{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-bottom:30px;
+    gap:16px;
+    margin-bottom:24px;
+    padding-bottom:18px;
+    border-bottom:1px solid #f1f5f9;
 }
 
 .tabs{
     display:flex;
-    gap:20px;
+    align-items:center;
+    gap:12px;
 }
 
 .tab{
-    cursor:pointer;
-    color:#666;
+    font-size:17px;
+    font-weight:700;
+    color:var(--text-primary);
+    display:flex;
+    align-items:center;
+    gap:10px;
 }
 
-.tab.active{
-    color:#1f86ff;
-    font-weight:600;
+.tab-dot{
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:var(--accent-blue);
+    box-shadow:0 0 0 4px rgba(31,134,255,.16);
+}
+
+.tab-subtitle{
+    font-size:12.5px;
+    color:var(--text-muted);
+    font-weight:400;
 }
 
 .filter{
-    display:flex;
-    gap:15px;
+    display:inline-flex;
+    gap:4px;
+    background:#f1f5f9;
+    padding:5px;
+    border-radius:12px;
+    border:1px solid #e2e8f0;
 }
 
 .filter button{
     border:none;
-    background:#f4f6fa;
-    padding:8px 15px;
-    border-radius:8px;
+    background:transparent;
+    color:var(--text-secondary);
+    padding:7px 14px;
+    border-radius:9px;
+    font-size:13px;
+    font-weight:500;
     cursor:pointer;
-    transition:.3s;
+    transition:all .2s ease;
 }
 
 .filter button:hover{
-    background:#dfe8f5;
+    color:var(--text-primary);
 }
 
 .filter button.active{
-    background:#1f86ff;
-    color:#fff;
+    background:#ffffff;
+    color:var(--accent-blue);
+    font-weight:600;
+    box-shadow:0 2px 8px rgba(15,23,42,.08);
 }
 
 .chart-area{
     display:grid;
-    grid-template-columns:2fr 1fr;
-    gap:25px;
+    grid-template-columns:2.1fr 1fr;
+    gap:24px;
+    align-items:stretch;
 }
 
 .chart-box{
     position:relative;
-    height:380px;
+    height:370px;
     min-width:0;
-    background:#fff;
-    padding:15px;
+    background:#ffffff;
+    border:1px solid #f1f5f9;
+    border-radius:16px;
+    padding:16px;
 }
 
+/* Ringkasan Box */
 .ranking{
     min-width:0;
-    background:#f7f9fc;
-    border-radius:10px;
-    padding:20px;
+    background:linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+    border:1px solid var(--border-light);
+    border-radius:16px;
+    padding:22px;
+    display:flex;
+    flex-direction:column;
 }
 
 .ranking-header{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-bottom:20px;
+    gap:8px;
+    margin-bottom:18px;
 }
 
 .ranking-header h3{
+    font-size:16px;
+    font-weight:700;
+    color:var(--text-primary);
     margin:0;
 }
 
 #tanggalRingkasan{
-    font-size:13px;
-    color:#666;
+    font-size:12px;
+    color:var(--text-secondary);
+    background:#ffffff;
+    border:1px solid var(--border-light);
+    padding:4px 10px;
+    border-radius:20px;
     font-weight:500;
+}
+
+.profit-highlight{
+    background:var(--green-bg);
+    border:1px solid var(--green-border);
+    border-radius:14px;
+    padding:16px;
+    margin-bottom:16px;
+    transition:all .25s ease;
+}
+
+.profit-highlight.loss{
+    background:var(--red-bg);
+    border-color:var(--red-border);
+}
+
+.profit-label-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:6px;
+}
+
+.profit-label{
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--text-secondary);
+}
+
+.roi-badge{
+    font-size:11.5px;
+    font-weight:700;
+    padding:2px 8px;
+    border-radius:20px;
+    background:rgba(22,163,74,.14);
+    color:var(--green-text);
+}
+
+.profit-highlight.loss .roi-badge{
+    background:rgba(220,38,38,.14);
+    color:var(--red-text);
+}
+
+.profit-highlight strong{
+    display:block;
+    font-size:24px;
+    font-weight:700;
+    letter-spacing:-0.4px;
+    color:var(--green-text);
+}
+
+.rank-list{
+    background:#ffffff;
+    border:1px solid var(--border-light);
+    border-radius:14px;
+    padding:4px 16px;
+    margin-top:auto;
 }
 
 .rank-item{
     display:flex;
     justify-content:space-between;
-    padding:12px 0;
-    border-bottom:1px solid #e5e5e5;
+    align-items:center;
+    padding:14px 0;
+    border-bottom:1px solid #f1f5f9;
+    font-size:13.5px;
 }
 
 .rank-item:last-child{
     border-bottom:none;
 }
 
-/* =========================
+.rank-item span{
+    color:var(--text-secondary);
+    font-weight:500;
+}
+
+.rank-item strong{
+    color:var(--text-primary);
+    font-weight:600;
+    font-size:14.5px;
+}
+
+/* =====================================================
    TABLET
-========================= */
+===================================================== */
 @media (max-width: 1200px){
     .stats{
         grid-template-columns:repeat(2,1fr);
@@ -297,9 +654,9 @@ body{
     }
 }
 
-/* =========================
+/* =====================================================
    MOBILE
-========================= */
+===================================================== */
 @media (max-width:768px){
     .dashboard{
         flex-direction:column;
@@ -309,12 +666,12 @@ body{
         position:fixed;
         top:0;
         left:0;
-        width:220px;
+        width:245px;
         height:100vh;
         z-index:1001;
         transform:translateX(-100%);
-        transition:.3s;
-        box-shadow:0 0 25px rgba(0,0,0,.25);
+        transition:.3s ease;
+        box-shadow:0 0 30px rgba(2,24,48,.35);
     }
 
     .sidebar.show{
@@ -323,131 +680,84 @@ body{
 
     .sidebar.hide{
         transform:translateX(-100%);
-        width:220px;
-    }
-
-    .logo{
-        font-size:24px;
-        margin-bottom:25px;
-    }
-
-    .menu li a{
-        padding:14px 20px;
-        font-size:15px;
-    }
-
-    .main{
-        width:100%;
+        width:245px;
     }
 
     .topbar{
-        padding:0 15px;
+        padding:0 16px;
+        height:66px;
+    }
+
+    .page-title-wrap h1{
+        font-size:17px;
+    }
+
+    .page-title-wrap p{
+        display:none;
     }
 
     .content{
-        padding:12px;
+        padding:16px;
     }
 
     .stats{
         grid-template-columns:1fr;
-        gap:12px;
+        gap:14px;
     }
 
     .card{
-        padding:16px;
+        padding:18px;
     }
 
     .card-value{
         font-size:24px;
     }
 
-    .price-unit{
-        font-size:13px;
-    }
-
     .panel{
-        padding:15px;
+        padding:18px;
+        border-radius:16px;
     }
 
     .panel-header{
         flex-direction:column;
         align-items:flex-start;
-        gap:12px;
-    }
-
-    .tabs{
-        width:100%;
+        gap:14px;
     }
 
     .filter{
         width:100%;
-        flex-wrap:wrap;
+        display:grid;
+        grid-template-columns:repeat(2,1fr);
     }
 
     .filter button{
-        flex:1;
-        min-width:90px;
-    }
-
-    .chart-area{
-        grid-template-columns:1fr;
-        gap:15px;
+        text-align:center;
     }
 
     .chart-box{
-        height:240px;
+        height:250px;
+        padding:10px;
     }
 
     .ranking{
-        padding:15px;
-    }
-
-    .ranking-header{
-        flex-direction:column;
-        align-items:flex-start;
-        gap:4px;
-    }
-
-    #tanggalRingkasan{
-        text-align:left;
-        font-size:12px;
-    }
-
-    .rank-item{
-        font-size:14px;
+        padding:18px;
     }
 }
 
-/* =========================
+/* =====================================================
    EXTRA SMALL DEVICE
-========================= */
+===================================================== */
 @media (max-width: 480px){
-    .logo{
-        font-size:22px;
+    .logout-btn span{
+        display:none;
     }
 
-    .topbar{
-        height:65px;
-    }
-
-    .left-top{
-        font-size:24px;
-    }
-
-    .card-title{
-        font-size:13px;
+    .logout-btn{
+        padding:9px 11px;
     }
 
     .card-value{
-        font-size:24px;
-    }
-
-    .card-sub{
-        font-size:12px;
-    }
-
-    .panel{
-        padding:15px;
+        font-size:22px;
     }
 }
 
@@ -457,7 +767,8 @@ body{
     left:0;
     width:100%;
     height:100%;
-    background:rgba(0,0,0,.45);
+    background:rgba(2,24,48,.5);
+    backdrop-filter:blur(2px);
     z-index:1000;
     opacity:0;
     visibility:hidden;
@@ -478,76 +789,171 @@ body{
 <div class="dashboard">
 
     <aside class="sidebar" id="sidebar">
-        <div class="logo">GoldDash</div>
+        <div class="logo">
+            <div class="logo-badge">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                    <path d="M4 17L7.5 11H16.5L20 17H4Z" fill="#F59E0B" stroke="#D97706" stroke-width="1.5" stroke-linejoin="round"/>
+                    <path d="M8.5 11L10.5 7.5H13.5L15.5 11" fill="#FBBF24" stroke="#D97706" stroke-width="1.5" stroke-linejoin="round"/>
+                    <path d="M5 6L9 3.5L13 5.5L19 2" stroke="#38BDF8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div><span>Gold</span>Dash</div>
+        </div>
 
+        <div class="menu-label">Menu Utama</div>
         <ul class="menu">
             <li class="active">
-                <a href="dashboard.html">Dashboard</a>
+                <a href="dashboard.html">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+                        <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+                        <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+                        <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+                    </svg>
+                    <span>Dashboard</span>
+                </a>
             </li>
             <li>
-                <a href="harga-emas.html">Harga Emas</a>
+                <a href="harga-emas.html">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                        <polyline points="16 7 22 7 22 13"></polyline>
+                    </svg>
+                    <span>Harga Emas</span>
+                </a>
             </li>
             <li>
-                <a href="data-emas.html">Data Emas</a>
+                <a href="data-emas.html">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                        <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                        <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                    </svg>
+                    <span>Data Emas</span>
+                </a>
             </li>
             <li>
-                <a href="investasi.html">Investasi</a>
-            </li>            
+                <a href="investasi.html">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    </svg>
+                    <span>Investasi</span>
+                </a>
+            </li>
         </ul>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-note">
+                <strong>Tabungan Emas</strong>
+                Monitoring nilai aset &amp; selisih profit harian secara otomatis.
+            </div>
+        </div>
     </aside>
 
     <main class="main">
 
-        <div class="topbar">
-            <button type="button" class="left-top" id="toggleSidebar" aria-label="Toggle Menu">
-                ☰
-            </button>
-            
+        <header class="topbar">
+            <div class="topbar-left">
+                <button type="button" class="left-top" id="toggleSidebar" aria-label="Toggle Menu">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="page-title-wrap">
+                    <h1>Ringkasan Portofolio</h1>
+                    <p>Pantau pergerakan harga emas dan pertumbuhan aset Anda</p>
+                </div>
+            </div>
+
             <div class="right-top">
-                <button type="button" class="logout-btn" onclick="logout()">
-                    Logout
+                <button type="button" class="logout-btn" aria-label="Logout">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    <span>Logout</span>
                 </button>
             </div>
-        </div>
+        </header>
 
         <div class="content">
 
             <div class="stats">
                 <div class="card">
-                    <div class="card-title">Harga Beli</div>
+                    <div class="card-top">
+                        <div class="card-title">Harga Beli</div>
+                        <div class="card-icon icon-blue">
+                            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                                <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                            </svg>
+                        </div>
+                    </div>
                     <div class="price-row">
-                        <div class="card-value" id="hargaBeli">Loading...</div>
+                        <div class="card-value num-tabular" id="hargaBeli"><span class="skeleton"></span></div>
                         <span class="price-unit">/ 0,01 gr</span>
                     </div>
-                    <div class="card-sub" id="tanggalHarga">Loading...</div>
-                </div>
-                    
-                <div class="card">
-                    <div class="card-title">Harga Jual</div>
-                    <div class="price-row">
-                        <div class="card-value" id="hargaJual">Loading...</div>
-                        <span class="price-unit">/ 0,01 gr</span>
-                    </div>
-                    <div class="card-sub" id="tanggalHarga2">Loading...</div>
+                    <div class="card-sub" id="tanggalHarga">Memuat tanggal...</div>
                 </div>
 
                 <div class="card">
-                    <div class="card-title">Berat</div>
-                    <div class="card-value" id="berat">0,0000 gr</div>
-                    <div class="card-sub">Total Aset</div>
+                    <div class="card-top">
+                        <div class="card-title">Harga Jual (Buyback)</div>
+                        <div class="card-icon icon-emerald">
+                            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                <polyline points="17 6 23 6 23 12"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="price-row">
+                        <div class="card-value num-tabular" id="hargaJual"><span class="skeleton"></span></div>
+                        <span class="price-unit">/ 0,01 gr</span>
+                    </div>
+                    <div class="card-sub" id="tanggalHarga2">Memuat tanggal...</div>
                 </div>
-                
+
                 <div class="card">
-                    <div class="card-title">Saldo</div>
-                    <div class="card-value" id="saldo">Rp 0</div>
-                    <div class="card-sub" id="tanggalSaldo">Loading...</div>
+                    <div class="card-top">
+                        <div class="card-title">Berat Emas</div>
+                        <div class="card-icon icon-gold">
+                            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M6 18L9 11H15L18 18H6Z"></path>
+                                <path d="M9 11L11 7H13L15 11"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="card-value num-tabular" id="berat">0,0000 gr</div>
+                    <div class="card-sub">Total Kepemilikan Aset</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-top">
+                        <div class="card-title">Nilai Aset Sekarang</div>
+                        <div class="card-icon icon-navy">
+                            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+                                <line x1="2" y1="10" x2="22" y2="10"></line>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="card-value num-tabular" id="saldo">Rp 0</div>
+                    <div class="card-sub" id="tanggalSaldo">Memuat data...</div>
                 </div>
             </div>
 
             <div class="panel">
                 <div class="panel-header">
                     <div class="tabs">
-                        <div class="tab active">Profit</div>
+                        <div class="tab active">
+                            <span class="tab-dot"></span>
+                            <span>Grafik Pertumbuhan Profit</span>
+                        </div>
                     </div>
 
                     <div class="filter">
@@ -565,23 +971,28 @@ body{
 
                     <div class="ranking">
                         <div class="ranking-header">
-                            <h3>Ringkasan</h3>
+                            <h3>Ringkasan Aset</h3>
                             <span id="tanggalRingkasan">-</span>
                         </div>
-                            
-                        <div class="rank-item">
-                            <span>Profit</span>
-                            <strong id="profit">Rp 0</strong>
+
+                        <div class="profit-highlight" id="profitCard">
+                            <div class="profit-label-row">
+                                <span class="profit-label">Keuntungan / Rugi</span>
+                                <span class="roi-badge num-tabular" id="roiBadge">0,00%</span>
+                            </div>
+                            <strong class="num-tabular" id="profit">Rp 0</strong>
                         </div>
-                        
-                        <div class="rank-item">
-                            <span>Modal</span>
-                            <strong id="modal">Rp 0</strong>
-                        </div>
-                        
-                        <div class="rank-item">
-                            <span>Uang di Aplikasi</span>
-                            <strong id="uangApp">Rp 0</strong>
+
+                        <div class="rank-list">
+                            <div class="rank-item">
+                                <span>Total Modal</span>
+                                <strong class="num-tabular" id="modal">Rp 0</strong>
+                            </div>
+
+                            <div class="rank-item">
+                                <span>Uang di Aplikasi</span>
+                                <strong class="num-tabular" id="uangApp">Rp 0</strong>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -592,7 +1003,6 @@ body{
 </div>
 
 <script>
-    // Helper Formatters
     function formatRupiah(n, round = true) {
         const num = Number(n) || 0;
         const val = round ? Math.round(num) : num;
@@ -645,18 +1055,15 @@ body{
     main.addEventListener("click", (e) => {
         if (sidebar.contains(e.target)) return;
 
-        // Di HP, klik area konten bakal nutup sidebar
         if (window.innerWidth <= 768) {
             sidebar.classList.remove("show");
             overlay.classList.remove("show");
         }
     });
 
-    function logout() {
-        window.location.href = "login.html";
-    }
-
-    // Load Harga Emas
+    /* =====================================================
+       LOAD HARGA EMAS
+    ===================================================== */
     async function loadHarga() {
         try {
             const res = await fetch("/api/harga");
@@ -688,7 +1095,9 @@ body{
         }
     }
 
-    // State Global Aset & Chart
+    /* =====================================================
+       CHART & RINGKASAN ASET
+    ===================================================== */
     let asetData = [];
     let goldChartInstance = null;
     const canvas = document.getElementById("goldChart");
@@ -723,8 +1132,8 @@ body{
 
         const profitData = filteredData.map(item => Number(item.untung_rugi || 0));
         const lastProfit = profitData.length ? profitData[profitData.length - 1] : 0;
-        const lineColor = lastProfit >= 0 ? "#16a34a" : "#e53935";
-        const fillColor = lastProfit >= 0 ? "rgba(22,163,74,.15)" : "rgba(229,57,53,.15)";
+        const isPositive = lastProfit >= 0;
+        const lineColor = isPositive ? "#16a34a" : "#dc2626";
 
         if (goldChartInstance) {
             goldChartInstance.destroy();
@@ -738,27 +1147,75 @@ body{
                     label: "Profit",
                     data: profitData,
                     borderColor: lineColor,
-                    backgroundColor: fillColor,
+                    borderWidth: 2.5,
+                    pointRadius: filteredData.length <= 31 ? 3 : 0,
+                    pointHoverRadius: 6,
+                    pointBackgroundColor: "#ffffff",
+                    pointBorderColor: lineColor,
+                    pointBorderWidth: 2.5,
+                    backgroundColor: (context) => {
+                        const { ctx, chartArea } = context.chart;
+                        if (!chartArea) return isPositive ? "rgba(22,163,74,.12)" : "rgba(220,38,38,.12)";
+                        const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+                        if (isPositive) {
+                            gradient.addColorStop(0, "rgba(22, 163, 74, 0.22)");
+                            gradient.addColorStop(1, "rgba(22, 163, 74, 0.0)");
+                        } else {
+                            gradient.addColorStop(0, "rgba(220, 38, 38, 0.22)");
+                            gradient.addColorStop(1, "rgba(220, 38, 38, 0.0)");
+                        }
+                        return gradient;
+                    },
                     fill: true,
-                    tension: 0.4
+                    tension: 0.35
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                interaction: {
+                    mode: "index",
+                    intersect: false
+                },
                 plugins: {
                     legend: {
                         display: false
                     },
                     tooltip: {
+                        backgroundColor: "#0f172a",
+                        titleColor: "#94a3b8",
+                        bodyColor: "#ffffff",
+                        titleFont: { family: "Poppins", size: 12, weight: "500" },
+                        bodyFont: { family: "Poppins", size: 13.5, weight: "600" },
+                        padding: 12,
+                        cornerRadius: 10,
+                        displayColors: false,
                         callbacks: {
                             label: (context) => "Profit: " + formatRupiah(context.parsed.y)
                         }
                     }
                 },
                 scales: {
-                    y: {
+                    x: {
+                        grid: {
+                            display: false
+                        },
                         ticks: {
+                            color: "#64748b",
+                            font: { family: "Poppins", size: 11.5 },
+                            maxRotation: 0
+                        }
+                    },
+                    y: {
+                        border: {
+                            display: false
+                        },
+                        grid: {
+                            color: "#f1f5f9"
+                        },
+                        ticks: {
+                            color: "#64748b",
+                            font: { family: "Poppins", size: 11.5 },
                             callback: value => formatRupiah(value)
                         }
                     }
@@ -767,7 +1224,6 @@ body{
         });
     }
 
-    // Load Data Aset Sekali untuk Card, Ringkasan, dan Chart
     async function initAsetDashboard() {
         try {
             const res = await fetch("/api/data-aset");
@@ -779,16 +1235,19 @@ body{
                 return;
             }
 
-            // Urutkan ascending berdasarkan tanggal_aset
             asetData = data.sort((a, b) => new Date(a.tanggal_aset) - new Date(b.tanggal_aset));
 
-            // Ambil data terbaru (elemen terakhir)
             const latest = asetData[asetData.length - 1];
             const tanggal = new Date(latest.tanggal_aset).toLocaleDateString("id-ID", {
                 day: "numeric",
                 month: "long",
                 year: "numeric"
             });
+
+            const untungRugi = Number(latest.untung_rugi || 0);
+            const totalModal = Number(latest.total_modal || 0);
+            const roiPercent = totalModal > 0 ? ((untungRugi / totalModal) * 100) : 0;
+            const roiSign = roiPercent > 0 ? "+" : "";
 
             // Update Card
             document.getElementById("berat").innerText = formatGram(latest.total_aset) + " gr";
@@ -797,14 +1256,21 @@ body{
 
             // Update Ringkasan
             document.getElementById("tanggalRingkasan").innerText = tanggal;
-            document.getElementById("profit").innerText = formatRupiah(latest.untung_rugi);
-            document.getElementById("modal").innerText = formatRupiah(latest.total_modal);
+            document.getElementById("profit").innerText = (untungRugi > 0 ? "+" : "") + formatRupiah(untungRugi);
+            document.getElementById("modal").innerText = formatRupiah(totalModal);
             document.getElementById("uangApp").innerText = formatRupiah(latest.jumlah_uang_aplikasi);
+            document.getElementById("roiBadge").innerText = roiSign + roiPercent.toFixed(2).replace(".", ",") + "%";
 
             const profitEl = document.getElementById("profit");
-            profitEl.style.color = Number(latest.untung_rugi || 0) >= 0 ? "#16a34a" : "#e53935";
+            const profitCard = document.getElementById("profitCard");
+            if (untungRugi >= 0) {
+                profitEl.style.color = "#16a34a";
+                profitCard.classList.remove("loss");
+            } else {
+                profitEl.style.color = "#dc2626";
+                profitCard.classList.add("loss");
+            }
 
-            // Render chart sesuai tombol filter yang aktif
             const activeBtn = document.querySelector(".filter button.active");
             renderChart(activeBtn ? activeBtn.dataset.filter : "30");
         } catch (err) {
@@ -813,7 +1279,6 @@ body{
         }
     }
 
-    // Event Tombol Filter Chart
     const filterButtons = document.querySelectorAll(".filter button");
     filterButtons.forEach(button => {
         button.addEventListener("click", () => {
@@ -823,7 +1288,6 @@ body{
         });
     });
 
-    // Jalankan inisialisasi saat halaman siap
     loadHarga();
     initAsetDashboard();
 </script>
