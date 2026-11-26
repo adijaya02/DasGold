@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Debug Login - GoldDash</title>
+<style>
+    *{ box-sizing:border-box; font-family:system-ui,-apple-system,sans-serif; }
+    body{ background:#0f172a; color:#f8fafc; padding:24px; max-width:720px; margin:auto; }
+    .card{ background:#1e293b; border:1px solid #334155; border-radius:14px; padding:22px; margin-bottom:20px; }
+    h2{ margin:0 0 8px; font-size:20px; color:#38bdf8; }
+    p{ margin:0 0 16px; color:#94a3b8; font-size:14px; }
+    label{ display:block; font-size:13px; margin-bottom:6px; color:#cbd5e1; }
+    input{ width:100%; padding:11px 14px; border-radius:8px; border:1px solid #475569; background:#0f172a; color:#fff; margin-bottom:14px; font-size:14px; }
+    .btns{ display:flex; gap:10px; flex-wrap:wrap; }
+    button{ padding:11px 16px; border:none; border-radius:8px; font-weight:600; cursor:pointer; font-size:14px; }
+    .btn-diag{ background:#0284c7; color:#fff; }
+    .btn-real{ background:#16a34a; color:#fff; }
+    .btn-auth{ background:#475569; color:#fff; }
+    pre{ background:#020617; border:1px solid #334155; border-radius:10px; padding:16px; overflow-x:auto; font-size:13px; line-height:1.5; color:#a7f3d0; white-space:pre-wrap; word-break:break-word; }
+</style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Test & Debug Login GoldDash</h2>
+    <p>Halaman terpisah untuk mengecek koneksi Supabase, RLS, dan respon asli API login tanpa mengubah tampilan utama.</p>
+
+    <label for="testId">ID atau user_name</label>
+    <input type="text" id="testId" placeholder="Contoh: 1 atau adi" value="1">
+
+    <label for="testPass">Password</label>
+    <input type="text" id="testPass" placeholder="Contoh: 1905" value="1905">
+
+    <div class="btns">
+        <button type="button" class="btn-diag" onclick="runTest('/api/test-login', 'POST')">1. Tes Koneksi & Cek Database</button>
+        <button type="button" class="btn-real" onclick="runTest('/api/login', 'POST')">2. Tes Endpoint /api/login Asli</button>
+        <button type="button" class="btn-auth" onclick="runTest('/api/check-auth', 'GET')">3. Cek Status Cookie Sesi</button>
+    </div>
+</div>
+
+<div class="card">
+    <h2>Hasil Respon Server</h2>
+    <pre id="output">Klik salah satu tombol di atas untuk mulai pengetesan...</pre>
+</div>
+
+<script>
+    const outputEl = document.getElementById("output");
+
+    async function runTest(endpoint, method) {
+        const id = document.getElementById("testId").value;
+        const password = document.getElementById("testPass").value;
+
+        outputEl.textContent = `Mengirim ${method} ke ${endpoint}...`;
+
+        try {
+            const options = {
+                method,
+                credentials: "same-origin",
+                headers: {}
+            };
+
+            if (method === "POST") {
+                options.headers["Content-Type"] = "application/json";
+                options.body = JSON.stringify({ id, password });
+            }
+
+            const res = await fetch(endpoint, options);
+            const rawText = await res.text();
+
+            let parsed = rawText;
+            try {
+                parsed = JSON.parse(rawText);
+            } catch {}
+
+            outputEl.textContent = JSON.stringify(
+                {
+                    endpoint,
+                    http_status: res.status,
+                    ok: res.ok,
+                    response: parsed
+                },
+                null,
+                2
+            );
+        } catch (err) {
+            outputEl.textContent = "FETCH ERROR: " + err.message;
+        }
+    }
+</script>
+
+</body>
+</html>
