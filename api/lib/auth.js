@@ -1,7 +1,7 @@
 import crypto from "crypto";
 
 const COOKIE_NAME = "golddash_session";
-const SESSION_MAX_AGE = 60 * 60 * 24 * 7; // 7 hari
+const SESSION_MAX_AGE = 60 * 60 * 24 * 7;
 
 function getSecret() {
     const secret = process.env.AUTH_SECRET || process.env.SUPABASE_KEY;
@@ -20,7 +20,7 @@ function safeEqual(a, b) {
 
 function checkPassword(inputPassword, storedPassword) {
     if (!storedPassword) return false;
-    const stored = String(storedPassword);
+    const stored = String(storedPassword).trim();
 
     if (stored.startsWith("sha256:")) {
         const hash = crypto
@@ -30,7 +30,7 @@ function checkPassword(inputPassword, storedPassword) {
         return safeEqual(`sha256:${hash}`, stored);
     }
 
-    return safeEqual(inputPassword, stored);
+    return safeEqual(String(inputPassword).trim(), stored);
 }
 
 export async function verifyCredentials(loginInput, password) {
@@ -44,12 +44,12 @@ export async function verifyCredentials(loginInput, password) {
     const cleanInput = String(loginInput).trim();
     const isNumericId = /^\d+$/.test(cleanInput);
 
-    // Bisa login pakai kolom id (angka) maupun user_name (teks)
     const filter = isNumericId
-        ? `or=(id.eq.${cleanInput},user_name.eq.${encodeURIComponent(cleanInput)})`
-        : `user_name=eq.${encodeURIComponent(cleanInput)}`;
+        ? `or=(id.eq.${cleanInput},user_name.ilike.${encodeURIComponent(cleanInput)})`
+        : `user_name.ilike.${encodeURIComponent(cleanInput)}`;
 
-    const url = `${supabaseUrl}/rest/v1/user?${filter}&select=id,user_name,password,role&limit=1`;
+    // Tanpa limit=1 agar tetap bisa mencocokkan jika ada user_name yang sama
+    const url = `${supabaseUrl}/rest/v1/user?${filter}&select=id,user_name,password,role&order=id.asc`;
 
     const response = await fetch(url, {
         headers: {
@@ -65,18 +65,18 @@ export async function verifyCredentials(loginInput, password) {
     }
 
     if (!Array.isArray(data) || data.length === 0) {
-        return null;
+        throw new Error("ID atau username tidak ditemukan di database");
     }
 
-    const user = data[0];
-    if (!checkPassword(password, user.password)) {
-        return null;
+    const matchedUser = data.find((u) => checkPassword(password, u.password));
+    if (!matchedUser) {
+        throw new Error("Password yang Anda masukkan salah");
     }
 
     return {
-        id: user.id,
-        user_name: user.user_name || String(user.id),
-        role: user.role || "viewer"
+        id: matchedUser.id,
+        user_name: matchedUser.user_name || String(matchedUser.id),
+        role: matchedUser.role || "viewer"
     };
 }
 
