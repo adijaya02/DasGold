@@ -57,7 +57,15 @@ async function handleLogout(e) {
     if (isLoggingOut) return;
     isLoggingOut = true;
 
+    const overlay = document.createElement("div");
+    overlay.style.cssText =
+        "position:fixed;inset:0;background:#04264a;color:#fff;display:flex;align-items:center;justify-content:center;font-family:Poppins,sans-serif;font-size:15px;z-index:99999;opacity:0;transition:opacity .15s ease;";
+    overlay.textContent = "Keluar dari akun...";
+    document.body.appendChild(overlay);
+    requestAnimationFrame(() => (overlay.style.opacity = "1"));
+
     try {
+        sessionStorage.setItem("just_logged_out", "1");
         await fetch("/api/logout", {
             method: "POST",
             credentials: "same-origin",
