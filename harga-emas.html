@@ -845,4 +845,404 @@ body{
                     <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
                         <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
-                        <path d
+                        <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                    </svg>
+                    <span>Data Emas</span>
+                </a>
+            </li>
+            <li>
+                <a href="investasi.html">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    </svg>
+                    <span>Investasi</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-note">
+                <strong>Tabungan Emas</strong>
+                Monitoring nilai aset &amp; selisih profit harian secara otomatis.
+            </div>
+        </div>
+    </aside>
+
+    <main class="main">
+
+        <header class="topbar">
+            <div class="topbar-left">
+                <button type="button" class="left-top" id="toggleSidebar" aria-label="Toggle Menu">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="page-title-wrap">
+                    <h1>Harga Emas</h1>
+                    <p>Pantau harga beli, harga jual, dan riwayat harian</p>
+                </div>
+            </div>
+
+            <div class="right-top">
+                <button type="button" class="logout-btn" aria-label="Logout">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </header>
+
+        <div class="content">
+
+            <div class="stats">
+                <div class="card">
+                    <div class="card-top">
+                        <div class="card-title">Tanggal &amp; Waktu</div>
+                        <div class="card-icon icon-gold">
+                            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="card-value" id="tanggal">-</div>
+                    <div class="card-sub">
+                        <span class="live-dot"></span>
+                        <span class="clock-text num-tabular" id="jam">-</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-top">
+                        <div class="card-title">Harga Beli</div>
+                        <div class="card-icon icon-blue">
+                            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                                <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="price-row">
+                        <div class="card-value num-tabular" id="hargaBeli"><span class="skeleton"></span></div>
+                        <span class="price-unit">/ 0,01 gr</span>
+                    </div>
+                    <div class="card-sub">Harga pembelian emas terkini</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-top">
+                        <div class="card-title">Harga Jual (Buyback)</div>
+                        <div class="card-icon icon-emerald">
+                            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                <polyline points="17 6 23 6 23 12"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="price-row">
+                        <div class="card-value num-tabular" id="hargaJual"><span class="skeleton"></span></div>
+                        <span class="price-unit">/ 0,01 gr</span>
+                    </div>
+                    <div class="card-sub">Harga penjualan kembali terkini</div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <div class="table-header">
+                    <div class="table-title-wrap">
+                        <span class="title-dot"></span>
+                        <div class="table-title">History Harga Emas</div>
+                        <span class="record-badge num-tabular" id="recordCount">0 hari</span>
+                    </div>
+
+                    <div class="month-nav">
+                        <button type="button" id="prevMonth" class="month-btn" title="Bulan Sebelumnya">
+                            <span class="desktop-text">← Bulan Sebelumnya</span>
+                            <span class="mobile-text">←</span>
+                        </button>
+
+                        <div id="monthLabel" class="month-label"></div>
+
+                        <button type="button" id="nextMonth" class="month-btn" title="Bulan Berikutnya">
+                            <span class="desktop-text">Bulan Berikutnya →</span>
+                            <span class="mobile-text">→</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th class="sortable" onclick="sortTable('tanggal')">
+                                    Hari / Tanggal
+                                    <span class="sort-pill" id="icon-tanggal">↕</span>
+                                </th>
+                                <th class="sortable" onclick="sortTable('harga_beli')">
+                                    Harga Beli
+                                    <span class="sort-pill" id="icon-harga_beli">↕</span>
+                                </th>
+                                <th class="sortable" onclick="sortTable('harga_jual')">
+                                    Harga Jual
+                                    <span class="sort-pill" id="icon-harga_jual">↕</span>
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="historyBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script>
+    function formatRupiah(n) {
+        return "Rp " + (Number(n) || 0).toLocaleString("id-ID");
+    }
+
+    /* =====================================================
+       LOAD HARGA SAAT INI
+    ===================================================== */
+    async function loadHarga() {
+        try {
+            const res = await fetch("/api/harga");
+            if (!res.ok) throw new Error("Gagal memuat harga");
+            const data = await res.json();
+
+            if (!data || !data.harga_beli) {
+                throw new Error("Data harga kosong");
+            }
+
+            document.getElementById("hargaBeli").innerText = formatRupiah(data.harga_beli);
+            document.getElementById("hargaJual").innerText = formatRupiah(data.harga_jual);
+        } catch (err) {
+            console.error(err);
+            document.getElementById("hargaBeli").innerText = "Rp 0";
+            document.getElementById("hargaJual").innerText = "Rp 0";
+        }
+    }
+
+    /* =====================================================
+       HISTORY HARGA EMAS
+    ===================================================== */
+    let allHistory = [];
+    let currentOffset = 0;
+    let sortColumn = "tanggal";
+    let sortDirection = "desc";
+
+    const prevMonthBtn = document.getElementById("prevMonth");
+    const nextMonthBtn = document.getElementById("nextMonth");
+
+    async function loadHistory() {
+        try {
+            const res = await fetch("/api/history");
+            if (!res.ok) throw new Error("Gagal memuat history");
+            const data = await res.json();
+            allHistory = Array.isArray(data) ? data : [];
+        } catch (err) {
+            console.error(err);
+            allHistory = [];
+        } finally {
+            updateSortIcons();
+            renderHistory();
+        }
+    }
+
+    function sortTable(column) {
+        if (sortColumn === column) {
+            sortDirection = sortDirection === "asc" ? "desc" : "asc";
+        } else {
+            sortColumn = column;
+            sortDirection = "asc";
+        }
+
+        updateSortIcons();
+        renderHistory();
+    }
+
+    function updateSortIcons() {
+        document.getElementById("icon-tanggal").textContent = "↕";
+        document.getElementById("icon-harga_beli").textContent = "↕";
+        document.getElementById("icon-harga_jual").textContent = "↕";
+
+        document.getElementById("icon-" + sortColumn).textContent =
+            sortDirection === "asc" ? "▲" : "▼";
+    }
+
+    function renderHistory() {
+        const tbody = document.getElementById("historyBody");
+        const countBadge = document.getElementById("recordCount");
+        const today = new Date();
+
+        const start = new Date(today.getFullYear(), today.getMonth() - currentOffset, 1, 0, 0, 0, 0);
+        const end = new Date(today.getFullYear(), today.getMonth() - currentOffset + 1, 0, 23, 59, 59, 999);
+
+        const label = start.toLocaleDateString("id-ID", {
+            month: "long",
+            year: "numeric"
+        });
+
+        document.getElementById("monthLabel").textContent = `Data ${label}`;
+        nextMonthBtn.disabled = currentOffset === 0;
+
+        const filtered = allHistory
+            .filter(item => {
+                const tgl = new Date(item.tanggal);
+                return tgl >= start && tgl <= end;
+            })
+            .sort((a, b) => {
+                const valueA = sortColumn === "tanggal" ? new Date(a.tanggal).getTime() : Number(a[sortColumn]);
+                const valueB = sortColumn === "tanggal" ? new Date(b.tanggal).getTime() : Number(b[sortColumn]);
+
+                if (valueA < valueB) return sortDirection === "asc" ? -1 : 1;
+                if (valueA > valueB) return sortDirection === "asc" ? 1 : -1;
+                return 0;
+            });
+
+        if (countBadge) {
+            countBadge.textContent = `${filtered.length} data`;
+        }
+
+        if (!filtered.length) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="empty-row">
+                        Tidak ada data riwayat harga pada bulan ${label}.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        tbody.innerHTML = filtered.map((item, index) => {
+            const tanggalFormatted = new Date(item.tanggal).toLocaleDateString("id-ID", {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            });
+
+            return `
+                <tr>
+                    <td class="row-num num-tabular">${index + 1}</td>
+                    <td>${tanggalFormatted}</td>
+                    <td class="price-cell num-tabular">${formatRupiah(item.harga_beli)}</td>
+                    <td class="price-cell num-tabular">${formatRupiah(item.harga_jual)}</td>
+                </tr>
+            `;
+        }).join("");
+    }
+
+    prevMonthBtn.addEventListener("click", () => {
+        currentOffset++;
+        renderHistory();
+    });
+
+    nextMonthBtn.addEventListener("click", () => {
+        if (currentOffset > 0) {
+            currentOffset--;
+            renderHistory();
+        }
+    });
+
+    /* =====================================================
+       SIDEBAR & NAVIGASI
+    ===================================================== */
+    const toggleBtn = document.getElementById("toggleSidebar");
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+    const main = document.querySelector(".main");
+    let lastWindowWidth = window.innerWidth;
+
+    toggleBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+
+        if (window.innerWidth <= 768) {
+            sidebar.classList.remove("hide");
+            sidebar.classList.toggle("show");
+            overlay.classList.toggle("show");
+        } else {
+            sidebar.classList.toggle("hide");
+        }
+    });
+
+    window.addEventListener("resize", () => {
+        if (window.innerWidth === lastWindowWidth) return;
+        lastWindowWidth = window.innerWidth;
+
+        if (window.innerWidth > 768) {
+            sidebar.classList.remove("show");
+            overlay.classList.remove("show");
+            sidebar.classList.remove("hide");
+        } else {
+            sidebar.classList.remove("hide");
+        }
+    });
+
+    overlay.addEventListener("click", () => {
+        sidebar.classList.remove("show");
+        overlay.classList.remove("show");
+    });
+
+    main.addEventListener("click", (e) => {
+        if (sidebar.contains(e.target)) return;
+
+        if (window.innerWidth <= 768) {
+            sidebar.classList.remove("show");
+            overlay.classList.remove("show");
+        }
+    });
+
+    /* =====================================================
+       JAM REAL-TIME (AUSTRALIA/PERTH)
+    ===================================================== */
+    function updatePerthTime() {
+        const now = new Date();
+
+        const tanggal = now.toLocaleDateString("id-ID", {
+            timeZone: "Australia/Perth",
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+        });
+
+        const parts = new Intl.DateTimeFormat("en-GB", {
+            timeZone: "Australia/Perth",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: false
+        }).formatToParts(now);
+
+        const hour = parts.find(p => p.type === "hour").value;
+        const minute = parts.find(p => p.type === "minute").value;
+        const second = parts.find(p => p.type === "second").value;
+
+        document.getElementById("tanggal").textContent = tanggal;
+        document.getElementById("jam").textContent = `${hour} : ${minute} : ${second}`;
+    }
+
+    // Inisialisasi
+    loadHarga();
+    loadHistory();
+    updatePerthTime();
+    setInterval(updatePerthTime, 1000);
+</script>
+
+</body>
+</html>
