@@ -1,6 +1,9 @@
+import { requireAdmin } from "./lib/auth.js";
 import { generateDataAset } from "./lib/generateDataAset.js";
 
 export default async function handler(req, res) {
+    if (!requireAdmin(req, res)) return;
+
     if (req.method !== "POST") {
         return res.status(405).json({
             success: false,
