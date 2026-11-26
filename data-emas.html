@@ -6,9 +6,32 @@
 <title>Data Emas - GoldDash</title>
 <script src="auth-guard.js"></script>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
+:root{
+    --navy-dark:#021830;
+    --navy-main:#04264a;
+    --navy-light:#0b3b6e;
+    --accent-blue:#1f86ff;
+    --accent-blue-hover:#0b6ce0;
+    --accent-gold:#f59e0b;
+    --bg-page:#f1f5f9;
+    --bg-card:#ffffff;
+    --text-primary:#0f172a;
+    --text-secondary:#475569;
+    --text-muted:#94a3b8;
+    --border-light:#e2e8f0;
+    --green-text:#16a34a;
+    --green-bg:#f0fdf4;
+    --green-border:#bbf7d0;
+    --red-text:#dc2626;
+    --red-bg:#fef2f2;
+    --red-border:#fecaca;
+}
+
 *{
     margin:0;
     padding:0;
@@ -20,7 +43,13 @@ html,
 body{
     height:100vh;
     overflow:hidden;
-    background:#eef2f7;
+    background:var(--bg-page);
+    color:var(--text-primary);
+    -webkit-font-smoothing:antialiased;
+}
+
+.num-tabular{
+    font-variant-numeric:tabular-nums;
 }
 
 .dashboard{
@@ -28,59 +57,156 @@ body{
     height:100vh;
 }
 
-/* SIDEBAR */
+/* =====================================================
+   SIDEBAR
+===================================================== */
 .sidebar{
     position:sticky;
     top:0;
     height:100vh;
     width:260px;
-    background:#04264a;
+    background:linear-gradient(180deg, var(--navy-main) 0%, var(--navy-dark) 100%);
     color:#fff;
-    padding:25px 0;
-    transition:all .3s ease;
+    padding:24px 0;
+    transition:all .3s cubic-bezier(.4, 0, .2, 1);
     overflow:hidden;
     flex-shrink:0;
+    display:flex;
+    flex-direction:column;
+    border-right:1px solid rgba(255,255,255,.06);
 }
 
 .sidebar.hide{
     width:0;
     min-width:0;
     padding:0;
+    border-right:none;
 }
 
 .logo{
-    font-size:28px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    font-size:24px;
     font-weight:700;
-    text-align:center;
-    margin-bottom:40px;
+    letter-spacing:-0.4px;
+    padding:4px 20px 26px;
+    margin-bottom:16px;
+    border-bottom:1px solid rgba(255,255,255,.08);
+    white-space:nowrap;
+}
+
+.logo-badge{
+    width:38px;
+    height:38px;
+    border-radius:11px;
+    background:linear-gradient(135deg, rgba(245,158,11,.22), rgba(31,134,255,.22));
+    border:1px solid rgba(251,191,36,.35);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+}
+
+.logo span{
+    color:#fbbf24;
+}
+
+.menu-label{
+    font-size:11px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:1.1px;
+    color:rgba(255,255,255,.4);
+    padding:0 26px;
+    margin-bottom:10px;
     white-space:nowrap;
 }
 
 .menu{
     list-style:none;
+    padding:0 14px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
 }
 
 .menu li{
-    transition:.3s;
+    border-radius:12px;
+    transition:all .25s ease;
 }
 
 .menu li:hover{
-    background:#0b4f96;
+    background:rgba(255,255,255,.08);
 }
 
 .menu li.active{
-    background:#1f86ff;
+    background:linear-gradient(135deg, #1f86ff, #0b6ce0);
+    box-shadow:0 8px 20px rgba(31,134,255,.32);
 }
 
 .menu li a{
-    display:block;
-    padding:16px 30px;
-    color:#fff;
+    display:flex;
+    align-items:center;
+    gap:13px;
+    padding:13px 16px;
+    color:rgba(255,255,255,.82);
     text-decoration:none;
+    font-size:14px;
+    font-weight:500;
     white-space:nowrap;
+    transition:.2s;
 }
 
-/* MAIN */
+.menu li:hover a,
+.menu li.active a{
+    color:#ffffff;
+}
+
+.menu li.active a{
+    font-weight:600;
+}
+
+.menu-icon{
+    width:19px;
+    height:19px;
+    flex-shrink:0;
+    opacity:.85;
+}
+
+.menu li.active .menu-icon{
+    opacity:1;
+}
+
+.sidebar-footer{
+    margin-top:auto;
+    padding:16px 20px 0;
+    border-top:1px solid rgba(255,255,255,.08);
+}
+
+.sidebar-note{
+    background:rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:12px;
+    padding:12px 14px;
+    font-size:12px;
+    color:rgba(255,255,255,.65);
+    line-height:1.5;
+    white-space:normal;
+    min-width:218px;
+}
+
+.sidebar-note strong{
+    display:block;
+    color:#fbbf24;
+    font-size:12.5px;
+    margin-bottom:2px;
+}
+
+/* =====================================================
+   MAIN & TOPBAR
+===================================================== */
 .main{
     flex:1;
     min-width:0;
@@ -90,57 +216,98 @@ body{
     transition:all .3s ease;
 }
 
-/* TOPBAR */
 .topbar{
-    height:75px;
+    height:74px;
     flex-shrink:0;
-    background:#fff;
+    background:rgba(255,255,255,.88);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border-light);
     display:flex;
     align-items:center;
     justify-content:space-between;
-    padding:0 30px;
-    box-shadow:0 2px 10px rgba(0,0,0,.05);
+    padding:0 28px;
+}
+
+.topbar-left{
+    display:flex;
+    align-items:center;
+    gap:16px;
 }
 
 .left-top{
-    font-size:26px;
+    width:40px;
+    height:40px;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
     cursor:pointer;
     user-select:none;
-    background:none;
-    border:none;
-    color:#1b1b1b;
+    background:#f8fafc;
+    border:1px solid var(--border-light);
+    color:var(--text-primary);
+    transition:.2s;
+}
+
+.left-top:hover{
+    background:#eef2f7;
+    border-color:#cbd5e1;
+}
+
+.page-title-wrap h1{
+    font-size:19px;
+    font-weight:700;
+    color:var(--text-primary);
+    line-height:1.2;
+}
+
+.page-title-wrap p{
+    font-size:12.5px;
+    color:var(--text-secondary);
+    margin-top:2px;
 }
 
 .right-top{
     display:flex;
     align-items:center;
-    gap:15px;
+    gap:14px;
 }
 
 .logout-btn{
-    background:#ff4d4d;
-    color:#fff;
-    border:none;
-    padding:10px 16px;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:#fff1f2;
+    color:#e11d48;
+    border:1px solid #fecdd3;
+    padding:9px 16px;
     border-radius:10px;
     cursor:pointer;
+    font-size:13.5px;
     font-weight:600;
-    transition:.3s;
+    transition:all .2s ease;
 }
 
 .logout-btn:hover{
-    background:#e60000;
+    background:#e11d48;
+    color:#ffffff;
+    border-color:#e11d48;
+    box-shadow:0 6px 16px rgba(225,29,72,.24);
 }
 
-/* TABLE CONTAINER */
+/* =====================================================
+   TABLE CONTAINER
+===================================================== */
 .table-container{
     flex:1;
     min-height:0;
-    margin:25px;
-    background:#fff;
-    border-radius:14px;
-    padding:20px;
-    box-shadow:0 4px 15px rgba(0,0,0,.05);
+    margin:24px 28px;
+    background:var(--bg-card);
+    border-radius:20px;
+    padding:24px;
+    border:1px solid var(--border-light);
+    box-shadow:0 4px 20px rgba(15,23,42,.035);
     display:flex;
     flex-direction:column;
     overflow:hidden;
@@ -150,42 +317,81 @@ body{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-bottom:15px;
+    margin-bottom:18px;
+    padding-bottom:16px;
+    border-bottom:1px solid #f1f5f9;
     flex-wrap:wrap;
-    gap:10px;
+    gap:14px;
     flex-shrink:0;
 }
 
-.table-title{
-    font-size:18px;
-    font-weight:600;
-    color:#1b1b1b;
-}
-
-/* NAVIGASI BULAN */
-.month-nav{
+.table-title-wrap{
     display:flex;
     align-items:center;
     gap:10px;
 }
 
-.month-btn{
-    background:#1f86ff;
-    color:#fff;
-    border:none;
-    padding:10px 16px;
-    border-radius:10px;
-    cursor:pointer;
+.title-dot{
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:var(--accent-blue);
+    box-shadow:0 0 0 4px rgba(31,134,255,.16);
+}
+
+.table-title{
+    font-size:17px;
+    font-weight:700;
+    color:var(--text-primary);
+}
+
+.record-badge{
+    font-size:12px;
     font-weight:600;
-    transition:.3s;
+    color:var(--accent-blue);
+    background:#eff6ff;
+    border:1px solid #dbeafe;
+    padding:3px 10px;
+    border-radius:20px;
+}
+
+/* =====================================================
+   NAVIGASI BULAN & CALENDAR POPUP
+===================================================== */
+.month-nav{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:#f1f5f9;
+    padding:5px;
+    border-radius:13px;
+    border:1px solid var(--border-light);
+}
+
+.month-btn{
+    background:#ffffff;
+    color:var(--text-primary);
+    border:1px solid var(--border-light);
+    padding:8px 14px;
+    border-radius:9px;
+    cursor:pointer;
+    font-size:13px;
+    font-weight:600;
+    transition:all .2s ease;
+    box-shadow:0 1px 3px rgba(15,23,42,.05);
 }
 
 .month-btn:hover:not(:disabled){
-    background:#0b4f96;
+    background:var(--accent-blue);
+    color:#ffffff;
+    border-color:var(--accent-blue);
 }
 
 .month-btn:disabled{
-    background:#b8d4f8;
+    background:transparent;
+    border-color:transparent;
+    box-shadow:none;
+    color:var(--text-muted);
     cursor:not-allowed;
 }
 
@@ -197,40 +403,67 @@ body{
     display:none;
 }
 
-/* MONTH PICKER & CALENDAR */
 .month-label-wrapper{
     position:relative;
 }
 
-.month-label{
-    background:#f3f6fa;
-    padding:10px 18px;
-    border-radius:10px;
-    font-weight:600;
-    color:#04264a;
-    min-width:190px;
+.month-label-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    background:#ffffff;
+    border:1px solid var(--border-light);
+    padding:8px 16px;
+    border-radius:9px;
+    font-size:13.5px;
+    font-weight:700;
+    color:var(--navy-main);
+    min-width:195px;
     text-align:center;
     cursor:pointer;
     user-select:none;
-    transition:.2s;
+    transition:all .2s ease;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
 }
 
-.month-label:hover{
-    background:#e8eef5;
+.month-label-btn:hover{
+    border-color:var(--accent-blue);
+    color:var(--accent-blue);
+    background:#f8fafc;
+}
+
+.calendar-icon-sm{
+    width:15px;
+    height:15px;
+    color:var(--accent-blue);
+    flex-shrink:0;
 }
 
 .calendar-popup{
     position:absolute;
-    top:calc(100% + 8px);
+    top:calc(100% + 10px);
     right:0;
     width:330px;
     background:#ffffff;
-    border-radius:14px;
-    box-shadow:0 8px 30px rgba(0,0,0,.18);
-    border:1px solid #e1e6eb;
-    padding:15px;
+    border-radius:16px;
+    box-shadow:0 18px 40px rgba(2,24,48,.16);
+    border:1px solid var(--border-light);
+    padding:16px;
     z-index:1000;
     display:none;
+    animation:popFade .18s ease;
+}
+
+@keyframes popFade{
+    from{
+        opacity:0;
+        transform:translateY(-6px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
 }
 
 .calendar-popup.show{
@@ -245,20 +478,21 @@ body{
 }
 
 .calendar-title{
-    font-size:16px;
+    font-size:15px;
     font-weight:700;
-    color:#04264a;
+    color:var(--navy-main);
     text-transform:capitalize;
 }
 
 .calendar-nav-btn{
     width:32px;
     height:32px;
-    border:none;
-    border-radius:8px;
-    background:#f1f4f8;
-    color:#04264a;
-    font-size:16px;
+    border:1px solid var(--border-light);
+    border-radius:9px;
+    background:#f8fafc;
+    color:var(--navy-main);
+    font-size:15px;
+    font-weight:600;
     cursor:pointer;
     display:flex;
     align-items:center;
@@ -267,12 +501,13 @@ body{
 }
 
 .calendar-nav-btn:hover:not(:disabled){
-    background:#1f86ff;
+    background:var(--accent-blue);
+    border-color:var(--accent-blue);
     color:#fff;
 }
 
 .calendar-nav-btn:disabled{
-    opacity:.45;
+    opacity:.4;
     cursor:not-allowed;
 }
 
@@ -280,19 +515,20 @@ body{
 .calendar-days{
     display:grid;
     grid-template-columns:repeat(7,1fr);
-    gap:2px;
+    gap:3px;
 }
 
 .calendar-weekdays{
-    margin-bottom:5px;
+    margin-bottom:6px;
 }
 
 .calendar-weekdays div{
     text-align:center;
     font-size:11px;
-    font-weight:600;
-    color:#6b7280;
-    padding:6px 0;
+    font-weight:700;
+    color:var(--text-muted);
+    text-transform:uppercase;
+    padding:5px 0;
 }
 
 .calendar-day{
@@ -301,15 +537,16 @@ body{
     display:flex;
     align-items:center;
     justify-content:center;
-    border-radius:8px;
+    border-radius:9px;
     font-size:13px;
-    color:#1f2937;
+    color:var(--text-primary);
     cursor:pointer;
-    transition:.2s;
+    transition:.15s;
 }
 
 .calendar-day:hover{
-    background:#eaf3ff;
+    background:#eff6ff;
+    color:var(--accent-blue);
 }
 
 .calendar-day.empty{
@@ -319,7 +556,7 @@ body{
 
 .calendar-day.has-data{
     font-weight:700;
-    color:#04264a;
+    color:var(--navy-main);
 }
 
 .calendar-day.has-data::after{
@@ -329,11 +566,11 @@ body{
     width:5px;
     height:5px;
     border-radius:50%;
-    background:#1f86ff;
+    background:var(--accent-blue);
 }
 
 .calendar-day.selected{
-    background:#1f86ff;
+    background:var(--accent-blue);
     color:#ffffff;
 }
 
@@ -342,13 +579,13 @@ body{
 }
 
 .calendar-day.today{
-    border:1px solid #1f86ff;
+    border:1.5px solid var(--accent-blue);
 }
 
 .calendar-footer{
     margin-top:12px;
-    padding-top:10px;
-    border-top:1px solid #e5e7eb;
+    padding-top:12px;
+    border-top:1px solid #f1f5f9;
     display:flex;
     justify-content:space-between;
     align-items:center;
@@ -356,88 +593,154 @@ body{
 }
 
 .calendar-info{
-    font-size:11px;
-    color:#777;
+    font-size:11.5px;
+    color:var(--text-secondary);
+    display:flex;
+    align-items:center;
+    gap:5px;
+}
+
+.calendar-info span{
+    color:var(--accent-blue);
+    font-size:10px;
 }
 
 .calendar-all-btn{
     border:none;
-    background:#04264a;
+    background:var(--navy-main);
     color:#fff;
-    border-radius:7px;
-    padding:7px 10px;
-    font-size:11px;
+    border-radius:8px;
+    padding:7px 12px;
+    font-size:11.5px;
+    font-weight:600;
     cursor:pointer;
     transition:.2s;
 }
 
 .calendar-all-btn:hover{
-    background:#0b4f96;
+    background:var(--accent-blue);
 }
 
-/* TABEL */
+/* =====================================================
+   TABEL DATA EMAS
+===================================================== */
 .table-wrapper{
     flex:1;
     min-height:0;
     overflow:auto;
-    border:1px solid #e5e7eb;
-    border-radius:10px;
+    border:1px solid var(--border-light);
+    border-radius:14px;
 }
 
 .history-table{
     width:100%;
-    border-collapse:collapse;
+    border-collapse:separate;
+    border-spacing:0;
 }
 
 .history-table thead th{
     position:sticky;
     top:0;
-    background:#04264a;
-    color:#ffffff;
+    background:#f8fafc;
+    color:var(--text-secondary);
     z-index:10;
-    padding:14px;
-    text-align:center;
-    font-size:14px;
-    font-weight:600;
-    border-bottom:1px solid #0b4f96;
+    padding:13px 16px;
+    text-align:right;
+    font-size:12px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.4px;
+    border-bottom:1px solid var(--border-light);
     white-space:nowrap;
 }
 
-.history-table tbody td{
-    padding:14px;
-    background:#ffffff;
-    border-bottom:1px solid #e5e5e5;
+.history-table thead th:first-child{
     text-align:center;
-    font-size:14px;
+    width:56px;
+}
+
+.history-table thead th:nth-child(2){
+    text-align:left;
+    position:sticky;
+    left:0;
+    z-index:15;
+    background:#f8fafc;
+    box-shadow:2px 0 6px rgba(15,23,42,.04);
+}
+
+.history-table tbody td{
+    padding:13px 16px;
+    background:#ffffff;
+    border-bottom:1px solid #f1f5f9;
+    text-align:right;
+    font-size:13.5px;
+    color:var(--text-primary);
     white-space:nowrap;
+    transition:background .15s ease;
+}
+
+.history-table tbody td:first-child{
+    text-align:center;
+    color:var(--text-muted);
+    font-weight:600;
+    font-size:13px;
+}
+
+.history-table tbody td:nth-child(2){
+    text-align:left;
+    position:sticky;
+    left:0;
+    z-index:5;
+    background:#ffffff;
+    font-weight:500;
+    box-shadow:2px 0 6px rgba(15,23,42,.04);
 }
 
 .history-table tbody tr:last-child td{
     border-bottom:none;
 }
 
-.history-table tbody tr:hover td{
-    background:#f7f9fc;
+.history-table tbody tr:hover td,
+.history-table tbody tr:hover td:nth-child(2){
+    background:#f8fafc;
+}
+
+.bold-cell{
+    font-weight:600;
 }
 
 .status-cell{
-    text-align:center;
-    padding:30px !important;
-    color:#777;
+    text-align:center !important;
+    padding:36px 20px !important;
+    color:var(--text-secondary);
+    font-size:14px;
 }
 
 .status-cell.error{
-    color:#d32f2f;
+    color:var(--red-text);
+    font-weight:500;
+}
+
+.badge-pl{
+    display:inline-flex;
+    align-items:center;
+    justify-content:flex-end;
+    padding:4px 10px;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:600;
 }
 
 .profit{
-    color:#16a34a;
-    font-weight:600;
+    background:var(--green-bg);
+    color:var(--green-text);
+    border:1px solid var(--green-border);
 }
 
 .loss{
-    color:#e53935;
-    font-weight:600;
+    background:var(--red-bg);
+    color:var(--red-text);
+    border:1px solid var(--red-border);
 }
 
 #overlay{
@@ -446,7 +749,8 @@ body{
     left:0;
     width:100%;
     height:100%;
-    background:rgba(0,0,0,.45);
+    background:rgba(2,24,48,.5);
+    backdrop-filter:blur(2px);
     z-index:1000;
     opacity:0;
     visibility:hidden;
@@ -458,9 +762,9 @@ body{
     visibility:visible;
 }
 
-/* =========================
+/* =====================================================
    MOBILE
-========================= */
+===================================================== */
 @media (max-width:768px){
     .dashboard{
         flex-direction:column;
@@ -470,12 +774,12 @@ body{
         position:fixed;
         top:0;
         left:0;
-        width:220px;
+        width:245px;
         height:100vh;
         z-index:1001;
         transform:translateX(-100%);
-        transition:.3s;
-        box-shadow:0 0 25px rgba(0,0,0,.25);
+        transition:.3s ease;
+        box-shadow:0 0 30px rgba(2,24,48,.35);
     }
 
     .sidebar.show{
@@ -483,52 +787,43 @@ body{
     }
 
     .sidebar.hide{
-        width:220px;
+        width:245px;
         transform:translateX(-100%);
     }
 
-    .logo{
-        font-size:24px;
-        margin-bottom:25px;
-    }
-
-    .menu li a{
-        padding:14px 20px;
-        font-size:15px;
-    }
-
-    .main{
-        width:100%;
-    }
-
     .topbar{
-        height:65px;
-        padding:0 15px;
+        height:66px;
+        padding:0 16px;
     }
 
-    .left-top{
-        font-size:24px;
+    .page-title-wrap h1{
+        font-size:17px;
+    }
+
+    .page-title-wrap p{
+        display:none;
     }
 
     .table-container{
-        margin:12px;
-        padding:15px;
+        margin:14px;
+        padding:16px;
+        border-radius:16px;
     }
 
     .month-nav{
         width:100%;
         display:flex;
         align-items:center;
-        gap:10px;
+        gap:6px;
     }
 
     .month-btn{
         flex:0 0 auto;
-        width:56px;
-        min-width:56px;
-        height:42px;
+        width:44px;
+        min-width:44px;
+        height:38px;
         padding:0;
-        border-radius:12px;
+        border-radius:9px;
         display:flex;
         align-items:center;
         justify-content:center;
@@ -540,7 +835,7 @@ body{
 
     .mobile-text{
         display:inline;
-        font-size:20px;
+        font-size:18px;
         font-weight:700;
         line-height:1;
     }
@@ -550,11 +845,11 @@ body{
         min-width:0;
     }
 
-    .month-label{
+    .month-label-btn{
         width:100%;
         min-width:0;
-        padding:10px 14px;
-        font-size:14px;
+        padding:8px 10px;
+        font-size:13px;
         white-space:nowrap;
         overflow:hidden;
         text-overflow:ellipsis;
@@ -562,13 +857,13 @@ body{
 
     .calendar-popup{
         position:fixed;
-        top:125px;
+        top:130px;
         left:50%;
         right:auto;
         transform:translateX(-50%);
-        width:calc(100vw - 30px);
+        width:calc(100vw - 28px);
         max-width:360px;
-        max-height:calc(100vh - 140px);
+        max-height:calc(100vh - 150px);
         overflow-y:auto;
         padding:14px;
     }
@@ -578,23 +873,23 @@ body{
         font-size:13px;
     }
 
-    .calendar-title{
-        font-size:15px;
-    }
-
     .history-table thead th,
     .history-table tbody td{
-        padding:10px;
-        font-size:13px;
+        padding:11px 12px;
+        font-size:12.5px;
     }
 }
 
-/* =========================
+/* =====================================================
    EXTRA SMALL DEVICE
-========================= */
+===================================================== */
 @media (max-width:480px){
-    .logo{
-        font-size:22px;
+    .logout-btn span{
+        display:none;
+    }
+
+    .logout-btn{
+        padding:9px 11px;
     }
 }
 </style>
@@ -607,40 +902,104 @@ body{
 <div class="dashboard">
 
     <aside class="sidebar" id="sidebar">
-        <div class="logo">GoldDash</div>
+        <div class="logo">
+            <div class="logo-badge">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                    <path d="M4 17L7.5 11H16.5L20 17H4Z" fill="#F59E0B" stroke="#D97706" stroke-width="1.5" stroke-linejoin="round"/>
+                    <path d="M8.5 11L10.5 7.5H13.5L15.5 11" fill="#FBBF24" stroke="#D97706" stroke-width="1.5" stroke-linejoin="round"/>
+                    <path d="M5 6L9 3.5L13 5.5L19 2" stroke="#38BDF8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div><span>Gold</span>Dash</div>
+        </div>
 
+        <div class="menu-label">Menu Utama</div>
         <ul class="menu">
             <li>
-                <a href="dashboard.html">Dashboard</a>
+                <a href="dashboard.html">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+                        <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+                        <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+                        <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+                    </svg>
+                    <span>Dashboard</span>
+                </a>
             </li>
             <li>
-                <a href="harga-emas.html">Harga Emas</a>
+                <a href="harga-emas.html">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                        <polyline points="16 7 22 7 22 13"></polyline>
+                    </svg>
+                    <span>Harga Emas</span>
+                </a>
             </li>
             <li class="active">
-                <a href="data-emas.html">Data Emas</a>
+                <a href="data-emas.html">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                        <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                        <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                    </svg>
+                    <span>Data Emas</span>
+                </a>
             </li>
             <li>
-                <a href="investasi.html">Investasi</a>
-            </li>            
+                <a href="investasi.html">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    </svg>
+                    <span>Investasi</span>
+                </a>
+            </li>
         </ul>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-note">
+                <strong>Tabungan Emas</strong>
+                Monitoring nilai aset &amp; selisih profit harian secara otomatis.
+            </div>
+        </div>
     </aside>
 
     <main class="main">
-        <div class="topbar">
-            <button type="button" class="left-top" id="toggleSidebar" aria-label="Toggle Menu">
-                ☰
-            </button>
+        <header class="topbar">
+            <div class="topbar-left">
+                <button type="button" class="left-top" id="toggleSidebar" aria-label="Toggle Menu">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="page-title-wrap">
+                    <h1>Data Emas</h1>
+                    <p>Catatan akumulasi gram, modal, nilai aset, dan untung/rugi harian</p>
+                </div>
+            </div>
 
             <div class="right-top">
-                <button type="button" class="logout-btn" onclick="logout()">
-                    Logout
+                <button type="button" class="logout-btn" aria-label="Logout">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    <span>Logout</span>
                 </button>
             </div>
-        </div>
+        </header>
 
         <div class="table-container">
             <div class="table-header">
-                <div class="table-title">History Aset Emas</div>
+                <div class="table-title-wrap">
+                    <span class="title-dot"></span>
+                    <div class="table-title">History Aset Emas</div>
+                    <span class="record-badge num-tabular" id="recordCount">0 data</span>
+                </div>
 
                 <div class="month-nav">
                     <button id="prevMonth" class="month-btn" type="button" title="Bulan Sebelumnya">
@@ -649,7 +1008,15 @@ body{
                     </button>
 
                     <div class="month-label-wrapper">
-                        <div id="monthLabel" class="month-label" title="Klik untuk pilih tanggal"></div>
+                        <div id="monthLabel" class="month-label-btn" title="Klik untuk pilih tanggal">
+                            <svg class="calendar-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            <span id="monthLabelText">Memuat...</span>
+                        </div>
 
                         <!-- CALENDAR -->
                         <div id="calendarPopup" class="calendar-popup">
@@ -679,7 +1046,7 @@ body{
 
                             <div class="calendar-footer">
                                 <div id="calendarInfo" class="calendar-info">
-                                    ● Memiliki data
+                                    <span>●</span> Memiliki data
                                 </div>
 
                                 <button type="button" id="showAllMonth" class="calendar-all-btn">
@@ -709,7 +1076,7 @@ body{
                             <th>Total Aset</th>
                             <th>Harga Jual</th>
                             <th>Jumlah Uang di Aplikasi</th>
-                            <th>Untung/Rugi</th>
+                            <th>Untung / Rugi</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody">
@@ -725,7 +1092,7 @@ body{
 </div>
 
 <script>
-   /* =====================================================
+    /* =====================================================
        SIDEBAR & NAVIGASI
     ===================================================== */
     const toggleBtn = document.getElementById("toggleSidebar");
@@ -767,19 +1134,11 @@ body{
     main.addEventListener("click", (e) => {
         if (sidebar.contains(e.target)) return;
 
-        // Di HP, klik area konten bakal nutup sidebar
         if (window.innerWidth <= 768) {
             sidebar.classList.remove("show");
             overlay.classList.remove("show");
         }
     });
-
-    /* =====================================================
-       LOGOUT
-    ===================================================== */
-    function logout() {
-        window.location.href = "login.html";
-    }
 
     /* =====================================================
        STATE & ELEMENTS
@@ -792,6 +1151,7 @@ body{
     const prevMonthBtn = document.getElementById("prevMonth");
     const nextMonthBtn = document.getElementById("nextMonth");
     const monthLabel = document.getElementById("monthLabel");
+    const monthLabelText = document.getElementById("monthLabelText");
     const calendarPopup = document.getElementById("calendarPopup");
     const calendarTitle = document.getElementById("calendarTitle");
     const calendarDays = document.getElementById("calendarDays");
@@ -802,12 +1162,13 @@ body{
     /* =====================================================
        HELPERS
     ===================================================== */
-    function formatRupiah(value) {
+    function formatRupiah(value, withPlus = false) {
         const num = Math.round(Number(value) || 0);
         if (num < 0) {
             return "-Rp " + Math.abs(num).toLocaleString("id-ID");
         }
-        return "Rp " + num.toLocaleString("id-ID");
+        const prefix = withPlus && num > 0 ? "+Rp " : "Rp ";
+        return prefix + num.toLocaleString("id-ID");
     }
 
     function formatGram(value) {
@@ -856,7 +1217,7 @@ body{
             const [year, month, day] = selectedDateKey.split("-").map(Number);
             const selectedDate = new Date(year, month - 1, day);
 
-            monthLabel.textContent = selectedDate.toLocaleDateString("id-ID", {
+            monthLabelText.textContent = selectedDate.toLocaleDateString("id-ID", {
                 day: "numeric",
                 month: "long",
                 year: "numeric"
@@ -866,7 +1227,7 @@ body{
                 month: "long",
                 year: "numeric"
             });
-            monthLabel.textContent = `Data ${label}`;
+            monthLabelText.textContent = `Data ${label}`;
         }
     }
 
@@ -891,11 +1252,16 @@ body{
 
     function renderTable() {
         const tbody = document.getElementById("tableBody");
+        const countBadge = document.getElementById("recordCount");
+
+        if (countBadge) {
+            countBadge.textContent = `${filteredData.length} data`;
+        }
 
         if (filteredData.length === 0) {
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="10" class="status-cell">Tidak ada data</td>
+                    <td colspan="10" class="status-cell">Tidak ada data aset pada periode ini.</td>
                 </tr>
             `;
             return;
@@ -907,16 +1273,18 @@ body{
 
             return `
                 <tr>
-                    <td>${index + 1}</td>
+                    <td class="num-tabular">${index + 1}</td>
                     <td>${formatTanggal(item.tanggal_aset)}</td>
-                    <td>${formatRupiah(item.harga_beli)}</td>
-                    <td>${formatRupiah(item.biaya_pembelian)}</td>
-                    <td>${formatRupiah(item.total_modal)}</td>
-                    <td>${formatGram(item.aset)} gr</td>
-                    <td>${formatGram(item.total_aset)} gr</td>
-                    <td>${formatRupiah(item.harga_jual)}</td>
-                    <td>${formatRupiah(item.jumlah_uang_aplikasi)}</td>
-                    <td class="${className}">${formatRupiah(item.untung_rugi)}</td>
+                    <td class="num-tabular">${formatRupiah(item.harga_beli)}</td>
+                    <td class="num-tabular">${formatRupiah(item.biaya_pembelian)}</td>
+                    <td class="num-tabular bold-cell">${formatRupiah(item.total_modal)}</td>
+                    <td class="num-tabular">${formatGram(item.aset)} gr</td>
+                    <td class="num-tabular bold-cell">${formatGram(item.total_aset)} gr</td>
+                    <td class="num-tabular">${formatRupiah(item.harga_jual)}</td>
+                    <td class="num-tabular bold-cell">${formatRupiah(item.jumlah_uang_aplikasi)}</td>
+                    <td class="num-tabular">
+                        <span class="badge-pl ${className}">${formatRupiah(item.untung_rugi, true)}</span>
+                    </td>
                 </tr>
             `;
         }).join("");
@@ -977,7 +1345,6 @@ body{
         const firstDay = new Date(year, month, 1);
         const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-        // Senin = 0, Selasa = 1, ..., Minggu = 6
         let startDay = firstDay.getDay() - 1;
         if (startDay < 0) startDay = 6;
 
