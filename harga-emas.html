@@ -6,9 +6,26 @@
 <title>Harga Emas - GoldDash</title>
 <script src="auth-guard.js"></script>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
+:root{
+    --navy-dark:#021830;
+    --navy-main:#04264a;
+    --navy-light:#0b3b6e;
+    --accent-blue:#1f86ff;
+    --accent-blue-hover:#0b6ce0;
+    --accent-gold:#f59e0b;
+    --bg-page:#f1f5f9;
+    --bg-card:#ffffff;
+    --text-primary:#0f172a;
+    --text-secondary:#475569;
+    --text-muted:#94a3b8;
+    --border-light:#e2e8f0;
+}
+
 *{
     margin:0;
     padding:0;
@@ -23,122 +40,269 @@ body{
     overflow-x:hidden;
     width:100%;
     max-width:100%;
-    background:#eef2f7;
+    background:var(--bg-page);
+    color:var(--text-primary);
+    -webkit-font-smoothing:antialiased;
+}
+
+.num-tabular{
+    font-variant-numeric:tabular-nums;
 }
 
 .dashboard{
     display:flex;
     min-height:100vh;
-    overflow-x:hidden;
 }
 
-/* SIDEBAR */
+/* =====================================================
+   SIDEBAR
+===================================================== */
 .sidebar{
     position:sticky;
     top:0;
     height:100vh;
     width:260px;
-    background:#04264a;
+    background:linear-gradient(180deg, var(--navy-main) 0%, var(--navy-dark) 100%);
     color:#fff;
-    padding:25px 0;
-    transition:all .3s ease;
+    padding:24px 0;
+    transition:all .3s cubic-bezier(.4, 0, .2, 1);
     overflow:hidden;
     flex-shrink:0;
+    display:flex;
+    flex-direction:column;
+    border-right:1px solid rgba(255,255,255,.06);
 }
 
 .sidebar.hide{
     width:0;
     padding:0;
+    border-right:none;
 }
 
 .logo{
-    font-size:28px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    font-size:24px;
     font-weight:700;
-    text-align:center;
-    margin-bottom:40px;
+    letter-spacing:-0.4px;
+    padding:4px 20px 26px;
+    margin-bottom:16px;
+    border-bottom:1px solid rgba(255,255,255,.08);
+    white-space:nowrap;
+}
+
+.logo-badge{
+    width:38px;
+    height:38px;
+    border-radius:11px;
+    background:linear-gradient(135deg, rgba(245,158,11,.22), rgba(31,134,255,.22));
+    border:1px solid rgba(251,191,36,.35);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+}
+
+.logo span{
+    color:#fbbf24;
+}
+
+.menu-label{
+    font-size:11px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:1.1px;
+    color:rgba(255,255,255,.4);
+    padding:0 26px;
+    margin-bottom:10px;
     white-space:nowrap;
 }
 
 .menu{
     list-style:none;
+    padding:0 14px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
 }
 
 .menu li{
-    transition:.3s;
+    border-radius:12px;
+    transition:all .25s ease;
 }
 
 .menu li:hover{
-    background:#0b4f96;
+    background:rgba(255,255,255,.08);
 }
 
 .menu li.active{
-    background:#1f86ff;
+    background:linear-gradient(135deg, #1f86ff, #0b6ce0);
+    box-shadow:0 8px 20px rgba(31,134,255,.32);
 }
 
 .menu li a{
-    display:block;
-    padding:16px 30px;
-    color:#fff;
+    display:flex;
+    align-items:center;
+    gap:13px;
+    padding:13px 16px;
+    color:rgba(255,255,255,.82);
     text-decoration:none;
+    font-size:14px;
+    font-weight:500;
     white-space:nowrap;
+    transition:.2s;
 }
 
-/* MAIN */
+.menu li:hover a,
+.menu li.active a{
+    color:#ffffff;
+}
+
+.menu li.active a{
+    font-weight:600;
+}
+
+.menu-icon{
+    width:19px;
+    height:19px;
+    flex-shrink:0;
+    opacity:.85;
+}
+
+.menu li.active .menu-icon{
+    opacity:1;
+}
+
+.sidebar-footer{
+    margin-top:auto;
+    padding:16px 20px 0;
+    border-top:1px solid rgba(255,255,255,.08);
+}
+
+.sidebar-note{
+    background:rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:12px;
+    padding:12px 14px;
+    font-size:12px;
+    color:rgba(255,255,255,.65);
+    line-height:1.5;
+    white-space:normal;
+    min-width:218px;
+}
+
+.sidebar-note strong{
+    display:block;
+    color:#fbbf24;
+    font-size:12.5px;
+    margin-bottom:2px;
+}
+
+/* =====================================================
+   MAIN & TOPBAR
+===================================================== */
 .main{
     flex:1;
     min-width:0;
     transition:all .3s ease;
-    overflow-x:hidden;
+    display:flex;
+    flex-direction:column;
 }
 
-/* TOPBAR */
 .topbar{
-    height:75px;
-    background:#fff;
+    position:sticky;
+    top:0;
+    z-index:50;
+    height:74px;
+    background:rgba(255,255,255,.88);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border-light);
     display:flex;
     align-items:center;
     justify-content:space-between;
-    padding:0 30px;
-    box-shadow:0 2px 10px rgba(0,0,0,.05);
+    padding:0 28px;
+}
+
+.topbar-left{
+    display:flex;
+    align-items:center;
+    gap:16px;
 }
 
 .left-top{
-    font-size:26px;
+    width:40px;
+    height:40px;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
     cursor:pointer;
     user-select:none;
-    background:none;
-    border:none;
-    color:#1b1b1b;
+    background:#f8fafc;
+    border:1px solid var(--border-light);
+    color:var(--text-primary);
+    transition:.2s;
+}
+
+.left-top:hover{
+    background:#eef2f7;
+    border-color:#cbd5e1;
+}
+
+.page-title-wrap h1{
+    font-size:19px;
+    font-weight:700;
+    color:var(--text-primary);
+    line-height:1.2;
+}
+
+.page-title-wrap p{
+    font-size:12.5px;
+    color:var(--text-secondary);
+    margin-top:2px;
 }
 
 .right-top{
     display:flex;
     align-items:center;
-    gap:15px;
+    gap:14px;
 }
 
 .logout-btn{
-    background:#ff4d4d;
-    color:#fff;
-    border:none;
-    padding:10px 16px;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:#fff1f2;
+    color:#e11d48;
+    border:1px solid #fecdd3;
+    padding:9px 16px;
     border-radius:10px;
     cursor:pointer;
+    font-size:13.5px;
     font-weight:600;
-    transition:.3s;
+    transition:all .2s ease;
 }
 
 .logout-btn:hover{
-    background:#e60000;
+    background:#e11d48;
+    color:#ffffff;
+    border-color:#e11d48;
+    box-shadow:0 6px 16px rgba(225,29,72,.24);
 }
 
-/* CONTENT */
+/* =====================================================
+   CONTENT & STAT CARDS
+===================================================== */
 .content{
-    padding:25px;
-    overflow-x:hidden;
+    padding:26px 28px 36px;
+    max-width:1480px;
+    width:100%;
+    margin:0 auto;
 }
 
-/* CARDS */
 .stats{
     display:grid;
     grid-template-columns:repeat(3,1fr);
@@ -146,94 +310,233 @@ body{
 }
 
 .card{
-    background:#fff;
-    border-radius:14px;
-    padding:20px;
-    box-shadow:0 4px 15px rgba(0,0,0,.05);
+    background:var(--bg-card);
+    border-radius:18px;
+    padding:22px;
+    border:1px solid var(--border-light);
+    box-shadow:0 4px 20px rgba(15,23,42,.035);
+    transition:transform .25s ease, box-shadow .25s ease;
+    position:relative;
+    overflow:hidden;
+}
+
+.card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 12px 28px rgba(15,23,42,.07);
+}
+
+.card-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
 }
 
 .card-title{
-    color:#777;
-    font-size:14px;
+    color:var(--text-secondary);
+    font-size:13.5px;
+    font-weight:600;
+}
+
+.card-icon{
+    width:38px;
+    height:38px;
+    border-radius:11px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+}
+
+.icon-gold{
+    background:#fffbeb;
+    color:#d97706;
+}
+
+.icon-blue{
+    background:#eff6ff;
+    color:#2563eb;
+}
+
+.icon-emerald{
+    background:#ecfdf5;
+    color:#059669;
 }
 
 .card-value{
-    font-size:34px;
+    font-size:clamp(22px, 1.9vw, 28px);
     font-weight:700;
-    margin-top:10px;
-    color:#1b1b1b;
+    margin-top:14px;
+    color:var(--text-primary);
+    letter-spacing:-0.4px;
+    line-height:1.25;
+}
+
+.price-row{
+    display:flex;
+    align-items:baseline;
+    gap:6px;
+    margin-top:14px;
+    flex-wrap:wrap;
+}
+
+.price-row .card-value{
+    margin-top:0;
+}
+
+.price-unit{
+    font-size:12.5px;
+    color:var(--text-muted);
+    font-weight:500;
 }
 
 .card-sub{
     margin-top:12px;
-    color:#666;
-    font-size:14px;
+    padding-top:10px;
+    border-top:1px dashed #e2e8f0;
+    color:var(--text-secondary);
+    font-size:12.5px;
+    display:flex;
+    align-items:center;
+    gap:8px;
 }
 
-/* HISTORY TABLE */
+.live-dot{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:#10b981;
+    box-shadow:0 0 0 3px rgba(16,185,129,.2);
+    flex-shrink:0;
+}
+
+.clock-text{
+    font-weight:600;
+    color:var(--text-primary);
+    letter-spacing:0.3px;
+}
+
+/* Shimmer Skeleton */
+.skeleton{
+    display:inline-block;
+    height:28px;
+    width:150px;
+    border-radius:8px;
+    background:linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+    background-size:200% 100%;
+    animation:shimmer 1.4s infinite;
+    vertical-align:middle;
+}
+
+@keyframes shimmer{
+    0%{ background-position:200% 0; }
+    100%{ background-position:-200% 0; }
+}
+
+/* =====================================================
+   HISTORY TABLE CONTAINER
+===================================================== */
 .table-container{
-    margin-top:25px;
-    background:#fff;
-    border-radius:14px;
-    padding:20px;
-    box-shadow:0 4px 15px rgba(0,0,0,.05);
+    margin-top:24px;
+    background:var(--bg-card);
+    border-radius:20px;
+    padding:26px;
+    border:1px solid var(--border-light);
+    box-shadow:0 4px 20px rgba(15,23,42,.035);
 }
 
 .table-header{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-bottom:15px;
+    margin-bottom:20px;
+    padding-bottom:18px;
+    border-bottom:1px solid #f1f5f9;
     flex-wrap:wrap;
-    gap:10px;
+    gap:14px;
 }
 
-.table-title{
-    font-size:18px;
-    font-weight:600;
-    color:#1b1b1b;
-}
-
-.month-nav{
+.table-title-wrap{
     display:flex;
     align-items:center;
     gap:10px;
 }
 
-.month-btn{
-    background:#1f86ff;
-    color:#fff;
-    border:none;
-    padding:10px 16px;
-    border-radius:10px;
-    cursor:pointer;
+.title-dot{
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:var(--accent-blue);
+    box-shadow:0 0 0 4px rgba(31,134,255,.16);
+}
+
+.table-title{
+    font-size:17px;
+    font-weight:700;
+    color:var(--text-primary);
+}
+
+.record-badge{
+    font-size:12px;
     font-weight:600;
-    transition:.3s;
+    color:var(--accent-blue);
+    background:#eff6ff;
+    border:1px solid #dbeafe;
+    padding:3px 10px;
+    border-radius:20px;
+}
+
+.month-nav{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:#f1f5f9;
+    padding:5px;
+    border-radius:13px;
+    border:1px solid var(--border-light);
+}
+
+.month-btn{
+    background:#ffffff;
+    color:var(--text-primary);
+    border:1px solid var(--border-light);
+    padding:8px 14px;
+    border-radius:9px;
+    cursor:pointer;
+    font-size:13px;
+    font-weight:600;
+    transition:all .2s ease;
+    box-shadow:0 1px 3px rgba(15,23,42,.05);
 }
 
 .month-btn:hover:not(:disabled){
-    background:#0b4f96;
+    background:var(--accent-blue);
+    color:#ffffff;
+    border-color:var(--accent-blue);
 }
 
 .month-btn:disabled{
-    background:#b8d4f8;
+    background:transparent;
+    border-color:transparent;
+    box-shadow:none;
+    color:var(--text-muted);
     cursor:not-allowed;
 }
 
 .month-label{
-    background:#f3f6fa;
-    padding:10px 18px;
-    border-radius:10px;
-    font-weight:600;
-    color:#04264a;
-    min-width:180px;
+    padding:8px 16px;
+    font-size:13.5px;
+    font-weight:700;
+    color:var(--navy-main);
+    min-width:175px;
     text-align:center;
 }
 
 .table-responsive{
     width:100%;
     overflow-x:auto;
-    border-radius:10px;
+    border:1px solid var(--border-light);
+    border-radius:14px;
 }
 
 .history-table{
@@ -242,58 +545,97 @@ body{
 }
 
 .history-table th{
-    background:#04264a;
-    color:#fff;
-    padding:14px;
+    background:#f8fafc;
+    color:var(--text-secondary);
+    padding:14px 16px;
     text-align:left;
-    font-size:14px;
+    font-size:12.5px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.4px;
+    border-bottom:1px solid var(--border-light);
     white-space:nowrap;
 }
 
 .history-table td{
-    padding:14px;
-    border-bottom:1px solid #e5e5e5;
+    padding:14px 16px;
+    border-bottom:1px solid #f1f5f9;
+    font-size:14px;
+    color:var(--text-primary);
 }
 
-.history-table tr:last-child td{
+.history-table tbody tr:last-child td{
     border-bottom:none;
 }
 
-.history-table tr:hover{
-    background:#f7f9fc;
+.history-table tbody tr{
+    transition:background .15s ease;
+}
+
+.history-table tbody tr:hover{
+    background:#f8fafc;
+}
+
+.row-num{
+    color:var(--text-muted);
+    font-weight:600;
+    font-size:13px;
+    width:60px;
+}
+
+.price-cell{
+    font-weight:600;
+    color:var(--text-primary);
 }
 
 .empty-row{
     text-align:center;
-    padding:24px !important;
-    color:#777;
+    padding:36px 20px !important;
+    color:var(--text-secondary);
+    font-size:14px;
 }
 
 .sortable{
     cursor:pointer;
     user-select:none;
     white-space:nowrap;
+    transition:color .2s, background .2s;
 }
 
 .sortable:hover{
-    background:#0b4f96;
+    background:#f1f5f9;
+    color:var(--accent-blue);
 }
 
-.sortable span{
+.sort-pill{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
     margin-left:6px;
-    font-size:12px;
+    width:20px;
+    height:20px;
+    border-radius:6px;
+    background:#e2e8f0;
+    color:var(--text-secondary);
+    font-size:11px;
+    transition:.2s;
+}
+
+.sortable:hover .sort-pill{
+    background:#dbeafe;
+    color:var(--accent-blue);
 }
 
 .mobile-text{
     display:none;
-    font-size:20px;
+    font-size:18px;
     font-weight:700;
     line-height:1;
 }
 
-/* =========================
+/* =====================================================
    TABLET
-========================= */
+===================================================== */
 @media (max-width: 1200px){
     .stats{
         grid-template-columns:repeat(2,1fr);
@@ -304,20 +646,24 @@ body{
     }
 }
 
-/* ===========================
+/* =====================================================
    MOBILE
-=========================== */
+===================================================== */
 @media (max-width:768px){
+    .dashboard{
+        flex-direction:column;
+    }
+
     .sidebar{
         position:fixed;
         top:0;
         left:0;
-        width:220px;
+        width:245px;
         height:100vh;
         z-index:1001;
         transform:translateX(-100%);
-        transition:.3s;
-        box-shadow:0 0 25px rgba(0,0,0,.25);
+        transition:.3s ease;
+        box-shadow:0 0 30px rgba(2,24,48,.35);
     }
 
     .sidebar.show{
@@ -326,34 +672,24 @@ body{
 
     .sidebar.hide{
         transform:translateX(-100%);
-        width:220px;
-    }
-
-    .logo{
-        font-size:24px;
-        margin-bottom:25px;
-    }
-
-    .menu li a{
-        padding:14px 20px;
-        font-size:15px;
-    }
-
-    .main{
-        width:100%;
+        width:245px;
     }
 
     .topbar{
-        height:65px;
-        padding:0 15px;
+        height:66px;
+        padding:0 16px;
     }
 
-    .left-top{
-        font-size:24px;
+    .page-title-wrap h1{
+        font-size:17px;
+    }
+
+    .page-title-wrap p{
+        display:none;
     }
 
     .content{
-        padding:12px;
+        padding:16px;
     }
 
     .stats{
@@ -370,42 +706,38 @@ body{
     }
 
     .card-title{
-        font-size:13px;
+        font-size:12.5px;
     }
 
     .card-value{
-        font-size:24px;
-    }
-
-    .card-sub{
-        font-size:12px;
+        font-size:21px;
     }
 
     .table-container{
-        margin-top:15px;
-        padding:15px;
+        margin-top:16px;
+        padding:16px;
+        border-radius:16px;
     }
 
     .history-table th,
     .history-table td{
-        padding:10px 8px;
-        font-size:12px;
+        padding:11px 10px;
+        font-size:12.5px;
     }
 
     .month-nav{
         width:100%;
         display:flex;
         align-items:center;
-        gap:10px;
+        gap:6px;
     }
 
     .month-btn{
         flex:0 0 auto;
-        min-width:56px;
-        height:42px;
-        padding:0 14px;
-        border-radius:12px;
-        font-size:18px;
+        min-width:44px;
+        height:38px;
+        padding:0 12px;
+        border-radius:9px;
         display:flex;
         align-items:center;
         justify-content:center;
@@ -414,8 +746,8 @@ body{
     .month-label{
         flex:1;
         min-width:0;
-        padding:10px 14px;
-        font-size:14px;
+        padding:8px 10px;
+        font-size:13px;
         white-space:nowrap;
         overflow:hidden;
         text-overflow:ellipsis;
@@ -430,16 +762,20 @@ body{
     }
 }
 
-/* =========================
+/* =====================================================
    EXTRA SMALL DEVICE
-========================= */
+===================================================== */
 @media (max-width: 480px){
-    .logo{
-        font-size:22px;
+    .logout-btn span{
+        display:none;
+    }
+
+    .logout-btn{
+        padding:9px 11px;
     }
 
     .card-value{
-        font-size:22px;
+        font-size:19px;
     }
 }
 
@@ -449,7 +785,8 @@ body{
     left:0;
     width:100%;
     height:100%;
-    background:rgba(0,0,0,.45);
+    background:rgba(2,24,48,.5);
+    backdrop-filter:blur(2px);
     z-index:1000;
     opacity:0;
     visibility:hidden;
@@ -470,337 +807,42 @@ body{
 <div class="dashboard">
 
     <aside class="sidebar" id="sidebar">
-        <div class="logo">GoldDash</div>
+        <div class="logo">
+            <div class="logo-badge">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                    <path d="M4 17L7.5 11H16.5L20 17H4Z" fill="#F59E0B" stroke="#D97706" stroke-width="1.5" stroke-linejoin="round"/>
+                    <path d="M8.5 11L10.5 7.5H13.5L15.5 11" fill="#FBBF24" stroke="#D97706" stroke-width="1.5" stroke-linejoin="round"/>
+                    <path d="M5 6L9 3.5L13 5.5L19 2" stroke="#38BDF8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div><span>Gold</span>Dash</div>
+        </div>
 
+        <div class="menu-label">Menu Utama</div>
         <ul class="menu">
             <li>
-                <a href="dashboard.html">Dashboard</a>
+                <a href="dashboard.html">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+                        <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+                        <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+                        <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+                    </svg>
+                    <span>Dashboard</span>
+                </a>
             </li>
             <li class="active">
-                <a href="harga-emas.html">Harga Emas</a>
+                <a href="harga-emas.html">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                        <polyline points="16 7 22 7 22 13"></polyline>
+                    </svg>
+                    <span>Harga Emas</span>
+                </a>
             </li>
             <li>
-                <a href="data-emas.html">Data Emas</a>
-            </li>
-            <li>
-                <a href="investasi.html">Investasi</a>
-            </li>
-        </ul>
-    </aside>
-
-    <main class="main">
-
-        <div class="topbar">
-            <button type="button" class="left-top" id="toggleSidebar" aria-label="Toggle Menu">
-                ☰
-            </button>
-            
-            <div class="right-top">
-                <button type="button" class="logout-btn" onclick="logout()">
-                    Logout
-                </button>
-            </div>
-        </div>
-
-        <div class="content">
-
-            <div class="stats">
-                <div class="card">
-                    <div class="card-title">Tanggal</div>
-                    <div class="card-value" id="tanggal">-</div>
-                    <div class="card-sub" id="jam">-</div>
-                </div>
-
-                <div class="card">
-                    <div class="card-title">Harga Beli</div>
-                    <div class="card-value" id="hargaBeli">Loading...</div>
-                    <div class="card-sub">/ 0,01 gr</div>
-                </div>
-
-                <div class="card">
-                    <div class="card-title">Harga Jual</div>
-                    <div class="card-value" id="hargaJual">Loading...</div>
-                    <div class="card-sub">/ 0,01 gr</div>
-                </div>
-            </div>
-
-            <div class="table-container">
-                <div class="table-header">
-                    <div class="table-title">History Harga Emas</div>
-                
-                    <div class="month-nav">
-                        <button type="button" id="prevMonth" class="month-btn" title="Bulan Sebelumnya">
-                            <span class="desktop-text">← Bulan Sebelumnya</span>
-                            <span class="mobile-text">←</span>
-                        </button>
-                    
-                        <div id="monthLabel" class="month-label"></div>
-                    
-                        <button type="button" id="nextMonth" class="month-btn" title="Bulan Berikutnya">
-                            <span class="desktop-text">Bulan Berikutnya →</span>
-                            <span class="mobile-text">→</span>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="table-responsive">
-                    <table class="history-table">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th class="sortable" onclick="sortTable('tanggal')">
-                                    Hari / Tanggal
-                                    <span id="icon-tanggal">↕</span>
-                                </th>
-                                <th class="sortable" onclick="sortTable('harga_beli')">
-                                    Harga Beli
-                                    <span id="icon-harga_beli">↕</span>
-                                </th>
-                                <th class="sortable" onclick="sortTable('harga_jual')">
-                                    Harga Jual
-                                    <span id="icon-harga_jual">↕</span>
-                                </th>
-                            </tr>
-                        </thead>
-
-                        <tbody id="historyBody"></tbody>
-                    </table>
-                </div>
-            </div>
-
-        </div>
-
-    </main>
-
-</div>
-
-<script>
-    function formatRupiah(n) {
-        return "Rp " + (Number(n) || 0).toLocaleString("id-ID");
-    }
-
-    // Load Harga Saat Ini
-    async function loadHarga() {
-        try {
-            const res = await fetch("/api/harga");
-            if (!res.ok) throw new Error("Gagal memuat harga");
-            const data = await res.json();
-
-            if (!data || !data.harga_beli) {
-                throw new Error("Data harga kosong");
-            }
-
-            document.getElementById("hargaBeli").innerText = formatRupiah(data.harga_beli);
-            document.getElementById("hargaJual").innerText = formatRupiah(data.harga_jual);
-        } catch (err) {
-            console.error(err);
-            document.getElementById("hargaBeli").innerText = "Rp 0";
-            document.getElementById("hargaJual").innerText = "Rp 0";
-        }
-    }
-
-    // History Harga Emas
-    let allHistory = [];
-    let currentOffset = 0;
-    let sortColumn = "tanggal";
-    let sortDirection = "desc";
-
-    const prevMonthBtn = document.getElementById("prevMonth");
-    const nextMonthBtn = document.getElementById("nextMonth");
-
-    async function loadHistory() {
-        try {
-            const res = await fetch("/api/history");
-            if (!res.ok) throw new Error("Gagal memuat history");
-            const data = await res.json();
-            allHistory = Array.isArray(data) ? data : [];
-        } catch (err) {
-            console.error(err);
-            allHistory = [];
-        } finally {
-            updateSortIcons();
-            renderHistory();
-        }
-    }
-
-    function sortTable(column) {
-        if (sortColumn === column) {
-            sortDirection = sortDirection === "asc" ? "desc" : "asc";
-        } else {
-            sortColumn = column;
-            sortDirection = "asc";
-        }
-
-        updateSortIcons();
-        renderHistory();
-    }
-
-    function updateSortIcons() {
-        document.getElementById("icon-tanggal").textContent = "↕";
-        document.getElementById("icon-harga_beli").textContent = "↕";
-        document.getElementById("icon-harga_jual").textContent = "↕";
-
-        document.getElementById("icon-" + sortColumn).textContent =
-            sortDirection === "asc" ? "▲" : "▼";
-    }
-
-    function renderHistory() {
-        const tbody = document.getElementById("historyBody");
-        const today = new Date();
-
-        const start = new Date(today.getFullYear(), today.getMonth() - currentOffset, 1, 0, 0, 0, 0);
-        const end = new Date(today.getFullYear(), today.getMonth() - currentOffset + 1, 0, 23, 59, 59, 999);
-
-        const label = start.toLocaleDateString("id-ID", {
-            month: "long",
-            year: "numeric"
-        });
-
-        document.getElementById("monthLabel").textContent = `Data ${label}`;
-        nextMonthBtn.disabled = currentOffset === 0;
-
-        const filtered = allHistory
-            .filter(item => {
-                const tgl = new Date(item.tanggal);
-                return tgl >= start && tgl <= end;
-            })
-            .sort((a, b) => {
-                const valueA = sortColumn === "tanggal" ? new Date(a.tanggal).getTime() : Number(a[sortColumn]);
-                const valueB = sortColumn === "tanggal" ? new Date(b.tanggal).getTime() : Number(b[sortColumn]);
-
-                if (valueA < valueB) return sortDirection === "asc" ? -1 : 1;
-                if (valueA > valueB) return sortDirection === "asc" ? 1 : -1;
-                return 0;
-            });
-
-        if (!filtered.length) {
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="4" class="empty-row">
-                        Tidak ada data riwayat harga pada bulan ${label}.
-                    </td>
-                </tr>
-            `;
-            return;
-        }
-
-        tbody.innerHTML = filtered.map((item, index) => {
-            const tanggalFormatted = new Date(item.tanggal).toLocaleDateString("id-ID", {
-                weekday: "long",
-                day: "numeric",
-                month: "long",
-                year: "numeric"
-            });
-
-            return `
-                <tr>
-                    <td>${index + 1}</td>
-                    <td>${tanggalFormatted}</td>
-                    <td>${formatRupiah(item.harga_beli)}</td>
-                    <td>${formatRupiah(item.harga_jual)}</td>
-                </tr>
-            `;
-        }).join("");
-    }
-
-    prevMonthBtn.addEventListener("click", () => {
-        currentOffset++;
-        renderHistory();
-    });
-
-    nextMonthBtn.addEventListener("click", () => {
-        if (currentOffset > 0) {
-            currentOffset--;
-            renderHistory();
-        }
-    });
-
-    /* =====================================================
-       SIDEBAR & NAVIGASI
-    ===================================================== */
-    const toggleBtn = document.getElementById("toggleSidebar");
-    const sidebar = document.getElementById("sidebar");
-    const overlay = document.getElementById("overlay");
-    const main = document.querySelector(".main");
-    let lastWindowWidth = window.innerWidth;
-
-    toggleBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-
-        if (window.innerWidth <= 768) {
-            sidebar.classList.remove("hide");
-            sidebar.classList.toggle("show");
-            overlay.classList.toggle("show");
-        } else {
-            sidebar.classList.toggle("hide");
-        }
-    });
-
-    window.addEventListener("resize", () => {
-        if (window.innerWidth === lastWindowWidth) return;
-        lastWindowWidth = window.innerWidth;
-
-        if (window.innerWidth > 768) {
-            sidebar.classList.remove("show");
-            overlay.classList.remove("show");
-            sidebar.classList.remove("hide");
-        } else {
-            sidebar.classList.remove("hide");
-        }
-    });
-
-    overlay.addEventListener("click", () => {
-        sidebar.classList.remove("show");
-        overlay.classList.remove("show");
-    });
-
-    main.addEventListener("click", (e) => {
-        if (sidebar.contains(e.target)) return;
-
-        // Di HP, klik area konten bakal nutup sidebar
-        if (window.innerWidth <= 768) {
-            sidebar.classList.remove("show");
-            overlay.classList.remove("show");
-        }
-    });
-
-    // Jam Real-time (Australia/Perth)
-    function updatePerthTime() {
-        const now = new Date();
-
-        const tanggal = now.toLocaleDateString("id-ID", {
-            timeZone: "Australia/Perth",
-            day: "numeric",
-            month: "long",
-            year: "numeric"
-        });
-
-        const parts = new Intl.DateTimeFormat("en-GB", {
-            timeZone: "Australia/Perth",
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            hour12: false
-        }).formatToParts(now);
-
-        const hour = parts.find(p => p.type === "hour").value;
-        const minute = parts.find(p => p.type === "minute").value;
-        const second = parts.find(p => p.type === "second").value;
-
-        document.getElementById("tanggal").textContent = tanggal;
-        document.getElementById("jam").textContent = `${hour} : ${minute} : ${second}`;
-    }
-
-    function logout() {
-        window.location.href = "login.html";
-    }
-
-    // Inisialisasi
-    loadHarga();
-    loadHistory();
-    updatePerthTime();
-    setInterval(updatePerthTime, 1000);
-</script>
-
-</body>
-</html>
+                <a href="data-emas.html">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                        <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                        <path d
